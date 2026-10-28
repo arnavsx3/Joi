@@ -1,0 +1,29 @@
+# Python environments and generated files
+.venv/
+venv/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+*.egg-info/
+build/
+dist/
+
+# Local configuration and credentials
+.env
+.env.*
+!.env.example
+
+# Training artifacts and local datasets
+checkpoints/
+runs/
+data/raw/
+*.pt
+*.pth
+*.ckpt
+*.safetensors
+
+# Local editor and OS files
+.idea/
+.DS_Store
