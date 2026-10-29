@@ -1,0 +1,243 @@
+{
+  "checkpoint": "checkpoints/joi-chat/best.pt",
+  "checkpoint_sha256": "38960233e282b62c7b79d30ac1b288f3de18c17439cac07c26050d4f9726490d",
+  "runtime": {
+    "name": "Joi",
+    "step": 1600,
+    "context_size": 256,
+    "parameters": 691712,
+    "tokenizer": "word",
+    "mode": "our-own-dialogue-model",
+    "training_format": "joi-dialogue-v1",
+    "recall_specialist": true,
+    "recall_checkpoint_sha256": "678c0b021fe7b34ca619487aa03df8b2d41f00687464175971189ac189e616e5",
+    "note": "Routing selects a locally trained neural model. Names and reply text are not substituted by a template."
+  },
+  "phase_step": 1600,
+  "model_config": {
+    "vocab_size": 2048,
+    "block_size": 256,
+    "n_embd": 128,
+    "n_heads": 4,
+    "n_layers": 2,
+    "dropout": 0.1,
+    "attention_dropout": 0.0
+  },
+  "initialization": {
+    "mode": "own-checkpoint",
+    "source": "checkpoints/dialogue-words/best.pt",
+    "source_sha256": "042e67fc63aef8360998608e7080ec2fb5f1740988603dd344c0168532c815b3",
+    "source_step": 4000,
+    "source_initialization": {
+      "mode": "random"
+    }
+  },
+  "dataset_hashes": {
+    "train": "7c5fa62c44edb7fe1aff7a3c33292cbed600aabb1d587c3c8dfe1dcd482ec8cf",
+    "val": "e821c2e8f4d7a5b99dd10219ecd8a4fe667f772a2c19bb46624691c536dd6f46"
+  },
+  "tokenizer_type": "word",
+  "loss_unit": "nats per learned token",
+  "validation_loss_nats": 1.9683457911014557,
+  "token_perplexity": 7.158824497028416,
+  "protocol": {
+    "seed": 123,
+    "validation_batches": 16,
+    "validation_batch_size": 8,
+    "new_tokens_per_reply": 128,
+    "temperature": 0.65,
+    "top_k": 15,
+    "no_repeat_ngram_size": 6,
+    "literal_recall": "case-insensitive whole-word match",
+    "stop": "first generated newline; turn marker is removed"
+  },
+  "note": "Development probes, not an independent test set. Each episode uses the model's actual earlier replies. Literal name/topic checks do not establish reliable memory, fluency or cheerfulness.",
+  "episodes": [
+    {
+      "id": "greeting",
+      "purpose": "warm greeting",
+      "turns": [
+        "Hi Joi, how are you?"
+      ],
+      "results": [
+        {
+          "user": "Hi Joi, how are you?",
+          "reply": "Hey, you! I'm glad you're here. How has your day been?",
+          "included_messages": 1,
+          "context_characters": 75,
+          "elapsed_seconds": 0.039,
+          "model_used": "neural-general-dialogue",
+          "seed": 123
+        }
+      ],
+      "literal_recall_check": null
+    },
+    {
+      "id": "tired-day",
+      "purpose": "gentle conversational follow-up",
+      "turns": [
+        "My day was long and I feel worn out.",
+        "I'd rather just talk for a bit."
+      ],
+      "results": [
+        {
+          "user": "My day was long and I feel worn out.",
+          "reply": "How can I do?",
+          "included_messages": 1,
+          "context_characters": 91,
+          "elapsed_seconds": 0.012,
+          "model_used": "neural-general-dialogue",
+          "seed": 223
+        },
+        {
+          "user": "I'd rather just talk for a bit.",
+          "reply": "I can't see how to go with you?",
+          "included_messages": 3,
+          "context_characters": 148,
+          "elapsed_seconds": 0.027,
+          "model_used": "neural-general-dialogue",
+          "seed": 224
+        }
+      ],
+      "literal_recall_check": null
+    },
+    {
+      "id": "project",
+      "purpose": "follow a topic across turns",
+      "turns": [
+        "I made a little coding project today.",
+        "A chatbot, actually. What do you think?"
+      ],
+      "results": [
+        {
+          "user": "I made a little coding project today.",
+          "reply": "Ooh, a little creation of your own! What are you building?",
+          "included_messages": 1,
+          "context_characters": 92,
+          "elapsed_seconds": 0.029,
+          "model_used": "neural-general-dialogue",
+          "seed": 323
+        },
+        {
+          "user": "A chatbot, actually. What do you think?",
+          "reply": "I like the mood tonight?",
+          "included_messages": 3,
+          "context_characters": 202,
+          "elapsed_seconds": 0.02,
+          "model_used": "neural-general-dialogue",
+          "seed": 324
+        }
+      ],
+      "literal_recall_check": null
+    },
+    {
+      "id": "name-known",
+      "purpose": "recall a name present in curated training",
+      "turns": [
+        "My name is Arnav.",
+        "What is my name?"
+      ],
+      "expected_last_contains": "Arnav",
+      "results": [
+        {
+          "user": "My name is Arnav.",
+          "reply": "Hey, Arnav. It's lovely to have a name to go with our conversation. How are you feeling today?",
+          "included_messages": 1,
+          "context_characters": 72,
+          "elapsed_seconds": 0.045,
+          "model_used": "neural-general-dialogue",
+          "seed": 423
+        },
+        {
+          "user": "What is my name?",
+          "reply": "You're Arnav. What would you like to talk about next?",
+          "included_messages": 3,
+          "context_characters": 195,
+          "elapsed_seconds": 0.037,
+          "model_used": "neural-general-dialogue",
+          "seed": 424
+        }
+      ],
+      "literal_recall_check": true
+    },
+    {
+      "id": "name-new",
+      "purpose": "recall a name absent from the curated training examples",
+      "turns": [
+        "My name is Neel.",
+        "What is my name?"
+      ],
+      "expected_last_contains": "Neel",
+      "results": [
+        {
+          "user": "My name is Neel.",
+          "reply": "Hello! Nice to meet you, Sam.",
+          "included_messages": 1,
+          "context_characters": 71,
+          "elapsed_seconds": 0.017,
+          "model_used": "neural-general-dialogue",
+          "seed": 523
+        },
+        {
+          "user": "What is my name?",
+          "reply": "Maya, of course. How would you like to talk about?",
+          "included_messages": 3,
+          "context_characters": 129,
+          "elapsed_seconds": 0.032,
+          "model_used": "neural-recall-specialist",
+          "seed": 524
+        }
+      ],
+      "literal_recall_check": false
+    },
+    {
+      "id": "hobby",
+      "purpose": "recall a topic across turns",
+      "turns": [
+        "I like painting tiny cities.",
+        "What do I like painting?"
+      ],
+      "expected_last_contains": "cities",
+      "results": [
+        {
+          "user": "I like painting tiny cities.",
+          "reply": "Is there the way, so you are going to see it?",
+          "included_messages": 1,
+          "context_characters": 83,
+          "elapsed_seconds": 0.027,
+          "model_used": "neural-general-dialogue",
+          "seed": 623
+        },
+        {
+          "user": "What do I like painting?",
+          "reply": "Oh, that's really, I have to buy the chonts.",
+          "included_messages": 3,
+          "context_characters": 165,
+          "elapsed_seconds": 0.042,
+          "model_used": "neural-general-dialogue",
+          "seed": 624
+        }
+      ],
+      "literal_recall_check": false
+    },
+    {
+      "id": "playful",
+      "purpose": "playful response",
+      "turns": [
+        "Can you tell me something silly?"
+      ],
+      "results": [
+        {
+          "user": "Can you tell me something silly?",
+          "reply": "Yes, I think this one is.",
+          "included_messages": 1,
+          "context_characters": 87,
+          "elapsed_seconds": 0.016,
+          "model_used": "neural-general-dialogue",
+          "seed": 723
+        }
+      ],
+      "literal_recall_check": null
+    }
+  ]
+}

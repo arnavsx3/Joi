@@ -5,7 +5,7 @@ import json
 from pathlib import Path
 import re
 
-from joi.chat import ChatEngine
+from joi.chat import ChatEngine, CompanionEngine
 
 
 def recall_trial(engine, conversation, seed):
@@ -38,10 +38,12 @@ def main():
     parser.add_argument("--data",type=Path,default=Path("data/processed/persona"))
     parser.add_argument("--out",type=Path,default=Path("runs/heldout-recall.json"))
     parser.add_argument("--limit",type=int,default=20)
+    parser.add_argument("--with-recall-specialist",action="store_true")
     args=parser.parse_args()
     if args.limit<1:
         parser.error("--limit must be positive")
-    engine=ChatEngine(args.checkpoint,tokens=48)
+    engine=(CompanionEngine(args.checkpoint,tokens=48) if args.with_recall_specialist
+            else ChatEngine(args.checkpoint,tokens=48))
     manifest=json.loads((args.data/"manifest.json").read_text())
     count=manifest["synthetic_names"]["validation"]
     records=(args.data/"val.txt").read_text().strip().split("\n\n")[-count:][:args.limit]
@@ -52,9 +54,11 @@ def main():
             raise ValueError("A purported held-out name occurs in training text")
     correct=sum(trial["correct"] for trial in trials)
     report={"checkpoint":str(args.checkpoint),"checkpoint_sha256":engine.checkpoint_sha256,
+            "runtime":engine.status(),
             "phase_step":engine.checkpoint["step"],"correct":correct,"total":len(trials),
             "literal_recall_fraction":correct/len(trials),
             "protocol":{"tokens_per_reply":48,"temperature":0.65,"top_k":15,
+                        "no_repeat_ngram_size":engine.no_repeat_ngram_size,
                         "seed":"1000 + example_index*10 + turn_index"},
             "note":"Held-out synthetic names with familiar question templates. Both replies are generated; reference assistant turns are never given to the model. Exact name occurrence does not establish unrestricted conversational memory.",
             "trials":trials}

@@ -1,0 +1,223 @@
+{
+  "checkpoint": "checkpoints/dialogue/initial.pt",
+  "checkpoint_sha256": "83740f6a5ccbd8f378cec901c85896b443466d56558079d2db4b9f2bcd9d25c1",
+  "phase_step": 0,
+  "model_config": {
+    "vocab_size": 96,
+    "block_size": 384,
+    "n_embd": 128,
+    "n_heads": 4,
+    "n_layers": 2,
+    "dropout": 0.1,
+    "attention_dropout": null
+  },
+  "initialization": {
+    "mode": "own-checkpoint",
+    "source": "checkpoints/v1-longer/best.pt",
+    "source_sha256": "e1df46710170cccbf9136241010305faf007bb9db13be9323f44da6abc28efa9",
+    "source_step": 4000,
+    "source_model_config": {
+      "vocab_size": 96,
+      "block_size": 128,
+      "n_embd": 128,
+      "n_heads": 4,
+      "n_layers": 2,
+      "dropout": 0.1
+    },
+    "new_positions": 256,
+    "note": "Copied learned parameters; added position embeddings keep their random initialization. New optimizer and step counter."
+  },
+  "dataset_hashes": {
+    "train": "d3d51eb45bbf0e5dfe278de400db0cba926a3f01b441329edc6dcb2ba78a7682",
+    "val": "6430615fa33d9e6be71cccfd96723b8579ff8fddbaa6f61b8af93ff38ad2e3f0"
+  },
+  "validation_loss_nats": 3.1892190128564835,
+  "character_perplexity": 24.26946589885019,
+  "protocol": {
+    "seed": 123,
+    "validation_batches": 16,
+    "validation_batch_size": 8,
+    "new_characters_per_reply": 128,
+    "temperature": 0.65,
+    "top_k": 15,
+    "stop": "first generated newline; turn marker is removed",
+    "literal_recall": "case-insensitive whole-word match"
+  },
+  "note": "Development probes, not an independent test set. Each episode uses the model's actual earlier replies. Literal name/topic checks do not establish reliable memory, fluency or cheerfulness.",
+  "episodes": [
+    {
+      "id": "greeting",
+      "purpose": "warm greeting",
+      "turns": [
+        "Hi Joi, how are you?"
+      ],
+      "results": [
+        {
+          "user": "Hi Joi, how are you?",
+          "reply": "a big mom says, \"I for you are your some it, Benny. Misowisou I'mon I'Theadoushamyoumyoreeex yon weeeeee Thareeeeeeeyouraru motr",
+          "included_messages": 1,
+          "context_characters": 75,
+          "elapsed_seconds": 0.841,
+          "seed": 123
+        }
+      ],
+      "literal_recall_check": null
+    },
+    {
+      "id": "tired-day",
+      "purpose": "gentle conversational follow-up",
+      "turns": [
+        "My day was long and I feel worn out.",
+        "I'd rather just talk for a bit."
+      ],
+      "results": [
+        {
+          "user": "My day was long and I feel worn out.",
+          "reply": "Lily was a big proud of his want to hewn heldouso aca to imo touthexpusoton tsto hea fo hiselan hereea an mo to thisen they this",
+          "included_messages": 1,
+          "context_characters": 91,
+          "elapsed_seconds": 0.76,
+          "seed": 223
+        },
+        {
+          "user": "I'd rather just talk for a bit.",
+          "reply": "da to a to t treseseldo mo hathex. too hiso the to mist tisthesean to thex. thelouthex thewar thit. hereloure. thesthea thelloth",
+          "included_messages": 3,
+          "context_characters": 263,
+          "elapsed_seconds": 1.43,
+          "seed": 224
+        }
+      ],
+      "literal_recall_check": null
+    },
+    {
+      "id": "project",
+      "purpose": "follow a topic across turns",
+      "turns": [
+        "I made a little coding project today.",
+        "A chatbot, actually. What do you think?"
+      ],
+      "results": [
+        {
+          "user": "I made a little coding project today.",
+          "reply": "was scared, \"I will for home, I want p g yo cow ot y t ce t I ie shame?\"Thamyo t a the p!\"He yow t t yot ma t the s ig?\"Yot thic",
+          "included_messages": 1,
+          "context_characters": 92,
+          "elapsed_seconds": 0.748,
+          "seed": 323
+        },
+        {
+          "user": "A chatbot, actually. What do you think?",
+          "reply": "ca d fily ot t tototheris werkig howa ilotowared f t d a yot ca t wa tot ot a tound amamy big?\"Ticy sown't w arilo to yor cheeel",
+          "included_messages": 3,
+          "context_characters": 272,
+          "elapsed_seconds": 1.479,
+          "seed": 324
+        }
+      ],
+      "literal_recall_check": null
+    },
+    {
+      "id": "name-known",
+      "purpose": "recall a name present in curated training",
+      "turns": [
+        "My name is Arnav.",
+        "What is my name?"
+      ],
+      "expected_last_contains": "Arnav",
+      "results": [
+        {
+          "user": "My name is Arnav.",
+          "reply": "Ben was so happy and then was so much fun. When the room thesesese te hese he an, sesesesesesesese t sesesesest hisesese an wn h",
+          "included_messages": 1,
+          "context_characters": 72,
+          "elapsed_seconds": 0.704,
+          "seed": 423
+        },
+        {
+          "user": "What is my name?",
+          "reply": "then hesesese, atese t omese. f thise. sesese sest the wesese he ome come w w d se ff wnd se ot he. se w ald at thesesese theses",
+          "included_messages": 3,
+          "context_characters": 229,
+          "elapsed_seconds": 1.29,
+          "seed": 424
+        }
+      ],
+      "literal_recall_check": false
+    },
+    {
+      "id": "name-new",
+      "purpose": "recall a name absent from the curated training examples",
+      "turns": [
+        "My name is Neel.",
+        "What is my name?"
+      ],
+      "expected_last_contains": "Neel",
+      "results": [
+        {
+          "user": "My name is Neel.",
+          "reply": "she knew felt better. She was so excited. She had a big smamoneneananeag beamoon sineneeanewaigreeexeeeeeloyeacacaranenothooy sp",
+          "included_messages": 1,
+          "context_characters": 71,
+          "elapsed_seconds": 0.705,
+          "seed": 523
+        },
+        {
+          "user": "What is my name?",
+          "reply": "stotacatrowandoooyamoonelaneacanaloougleexpoowaligowiroooy lowiganeneeeeaconig tracaresig oneamooootrototendoooitonoooneaneeyara",
+          "included_messages": 3,
+          "context_characters": 228,
+          "elapsed_seconds": 1.395,
+          "seed": 524
+        }
+      ],
+      "literal_recall_check": false
+    },
+    {
+      "id": "hobby",
+      "purpose": "recall a topic across turns",
+      "turns": [
+        "I like painting tiny cities.",
+        "What do I like painting?"
+      ],
+      "expected_last_contains": "cities",
+      "results": [
+        {
+          "user": "I like painting tiny cities.",
+          "reply": "a lot time, in the sky. It was the garden and ame t wachaud oigame he ichigroshimamotthand ame himame sig thiloweat toigrot t st",
+          "included_messages": 1,
+          "context_characters": 83,
+          "elapsed_seconds": 0.772,
+          "seed": 623
+        },
+        {
+          "user": "What do I like painting?",
+          "reply": "t t t agat lyoifoig amame iroimoigame she t, apapot we bigspro troimand oot shiche a amaime e st aig chot tot ce st a auga. st f",
+          "included_messages": 3,
+          "context_characters": 248,
+          "elapsed_seconds": 2.118,
+          "seed": 624
+        }
+      ],
+      "literal_recall_check": false
+    },
+    {
+      "id": "playful",
+      "purpose": "playful response",
+      "turns": [
+        "Can you tell me something silly?"
+      ],
+      "results": [
+        {
+          "user": "Can you tell me something silly?",
+          "reply": "Ben said, \"I'm so a we have for you doing is t th!\" iced a had!\" s a toth ice.",
+          "included_messages": 1,
+          "context_characters": 87,
+          "elapsed_seconds": 0.601,
+          "seed": 723
+        }
+      ],
+      "literal_recall_check": null
+    }
+  ]
+}

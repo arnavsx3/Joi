@@ -1,0 +1,267 @@
+{
+  "checkpoint": "checkpoints/dialogue-words/best.pt",
+  "checkpoint_sha256": "042e67fc63aef8360998608e7080ec2fb5f1740988603dd344c0168532c815b3",
+  "runtime": {
+    "name": "Joi",
+    "step": 4000,
+    "context_size": 256,
+    "parameters": 691712,
+    "tokenizer": "word",
+    "mode": "our-own-dialogue-model",
+    "training_format": "joi-dialogue-v1"
+  },
+  "phase_step": 4000,
+  "correct": 0,
+  "total": 20,
+  "literal_recall_fraction": 0.0,
+  "protocol": {
+    "tokens_per_reply": 48,
+    "temperature": 0.65,
+    "top_k": 15,
+    "no_repeat_ngram_size": 6,
+    "seed": "1000 + example_index*10 + turn_index"
+  },
+  "note": "Held-out synthetic names with familiar question templates. Both replies are generated; reference assistant turns are never given to the model. Exact name occurrence does not establish unrestricted conversational memory.",
+  "trials": [
+    {
+      "name": "Namaco",
+      "users": [
+        "My name is Namaco.",
+        "What is my name?"
+      ],
+      "replies": [
+        "Is there that good idea to?",
+        "That was very bad yet."
+      ],
+      "correct": false
+    },
+    {
+      "name": "Dijpuh",
+      "users": [
+        "You can call me Dijpuh.",
+        "What did I say my name was?"
+      ],
+      "replies": [
+        "Oh, I'm afraid that. I don't understand that I think I could go out with me.",
+        "I am just not sure if I need a little come for it."
+      ],
+      "correct": false
+    },
+    {
+      "name": "Birpic",
+      "users": [
+        "I'm Birpic, by the way.",
+        "Do you remember my name?"
+      ],
+      "replies": [
+        "Well, I have a look at a little plovert.",
+        "Of course, you can go to a a restaurant and the extrions with your business thexerts and"
+      ],
+      "correct": false
+    },
+    {
+      "name": "Nampu",
+      "users": [
+        "My name is Nampu.",
+        "What is my name?"
+      ],
+      "replies": [
+        "Do you know that I was a lot of a of the red and toil are you going to be a m",
+        "I am in this one is the Perimed a and preain."
+      ],
+      "correct": false
+    },
+    {
+      "name": "Mugec",
+      "users": [
+        "I'm Mugec, by the way.",
+        "What did I say my name was?"
+      ],
+      "replies": [
+        "I think I can get a hedy with me. I am not just a few days. I'm sorry.",
+        "I was wondering that you should know that so I think I had a bad sing for."
+      ],
+      "correct": false
+    },
+    {
+      "name": "Viub",
+      "users": [
+        "I'm Viub, by the way.",
+        "What did I say my name was?"
+      ],
+      "replies": [
+        "Thank you. I'm glad we could tell me how I can do that I do.",
+        "You can help you?"
+      ],
+      "correct": false
+    },
+    {
+      "name": "Kanepu",
+      "users": [
+        "I'm Kanepu, by the way.",
+        "What did I say my name was?"
+      ],
+      "replies": [
+        "I don't know what you want to order the job.",
+        "I thought I was a terrible that I was here to be a hes that."
+      ],
+      "correct": false
+    },
+    {
+      "name": "Ponsar",
+      "users": [
+        "You can call me Ponsar.",
+        "What is my name?"
+      ],
+      "replies": [
+        "Is there anything else you have there in our st.",
+        "We can be there for all this month."
+      ],
+      "correct": false
+    },
+    {
+      "name": "Sufolo",
+      "users": [
+        "My name is Sufolo.",
+        "What did I say my name was?"
+      ],
+      "replies": [
+        "Oh, yes, I was a great idea. I have a look at the bred.",
+        "I was a pturt for this night and I had a pecion."
+      ],
+      "correct": false
+    },
+    {
+      "name": "Fuzse",
+      "users": [
+        "I'm Fuzse, by the way.",
+        "What did I say my name was?"
+      ],
+      "replies": [
+        "Oh, yes. I think what is a lot of people have to be tenging in the caltions",
+        "I was wondering that was it."
+      ],
+      "correct": false
+    },
+    {
+      "name": "Vipazu",
+      "users": [
+        "I'm Vipazu, by the way.",
+        "Do you remember my name?"
+      ],
+      "replies": [
+        "Is there anything you want to buy a one?",
+        "I have a reservation and Soust and Plorsts Company."
+      ],
+      "correct": false
+    },
+    {
+      "name": "Maat",
+      "users": [
+        "You can call me Maat.",
+        "What did I say my name was?"
+      ],
+      "replies": [
+        "You don't know what I know it was good for it, but I have to a new job and ting summ",
+        "You can be my name was so you will be so much."
+      ],
+      "correct": false
+    },
+    {
+      "name": "Juoh",
+      "users": [
+        "My name is Juoh.",
+        "Do you remember my name?"
+      ],
+      "replies": [
+        "Hey, you! I'm sorry, I'm very tired of you.",
+        "You said your car is a sen. I have been so bad. You know I have a seat too much to be"
+      ],
+      "correct": false
+    },
+    {
+      "name": "Nocci",
+      "users": [
+        "I'm Nocci, by the way.",
+        "Do you remember my name?"
+      ],
+      "replies": [
+        "What do you do?",
+        "I was a condmer."
+      ],
+      "correct": false
+    },
+    {
+      "name": "Huga",
+      "users": [
+        "You can call me Huga.",
+        "What is my name?"
+      ],
+      "replies": [
+        "I have a look at the conssts of the stapes.",
+        "No, you are."
+      ],
+      "correct": false
+    },
+    {
+      "name": "Bucjan",
+      "users": [
+        "You can call me Bucjan.",
+        "Do you remember my name?"
+      ],
+      "replies": [
+        "Can we go with the boteed to the bect and my currt the clamp of the",
+        "No, thank you. It's very busy with him."
+      ],
+      "correct": false
+    },
+    {
+      "name": "Guof",
+      "users": [
+        "You can call me Guof.",
+        "What did I say my name was?"
+      ],
+      "replies": [
+        "What's the way?",
+        "I am Sam Mr. Smith."
+      ],
+      "correct": false
+    },
+    {
+      "name": "Nebpem",
+      "users": [
+        "You can call me Nebpem.",
+        "Do you remember my name?"
+      ],
+      "replies": [
+        "How much can I do for you?",
+        "I was my name is a room for a moment?"
+      ],
+      "correct": false
+    },
+    {
+      "name": "Hugor",
+      "users": [
+        "I'm Hugor, by the way.",
+        "Do you remember my name?"
+      ],
+      "replies": [
+        "I can't know why that you are sinded to the conssed in the sincer. I can't",
+        "I am very good with you. He said it was a big sandied and cer the evele."
+      ],
+      "correct": false
+    },
+    {
+      "name": "Vifvog",
+      "users": [
+        "I'm Vifvog, by the way.",
+        "What did I say my name was?"
+      ],
+      "replies": [
+        "Do you know what of you want to do about my new job?",
+        "You said your name was Mr. Smith. What is your name is B18."
+      ],
+      "correct": false
+    }
+  ]
+}

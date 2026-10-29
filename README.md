@@ -9,9 +9,40 @@ The goal is a warm, playful personal chat companion inspired by Joi in
 weights or remote inference services. The portrait is edited from the owner's
 supplied image; its [edit prompt](assets/joi-portrait.prompt.txt) is recorded.
 
-## Dialogue training
+## Open Joi
 
-Joi now has a separate conversation-training path. It starts from our own
+The local chat uses our own word model with assistant-only dialogue tuning:
+
+```bash
+uv run --offline python -m joi.serve
+```
+
+Open **http://127.0.0.1:7860**. The selected checkpoint is
+`checkpoints/joi-chat/best.pt`: 691,712 parameters and a 256-token context.
+Your browser saves the transcript locally, and recent turns are sent back as
+context. No pretrained weights or remote chat service are involved.
+
+When compatible weights exist at `checkpoints/companion-recall/best.pt`, a small
+rule routes explicit name questions about an unfamiliar, previously introduced
+name to that separately trained neural specialist. Familiar whole-word names
+and ordinary conversation stay with the general model. Both replies are generated
+by our models: the router never writes or substitutes an answer. Use
+`--no-recall-specialist` to inspect general-model behavior alone. The specialist
+and routing remain experimental and can still give an incorrect name.
+
+See the [companion experiment report](docs/companion-experiment.md) for actual
+conversations, failures, name-recall trials, and training details. **The app
+works; reliable free-flowing neural conversation is not established yet.**
+
+This checkout has the trained checkpoints locally. A fresh clone needs
+`uv sync --locked`, followed by the learned-word and general assistant-only
+training steps below. The code and reports are on GitHub; weights and downloaded
+datasets remain local. Conversation quality and dependable memory are still
+active research goals for this small model.
+
+## Character dialogue experiment
+
+The earlier character conversation-training path starts from our own
 random-initialized model's learned weights, expands the context from 128 to 384
 characters, and trains on DailyDialog plus original warm, playful Joi examples.
 No third-party model weights are used. Context growth preserves learned weights;
@@ -43,7 +74,7 @@ continue, while the optimizer starts fresh for this separate experiment.
 
 ## Chat with Joi locally
 
-After preparing and training the dialogue model:
+After completing the learned-word and general assistant-only training steps:
 
 ```bash
 uv run --offline python -m joi.serve
@@ -52,7 +83,7 @@ uv run --offline python -m joi.serve
 Open **http://127.0.0.1:7860** for the portrait, chat screen, and starter prompts.
 The page and neural inference both run on your laptop. Your browser keeps the
 current transcript locally; “new conversation” clears it. Recent complete turns
-are supplied to the model within its 384-character context, and generation stops
+are supplied to the model within its context window (256 learned tokens for the default), and generation stops
 at a turn boundary. This is contextual input, not permanent learned memory.
 
 For a terminal conversation with the same history handling:
@@ -68,7 +99,7 @@ replies must be checked from actual generated examples.
 ![Joi chat screen](docs/assets/joi-chat-desktop.jpg)
 
 [Phone layout](docs/assets/joi-chat-mobile.jpg). The default chat checkpoint is
-`checkpoints/dialogue-cpu/best.pt`; pass `--checkpoint` to inspect a different
+`checkpoints/joi-chat/best.pt`; pass `--checkpoint` to inspect a different
 dialogue-trained run.
 
 Record actual multi-turn development probes and a separate validation score:
@@ -81,6 +112,9 @@ This saves real generated episodes to `runs/chat-evaluation.json`. Later turns
 use the model's own earlier replies. Simple literal name/topic checks are
 reported separately; they are not a general fluency or memory benchmark. These
 development probes are not the untouched official test split.
+Add `--with-recall-specialist` when evaluating the routed runtime rather than a
+single general checkpoint. Name checks use whole-word matching: `Neell` does not
+count as a correct answer for `Neel`.
 
 ### Learned word vocabulary experiment
 
@@ -105,8 +139,9 @@ The vocabulary is fitted on training text only. Word-model loss is measured per
 learned token and **cannot be compared numerically with character-model loss**.
 Use actual conversation probes to judge the different replies. Checkpoint loading
 remains compatible with the earlier character models.
-Word-model chat also blocks repeated three-token patterns in newly generated
-text. Prompt patterns are not blocked, so this does not prevent copying a name
+Word-model chat also blocks repeated six-token patterns in newly generated
+text (roughly three words, because spaces are separate tokens). Prompt patterns
+are not blocked, so this does not prevent copying a name
 from the conversation. This is a decoding constraint, not proof of coherence.
 
 ### Warm personality and recall curriculum

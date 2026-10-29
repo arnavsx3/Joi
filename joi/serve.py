@@ -6,7 +6,7 @@ import json
 from pathlib import Path
 from urllib.parse import urlparse
 
-from joi.chat import ChatEngine
+from joi.chat import CompanionEngine
 
 ROOT = Path(__file__).resolve().parent.parent
 FILES = {"/": ("web/index.html", "text/html; charset=utf-8"),
@@ -78,13 +78,14 @@ def handler_for(engine):
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--checkpoint", type=Path, default=ROOT / "checkpoints/dialogue-cpu/best.pt")
+    parser.add_argument("--checkpoint", type=Path, default=ROOT / "checkpoints/joi-chat/best.pt")
     parser.add_argument("--port", type=int, default=7860)
+    parser.add_argument("--no-recall-specialist",action="store_true")
     args = parser.parse_args()
     if not 1 <= args.port <= 65535:
         parser.error("Choose a port between 1 and 65535")
     try:
-        engine = ChatEngine(args.checkpoint)
+        engine = CompanionEngine(args.checkpoint,use_recall=not args.no_recall_specialist)
         server = ThreadingHTTPServer(("127.0.0.1",args.port), handler_for(engine))
     except (ValueError, FileNotFoundError, OSError) as exc:
         parser.error(str(exc))

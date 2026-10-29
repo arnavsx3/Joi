@@ -3,6 +3,7 @@
 import argparse
 import hashlib
 import io
+import re
 from pathlib import Path
 import threading
 import time
@@ -10,11 +11,11 @@ import time
 import torch
 
 from joi.checkpoint import load_checkpoint
-from joi.dialogue import build_prompt
+from joi.dialogue import build_prompt, clean_turn
 
 
 class ChatEngine:
-    def __init__(self, checkpoint, *, threads=2, tokens=180, temperature=0.65, top_k=15):
+    def __init__(self, checkpoint, *, threads=2, tokens=None, temperature=0.65, top_k=15):
         torch.set_num_threads(threads)
         raw = Path(checkpoint).read_bytes()
         self.model, self.tokenizer, self.checkpoint = load_checkpoint(io.BytesIO(raw))
@@ -22,7 +23,11 @@ class ChatEngine:
         if self.checkpoint.get("dataset_manifest", {}).get("format") != "joi-dialogue-v1":
             raise ValueError("Select a dialogue-trained checkpoint; prepare and train dialogue first")
         self.model.eval()
-        self.tokens, self.temperature, self.top_k = tokens, temperature, top_k
+        self.tokens = tokens if tokens is not None else (96 if self.tokenizer.kind=="word" else 180)
+        self.temperature, self.top_k = temperature, top_k
+        # Spaces are tokens too, so six raw tokens cover roughly three words.
+        # Blocking three raw tokens would forbid ordinary repeated words.
+        self.no_repeat_ngram_size = 6 if self.tokenizer.kind=="word" else 0
         self.lock = threading.Lock()
 
     def reply(self, messages, *, seed=42):
@@ -33,7 +38,7 @@ class ChatEngine:
             torch.manual_seed(seed)
             output = self.model.generate(encoded, max_new_tokens=self.tokens,
                                          temperature=self.temperature, top_k=self.top_k,
-                                         no_repeat_ngram_size=3 if self.tokenizer.kind=="word" else 0,
+                                         no_repeat_ngram_size=self.no_repeat_ngram_size,
                                          stop_sequences=[self.tokenizer.encode("\n")])
         reply = self.tokenizer.decode(output[0, encoded.shape[1]:].tolist()).strip()
         if not reply:
@@ -49,12 +54,59 @@ class ChatEngine:
                 "mode":"our-own-dialogue-model", "training_format":"joi-dialogue-v1"}
 
 
+class CompanionEngine:
+    """Use our general model for chat and a compatible neural recall specialist."""
+    def __init__(self, checkpoint, *, use_recall=True, tokens=None):
+        self.general=ChatEngine(checkpoint,tokens=tokens)
+        self.recall=None
+        recall_path=Path(__file__).resolve().parent.parent/"checkpoints/companion-recall/best.pt"
+        if use_recall and self.general.tokenizer.kind=="word" and recall_path.is_file():
+            candidate=ChatEngine(recall_path,tokens=tokens)
+            if candidate.tokenizer.chars==self.general.tokenizer.chars:
+                candidate.lock=self.general.lock
+                self.recall=candidate
+        for name in ("model","tokenizer","checkpoint","checkpoint_sha256","no_repeat_ngram_size"):
+            setattr(self,name,getattr(self.general,name))
+
+    def uses_recall(self,messages):
+        if not self.recall or not messages:
+            return False
+        question=clean_turn(messages[-1].get("content","")).lower()
+        if not re.search(r"(?:what.*\bmy name\b|remember.*\bmy name\b|recall.*\bmy name\b|say.*\bmy name\b)",question):
+            return False
+        for message in reversed(messages[:-1]):
+            if message.get("role")!="user":
+                continue
+            text=clean_turn(message.get("content",""))
+            match=re.search(r"(?:my name is|you can call me|call me)\s+([A-Za-z]+)",text,flags=re.I)
+            if not match:
+                match=re.search(r"I'm\s+([A-Za-z]+),?\s+by the way",text,flags=re.I)
+            if match:
+                # Known whole-word names are better handled by the general
+                # model; the specialist learned character-fallback names.
+                return match.group(1) not in self.general.tokenizer.stoi
+        return False
+
+    def reply(self,messages,*,seed=42):
+        specialist=self.uses_recall(messages)
+        engine=self.recall if specialist else self.general
+        return {**engine.reply(messages,seed=seed),
+                "model_used":"neural-recall-specialist" if specialist else "neural-general-dialogue"}
+
+    def status(self):
+        return {**self.general.status(),"recall_specialist":self.recall is not None,
+                "models":2 if self.recall else 1,
+                "recall_checkpoint_sha256":self.recall.checkpoint_sha256 if self.recall else None,
+                "note":"Routing selects a locally trained neural model. Names and reply text are not substituted by a template."}
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--checkpoint", type=Path, default=Path("checkpoints/dialogue-cpu/best.pt"))
+    parser.add_argument("--checkpoint", type=Path, default=Path("checkpoints/joi-chat/best.pt"))
+    parser.add_argument("--no-recall-specialist",action="store_true")
     args = parser.parse_args()
     try:
-        engine = ChatEngine(args.checkpoint)
+        engine = CompanionEngine(args.checkpoint,use_recall=not args.no_recall_specialist)
     except (ValueError, FileNotFoundError) as exc:
         parser.error(str(exc))
     messages = []

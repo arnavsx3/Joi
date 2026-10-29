@@ -1,0 +1,32 @@
+[
+  {
+    "step": 0,
+    "train_loss": 3.175886571407318,
+    "val_loss": 3.214418590068817,
+    "elapsed_seconds": 0.658
+  },
+  {
+    "step": 200,
+    "train_loss": 1.93059641122818,
+    "val_loss": 1.976414293050766,
+    "elapsed_seconds": 124.969
+  },
+  {
+    "step": 400,
+    "train_loss": 1.8402541875839233,
+    "val_loss": 1.892646461725235,
+    "elapsed_seconds": 249.124
+  },
+  {
+    "step": 600,
+    "train_loss": 1.7420463263988495,
+    "val_loss": 1.7971292436122894,
+    "elapsed_seconds": 373.994
+  },
+  {
+    "step": 800,
+    "train_loss": 1.6792765855789185,
+    "val_loss": 1.7429382503032684,
+    "elapsed_seconds": 499.687
+  }
+]

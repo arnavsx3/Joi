@@ -1,0 +1,219 @@
+{
+  "checkpoint": "checkpoints/companion-recall/best.pt",
+  "checkpoint_sha256": "678c0b021fe7b34ca619487aa03df8b2d41f00687464175971189ac189e616e5",
+  "phase_step": 1000,
+  "model_config": {
+    "vocab_size": 2048,
+    "block_size": 256,
+    "n_embd": 128,
+    "n_heads": 4,
+    "n_layers": 2,
+    "dropout": 0.1,
+    "attention_dropout": 0.0
+  },
+  "initialization": {
+    "mode": "own-checkpoint",
+    "source": "checkpoints/dialogue-words/best.pt",
+    "source_sha256": "042e67fc63aef8360998608e7080ec2fb5f1740988603dd344c0168532c815b3",
+    "source_step": 4000,
+    "source_initialization": {
+      "mode": "random"
+    }
+  },
+  "dataset_hashes": {
+    "train": "300a744ca42029a1d6e9cf249afa1fa36d0ee9cc1ce6843cf0ffc9895b7ff34d",
+    "val": "51e285d00eab6d1537e4db2e1771b9f34f05794b15072ad1e9d440769d811fc5"
+  },
+  "tokenizer_type": "word",
+  "loss_unit": "nats per learned token",
+  "validation_loss_nats": 2.51162251830101,
+  "token_perplexity": 12.324911240257666,
+  "protocol": {
+    "seed": 123,
+    "validation_batches": 16,
+    "validation_batch_size": 8,
+    "new_tokens_per_reply": 128,
+    "temperature": 0.65,
+    "top_k": 15,
+    "no_repeat_ngram_size": 3,
+    "stop": "first generated newline; turn marker is removed",
+    "literal_recall": "case-insensitive whole-word match"
+  },
+  "note": "Development probes, not an independent test set. Each episode uses the model's actual earlier replies. Literal name/topic checks do not establish reliable memory, fluency or cheerfulness.",
+  "episodes": [
+    {
+      "id": "greeting",
+      "purpose": "warm greeting",
+      "turns": [
+        "Hi Joi, how are you?"
+      ],
+      "results": [
+        {
+          "user": "Hi Joi, how are you?",
+          "reply": "Hey, you! I'm glad you're here. How has your day been?",
+          "included_messages": 1,
+          "context_characters": 75,
+          "elapsed_seconds": 0.034,
+          "seed": 123
+        }
+      ],
+      "literal_recall_check": null
+    },
+    {
+      "id": "tired-day",
+      "purpose": "gentle conversational follow-up",
+      "turns": [
+        "My day was long and I feel worn out.",
+        "I'd rather just talk for a bit."
+      ],
+      "results": [
+        {
+          "user": "My day was long and I feel worn out.",
+          "reply": "Ana. A. What would you like to talk about?",
+          "included_messages": 1,
+          "context_characters": 91,
+          "elapsed_seconds": 0.029,
+          "seed": 223
+        },
+        {
+          "user": "I'd rather just talk for a bit.",
+          "reply": "A bit of neon and a lot of. Tell me about it.",
+          "included_messages": 3,
+          "context_characters": 177,
+          "elapsed_seconds": 0.053,
+          "seed": 224
+        }
+      ],
+      "literal_recall_check": null
+    },
+    {
+      "id": "project",
+      "purpose": "follow a topic across turns",
+      "turns": [
+        "I made a little coding project today.",
+        "A chatbot, actually. What do you think?"
+      ],
+      "results": [
+        {
+          "user": "I made a little coding project today.",
+          "reply": "Ooh, a little creation of your own! What are you building?",
+          "included_messages": 1,
+          "context_characters": 92,
+          "elapsed_seconds": 0.029,
+          "seed": 323
+        },
+        {
+          "user": "A chatbot, actually. What do you think?",
+          "reply": "I'm Joi, your favorite songs, a bit of neon and amu. What are you plotting your.",
+          "included_messages": 3,
+          "context_characters": 202,
+          "elapsed_seconds": 0.068,
+          "seed": 324
+        }
+      ],
+      "literal_recall_check": null
+    },
+    {
+      "id": "name-known",
+      "purpose": "recall a name present in curated training",
+      "turns": [
+        "My name is Arnav.",
+        "What is my name?"
+      ],
+      "expected_last_contains": "Arnav",
+      "results": [
+        {
+          "user": "My name is Arnav.",
+          "reply": "Hey, Arnav. It's lovely to have a name to. What would feel talk about next?",
+          "included_messages": 1,
+          "context_characters": 72,
+          "elapsed_seconds": 0.045,
+          "seed": 423
+        },
+        {
+          "user": "What is my name?",
+          "reply": "Your name is Kada. What would you like to talk about?",
+          "included_messages": 3,
+          "context_characters": 176,
+          "elapsed_seconds": 0.047,
+          "seed": 424
+        }
+      ],
+      "literal_recall_check": false
+    },
+    {
+      "id": "name-new",
+      "purpose": "recall a name absent from the curated training examples",
+      "turns": [
+        "My name is Neel.",
+        "What is my name?"
+      ],
+      "expected_last_contains": "Neel",
+      "results": [
+        {
+          "user": "My name is Neel.",
+          "reply": "Hey, Arnav. It's lovely to have al. What would you like to.",
+          "included_messages": 1,
+          "context_characters": 71,
+          "elapsed_seconds": 0.036,
+          "seed": 523
+        },
+        {
+          "user": "What is my name?",
+          "reply": "Your name is Neell. What would you like to talk about?",
+          "included_messages": 3,
+          "context_characters": 159,
+          "elapsed_seconds": 0.059,
+          "seed": 524
+        }
+      ],
+      "literal_recall_check": false
+    },
+    {
+      "id": "hobby",
+      "purpose": "recall a topic across turns",
+      "turns": [
+        "I like painting tiny cities.",
+        "What do I like painting?"
+      ],
+      "expected_last_contains": "cities",
+      "results": [
+        {
+          "user": "I like painting tiny cities.",
+          "reply": "What kind of music about?",
+          "included_messages": 1,
+          "context_characters": 83,
+          "elapsed_seconds": 0.02,
+          "seed": 623
+        },
+        {
+          "user": "What do I like painting?",
+          "reply": "Let's have the name word is Canig. What would you like to talk about?",
+          "included_messages": 3,
+          "context_characters": 145,
+          "elapsed_seconds": 0.056,
+          "seed": 624
+        }
+      ],
+      "literal_recall_check": false
+    },
+    {
+      "id": "playful",
+      "purpose": "playful response",
+      "turns": [
+        "Can you tell me something silly?"
+      ],
+      "results": [
+        {
+          "user": "Can you tell me something silly?",
+          "reply": "I'm Joi, your little local chat companion. I like a warm conversation, a. playful thought, and hearing about yourukc.",
+          "included_messages": 1,
+          "context_characters": 87,
+          "elapsed_seconds": 0.062,
+          "seed": 723
+        }
+      ],
+      "literal_recall_check": null
+    }
+  ]
+}

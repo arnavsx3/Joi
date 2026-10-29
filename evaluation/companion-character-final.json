@@ -1,0 +1,243 @@
+{
+  "checkpoint": "checkpoints/dialogue-cpu/best.pt",
+  "checkpoint_sha256": "2d172f3593bf19dcf420e6dde5bbbe5ea768b238a02b163e0bdded837203b2cc",
+  "phase_step": 1600,
+  "model_config": {
+    "vocab_size": 96,
+    "block_size": 384,
+    "n_embd": 128,
+    "n_heads": 4,
+    "n_layers": 2,
+    "dropout": 0.1,
+    "attention_dropout": 0.0
+  },
+  "initialization": {
+    "mode": "own-checkpoint",
+    "source": "checkpoints/dialogue/best.pt",
+    "source_sha256": "07ba1e8b7a99b1c21f29a15535718b4e3b00a44528330e879f685c9c6981af50",
+    "source_step": 800,
+    "source_model_config": {
+      "vocab_size": 96,
+      "block_size": 384,
+      "n_embd": 128,
+      "n_heads": 4,
+      "n_layers": 2,
+      "dropout": 0.1,
+      "attention_dropout": null
+    },
+    "source_initialization": {
+      "mode": "own-checkpoint",
+      "source": "checkpoints/v1-longer/best.pt",
+      "source_sha256": "e1df46710170cccbf9136241010305faf007bb9db13be9323f44da6abc28efa9",
+      "source_step": 4000,
+      "source_model_config": {
+        "vocab_size": 96,
+        "block_size": 128,
+        "n_embd": 128,
+        "n_heads": 4,
+        "n_layers": 2,
+        "dropout": 0.1
+      },
+      "new_positions": 256,
+      "note": "Copied learned parameters; added position embeddings keep their random initialization. New optimizer and step counter."
+    },
+    "new_positions": 0,
+    "note": "Copied learned parameters; added position embeddings keep their random initialization. New optimizer and step counter."
+  },
+  "dataset_hashes": {
+    "train": "d3d51eb45bbf0e5dfe278de400db0cba926a3f01b441329edc6dcb2ba78a7682",
+    "val": "6430615fa33d9e6be71cccfd96723b8579ff8fddbaa6f61b8af93ff38ad2e3f0"
+  },
+  "tokenizer_type": "char",
+  "loss_unit": "nats per character",
+  "validation_loss_nats": 1.1679981127381325,
+  "token_perplexity": 3.2155490243540936,
+  "character_perplexity": 3.2155490243540936,
+  "protocol": {
+    "seed": 123,
+    "validation_batches": 16,
+    "validation_batch_size": 8,
+    "new_tokens_per_reply": 128,
+    "temperature": 0.65,
+    "top_k": 15,
+    "stop": "first generated newline; turn marker is removed",
+    "literal_recall": "case-insensitive whole-word match"
+  },
+  "note": "Development probes, not an independent test set. Each episode uses the model's actual earlier replies. Literal name/topic checks do not establish reliable memory, fluency or cheerfulness.",
+  "episodes": [
+    {
+      "id": "greeting",
+      "purpose": "warm greeting",
+      "turns": [
+        "Hi Joi, how are you?"
+      ],
+      "results": [
+        {
+          "user": "Hi Joi, how are you?",
+          "reply": "Well, I don't you are the boyed to be far the day.",
+          "included_messages": 1,
+          "context_characters": 75,
+          "elapsed_seconds": 0.277,
+          "seed": 123
+        }
+      ],
+      "literal_recall_check": null
+    },
+    {
+      "id": "tired-day",
+      "purpose": "gentle conversational follow-up",
+      "turns": [
+        "My day was long and I feel worn out.",
+        "I'd rather just talk for a bit."
+      ],
+      "results": [
+        {
+          "user": "My day was long and I feel worn out.",
+          "reply": "What's so building? We can we can for a please some to go to?",
+          "included_messages": 1,
+          "context_characters": 91,
+          "elapsed_seconds": 0.34,
+          "seed": 223
+        },
+        {
+          "user": "I'd rather just talk for a bit.",
+          "reply": "That's a little sounds lately. What's only feel good to city you come together.",
+          "included_messages": 3,
+          "context_characters": 196,
+          "elapsed_seconds": 0.723,
+          "seed": 224
+        }
+      ],
+      "literal_recall_check": null
+    },
+    {
+      "id": "project",
+      "purpose": "follow a topic across turns",
+      "turns": [
+        "I made a little coding project today.",
+        "A chatbot, actually. What do you think?"
+      ],
+      "results": [
+        {
+          "user": "I made a little coding project today.",
+          "reply": "Let's go one things and something we can pile the share a lot of neon?",
+          "included_messages": 1,
+          "context_characters": 92,
+          "elapsed_seconds": 0.435,
+          "seed": 323
+        },
+        {
+          "user": "A chatbot, actually. What do you think?",
+          "reply": "The program still of neon and city was so bad. What's your did your from the program stayed to clue to go lately. What were you",
+          "included_messages": 3,
+          "context_characters": 214,
+          "elapsed_seconds": 1.387,
+          "seed": 324
+        }
+      ],
+      "literal_recall_check": null
+    },
+    {
+      "id": "name-known",
+      "purpose": "recall a name present in curated training",
+      "turns": [
+        "My name is Arnav.",
+        "What is my name?"
+      ],
+      "expected_last_contains": "Arnav",
+      "results": [
+        {
+          "user": "My name is Arnav.",
+          "reply": "I was Sam. I have a bit now. I am Sam. I've got a bit a name this pretty been and some to catch.",
+          "included_messages": 1,
+          "context_characters": 72,
+          "elapsed_seconds": 0.499,
+          "seed": 423
+        },
+        {
+          "user": "What is my name?",
+          "reply": "It's A but I'd like to more it we learn come to be the work and for you thing as envious.",
+          "included_messages": 3,
+          "context_characters": 197,
+          "elapsed_seconds": 0.778,
+          "seed": 424
+        }
+      ],
+      "literal_recall_check": false
+    },
+    {
+      "id": "name-new",
+      "purpose": "recall a name absent from the curated training examples",
+      "turns": [
+        "My name is Neel.",
+        "What is my name?"
+      ],
+      "expected_last_contains": "Neel",
+      "results": [
+        {
+          "user": "My name is Neel.",
+          "reply": "I'm Joi. Yes, you speaking to see. I'm Joi, I have a good to go with our next to you.",
+          "included_messages": 1,
+          "context_characters": 71,
+          "elapsed_seconds": 0.477,
+          "seed": 523
+        },
+        {
+          "user": "What is my name?",
+          "reply": "I like to eat the conversation. I want to go with our come throught to the more and a side.",
+          "included_messages": 3,
+          "context_characters": 185,
+          "elapsed_seconds": 0.842,
+          "seed": 524
+        }
+      ],
+      "literal_recall_check": false
+    },
+    {
+      "id": "hobby",
+      "purpose": "recall a topic across turns",
+      "turns": [
+        "I like painting tiny cities.",
+        "What do I like painting?"
+      ],
+      "expected_last_contains": "cities",
+      "results": [
+        {
+          "user": "I like painting tiny cities.",
+          "reply": "Yes, I don't know what do you can the serious.",
+          "included_messages": 1,
+          "context_characters": 83,
+          "elapsed_seconds": 0.273,
+          "seed": 623
+        },
+        {
+          "user": "What do I like painting?",
+          "reply": "That the to do for you be it is out?",
+          "included_messages": 3,
+          "context_characters": 166,
+          "elapsed_seconds": 0.261,
+          "seed": 624
+        }
+      ],
+      "literal_recall_check": false
+    },
+    {
+      "id": "playful",
+      "purpose": "playful response",
+      "turns": [
+        "Can you tell me something silly?"
+      ],
+      "results": [
+        {
+          "user": "Can you tell me something silly?",
+          "reply": "That's a little things can pile up. I'm sorry to looking about when you company to do.",
+          "included_messages": 1,
+          "context_characters": 87,
+          "elapsed_seconds": 0.483,
+          "seed": 723
+        }
+      ],
+      "literal_recall_check": null
+    }
+  ]
+}

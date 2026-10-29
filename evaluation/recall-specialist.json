@@ -1,0 +1,258 @@
+{
+  "checkpoint": "checkpoints/companion-recall/best.pt",
+  "checkpoint_sha256": "678c0b021fe7b34ca619487aa03df8b2d41f00687464175971189ac189e616e5",
+  "phase_step": 1000,
+  "correct": 10,
+  "total": 20,
+  "literal_recall_fraction": 0.5,
+  "protocol": {
+    "tokens_per_reply": 48,
+    "temperature": 0.65,
+    "top_k": 15,
+    "no_repeat_ngram_size": 6,
+    "seed": "1000 + example_index*10 + turn_index"
+  },
+  "note": "Held-out synthetic names with familiar question templates. Both replies are generated; reference assistant turns are never given to the model. Exact name occurrence does not establish unrestricted conversational memory.",
+  "trials": [
+    {
+      "name": "Namaco",
+      "users": [
+        "My name is Namaco.",
+        "What is my name?"
+      ],
+      "replies": [
+        "What would you like to talk about?",
+        "Your name is Nama. What would you like to talk about?"
+      ],
+      "correct": false
+    },
+    {
+      "name": "Dijpuh",
+      "users": [
+        "You can call me Dijpuh.",
+        "What did I say my name was?"
+      ],
+      "replies": [
+        "What would you like to talk about?",
+        "Your name is Dijpuh. What would you like to talk about?"
+      ],
+      "correct": true
+    },
+    {
+      "name": "Birpic",
+      "users": [
+        "I'm Birpic, by the way.",
+        "Do you remember my name?"
+      ],
+      "replies": [
+        "I'm Joi, your little local little smaller. What's next thing you'd feel good about finishing?",
+        "Your name is Birpic. What would you like to talk about?"
+      ],
+      "correct": true
+    },
+    {
+      "name": "Nampu",
+      "users": [
+        "My name is Nampu.",
+        "What is my name?"
+      ],
+      "replies": [
+        "Hey, Nepememmy: is What would you like to talk about?",
+        "Your name is Namemem. What would you like to talk about?"
+      ],
+      "correct": false
+    },
+    {
+      "name": "Mugec",
+      "users": [
+        "I'm Mugec, by the way.",
+        "What did I say my name was?"
+      ],
+      "replies": [
+        "I'm sorry today feels heavy. You don't have to force a smile with me. Want to talk about what happened?",
+        "Your name is Mugec. What would you like to talk about?"
+      ],
+      "correct": true
+    },
+    {
+      "name": "Viub",
+      "users": [
+        "I'm Viub, by the way.",
+        "What did I say my name was?"
+      ],
+      "replies": [
+        "I'm glad we could share a little moment. What would feel good to do next?",
+        "You said your name was Viubb. What would you like to talk about?"
+      ],
+      "correct": false
+    },
+    {
+      "name": "Kanepu",
+      "users": [
+        "I'm Kanepu, by the way.",
+        "What did I say my name was?"
+      ],
+      "replies": [
+        "Hey, you! I'm glad you're here. How has your favorite mind?",
+        "Your name is Kanepup. What would you like to talk about?"
+      ],
+      "correct": false
+    },
+    {
+      "name": "Ponsar",
+      "users": [
+        "You can call me Ponsar.",
+        "What is my name?"
+      ],
+      "replies": [
+        "What would you like to talk about?",
+        "Your name is Pona. What would you like to talk about?"
+      ],
+      "correct": false
+    },
+    {
+      "name": "Sufolo",
+      "users": [
+        "My name is Sufolo.",
+        "What did I say my name was?"
+      ],
+      "replies": [
+        "Hey, Arnav. It's lovely to have a name Volo. What would you like to talk about?",
+        "Your name is Sufolo. What would you like to talk about?"
+      ],
+      "correct": true
+    },
+    {
+      "name": "Fuzse",
+      "users": [
+        "I'm Fuzse, by the way.",
+        "What did I say my name was?"
+      ],
+      "replies": [
+        "I'm Joi, your little local chat companion. I like a warm conversation, a playful thought, and hearing about your day.",
+        "Your name is Fuzse. What would you like to talk about?"
+      ],
+      "correct": true
+    },
+    {
+      "name": "Vipazu",
+      "users": [
+        "I'm Vipazu, by the way.",
+        "Do you remember my name?"
+      ],
+      "replies": [
+        "Why did the computer get cold? It left Vipaza. What would you like to talk about?",
+        "Your name is Vipaza. What would you like to talk about?"
+      ],
+      "correct": false
+    },
+    {
+      "name": "Maat",
+      "users": [
+        "You can call me Maat.",
+        "What did I say my name was?"
+      ],
+      "replies": [
+        "Hey, you! I'm glad you're here. How has your day been?",
+        "Your name is Maat. What would you like to talk about?"
+      ],
+      "correct": true
+    },
+    {
+      "name": "Juoh",
+      "users": [
+        "My name is Juoh.",
+        "Do you remember my name?"
+      ],
+      "replies": [
+        "Hey, you! I'm glad you're here. How has your day been?",
+        "Your name is Juoh. What would you like to talk about?"
+      ],
+      "correct": true
+    },
+    {
+      "name": "Nocci",
+      "users": [
+        "I'm Nocci, by the way.",
+        "Do you remember my name?"
+      ],
+      "replies": [
+        "The quiet hours have their own mood, don't they? What's keeping you company tonight?",
+        "Your name is Nocci. What would you like to talk about?"
+      ],
+      "correct": true
+    },
+    {
+      "name": "Huga",
+      "users": [
+        "You can call me Huga.",
+        "What is my name?"
+      ],
+      "replies": [
+        "Hey, you! I'm glad you're here. How has your day been?",
+        "Your name is Huga. What would you like to talk about?"
+      ],
+      "correct": true
+    },
+    {
+      "name": "Bucjan",
+      "users": [
+        "You can call me Bucjan.",
+        "Do you remember my name?"
+      ],
+      "replies": [
+        "What would you like to talk about?",
+        "Your name is Bucjani. What would you like to talk about?"
+      ],
+      "correct": false
+    },
+    {
+      "name": "Guof",
+      "users": [
+        "You can call me Guof.",
+        "What did I say my name was?"
+      ],
+      "replies": [
+        "Hey, you! I'm glad you're here. How has your day been?",
+        "Your name is Guof. What would you like to talk about?"
+      ],
+      "correct": true
+    },
+    {
+      "name": "Nebpem",
+      "users": [
+        "You can call me Nebpem.",
+        "Do you remember my name?"
+      ],
+      "replies": [
+        "What would you like to talk about?",
+        "Your name is Nebpemem. What would you like to talk about?"
+      ],
+      "correct": false
+    },
+    {
+      "name": "Hugor",
+      "users": [
+        "I'm Hugor, by the way.",
+        "Do you remember my name?"
+      ],
+      "replies": [
+        "I'm sorry today feels Hugo. The name is Hugor. What would you like to talk about?",
+        "Your name is Hugoro. What would you like to talk about?"
+      ],
+      "correct": false
+    },
+    {
+      "name": "Vifvog",
+      "users": [
+        "I'm Vifvog, by the way.",
+        "What did I say my name was?"
+      ],
+      "replies": [
+        "Hey, fog. What would you like to talk about?",
+        "Your name is Vifog. What would you like to talk about?"
+      ],
+      "correct": false
+    }
+  ]
+}

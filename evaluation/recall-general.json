@@ -1,0 +1,258 @@
+{
+  "checkpoint": "checkpoints/joi-chat/best.pt",
+  "checkpoint_sha256": "38960233e282b62c7b79d30ac1b288f3de18c17439cac07c26050d4f9726490d",
+  "phase_step": 1600,
+  "correct": 0,
+  "total": 20,
+  "literal_recall_fraction": 0.0,
+  "protocol": {
+    "tokens_per_reply": 48,
+    "temperature": 0.65,
+    "top_k": 15,
+    "no_repeat_ngram_size": 6,
+    "seed": "1000 + example_index*10 + turn_index"
+  },
+  "note": "Held-out synthetic names with familiar question templates. Both replies are generated; reference assistant turns are never given to the model. Exact name occurrence does not establish unrestricted conversational memory.",
+  "trials": [
+    {
+      "name": "Namaco",
+      "users": [
+        "My name is Namaco.",
+        "What is my name?"
+      ],
+      "replies": [
+        "Is there that right?",
+        "It's Land Power."
+      ],
+      "correct": false
+    },
+    {
+      "name": "Dijpuh",
+      "users": [
+        "You can call me Dijpuh.",
+        "What did I say my name was?"
+      ],
+      "replies": [
+        "Oh, I'm afraid that I have a surlousting of my own sticiont and the lu",
+        "It was just not a precke."
+      ],
+      "correct": false
+    },
+    {
+      "name": "Birpic",
+      "users": [
+        "I'm Birpic, by the way.",
+        "Do you remember my name?"
+      ],
+      "replies": [
+        "Oh, yes, you know what I got it in this day to do?",
+        "Of course, I am afraid I have a name and I am so tired to see the bart and I can be"
+      ],
+      "correct": false
+    },
+    {
+      "name": "Nampu",
+      "users": [
+        "My name is Nampu.",
+        "What is my name?"
+      ],
+      "replies": [
+        "Oh, Mr. Sming speaking, sir?",
+        "It's Dearmanen."
+      ],
+      "correct": false
+    },
+    {
+      "name": "Mugec",
+      "users": [
+        "I'm Mugec, by the way.",
+        "What did I say my name was?"
+      ],
+      "replies": [
+        "I think I can do for you?",
+        "I was Sam. What do you like to do?"
+      ],
+      "correct": false
+    },
+    {
+      "name": "Viub",
+      "users": [
+        "I'm Viub, by the way.",
+        "What did I say my name was?"
+      ],
+      "replies": [
+        "Thank you. I'm glad we could put the compling with you?",
+        "You can help you?"
+      ],
+      "correct": false
+    },
+    {
+      "name": "Kanepu",
+      "users": [
+        "I'm Kanepu, by the way.",
+        "What did I say my name was?"
+      ],
+      "replies": [
+        "Yes, what happened?",
+        "I was Sam. Do you know where I could meet you?"
+      ],
+      "correct": false
+    },
+    {
+      "name": "Ponsar",
+      "users": [
+        "You can call me Ponsar.",
+        "What is my name?"
+      ],
+      "replies": [
+        "Oh, it's very nice at the lonsstives and I have a tader in your pothes",
+        "This is Lured AStoler Lin."
+      ],
+      "correct": false
+    },
+    {
+      "name": "Sufolo",
+      "users": [
+        "My name is Sufolo.",
+        "What did I say my name was?"
+      ],
+      "replies": [
+        "Oh, yes, I was a little bit to be a lot of it.",
+        "I was Sam Sam."
+      ],
+      "correct": false
+    },
+    {
+      "name": "Fuzse",
+      "users": [
+        "I'm Fuzse, by the way.",
+        "What did I say my name was?"
+      ],
+      "replies": [
+        "Oh, yes. I am going to go to the eting in the computer in the world. I can't go to get",
+        "I was Sam."
+      ],
+      "correct": false
+    },
+    {
+      "name": "Vipazu",
+      "users": [
+        "I'm Vipazu, by the way.",
+        "Do you remember my name?"
+      ],
+      "replies": [
+        "Why don't you?",
+        "I have a name was Souse to meet you, Manele Tunding Salle."
+      ],
+      "correct": false
+    },
+    {
+      "name": "Maat",
+      "users": [
+        "You can call me Maat.",
+        "What did I say my name was?"
+      ],
+      "replies": [
+        "Oh, I'm sorry, but it's a beautiful, and a girl and drechor.",
+        "Oh, no, my name was Jelon. It's just so a guy is a little good to me do."
+      ],
+      "correct": false
+    },
+    {
+      "name": "Juoh",
+      "users": [
+        "My name is Juoh.",
+        "Do you remember my name?"
+      ],
+      "replies": [
+        "Hey, you! I'm glad you're here.",
+        "You said that a bit of course. How about you?"
+      ],
+      "correct": false
+    },
+    {
+      "name": "Nocci",
+      "users": [
+        "I'm Nocci, by the way.",
+        "Do you remember my name?"
+      ],
+      "replies": [
+        "What do you want to do for you?",
+        "I was Sam."
+      ],
+      "correct": false
+    },
+    {
+      "name": "Huga",
+      "users": [
+        "You can call me Huga.",
+        "What is my name?"
+      ],
+      "replies": [
+        "I have to buy a call of my stuarty for a little for you.",
+        "You mean that is a good simpaintiont from the name and a was a sucolines"
+      ],
+      "correct": false
+    },
+    {
+      "name": "Bucjan",
+      "users": [
+        "You can call me Bucjan.",
+        "Do you remember my name?"
+      ],
+      "replies": [
+        "What do you prefer?",
+        "I have a Mechining Bara Bortlous A Lecholines."
+      ],
+      "correct": false
+    },
+    {
+      "name": "Guof",
+      "users": [
+        "You can call me Guof.",
+        "What did I say my name was?"
+      ],
+      "replies": [
+        "What's wrong?",
+        "I am calling to meet you to meet the passport with you?"
+      ],
+      "correct": false
+    },
+    {
+      "name": "Nebpem",
+      "users": [
+        "You can call me Nebpem.",
+        "Do you remember my name?"
+      ],
+      "replies": [
+        "How much do you like to pay the other other profes in the mantial the cones s",
+        "I was a sentant for a Murrestives?"
+      ],
+      "correct": false
+    },
+    {
+      "name": "Hugor",
+      "users": [
+        "I'm Hugor, by the way.",
+        "Do you remember my name?"
+      ],
+      "replies": [
+        "Hello, you?",
+        "My name is Mokon's Bost and I have a name to Mr. Courting Wan."
+      ],
+      "correct": false
+    },
+    {
+      "name": "Vifvog",
+      "users": [
+        "I'm Vifvog, by the way.",
+        "What did I say my name was?"
+      ],
+      "replies": [
+        "Oh, yes. But it's going to go to the luanted at the morning. You can give you for a hand",
+        "Oh, I would like to go back in the office next week."
+      ],
+      "correct": false
+    }
+  ]
+}

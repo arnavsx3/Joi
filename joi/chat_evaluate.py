@@ -7,7 +7,7 @@ import math
 import re
 from pathlib import Path
 
-from joi.chat import ChatEngine
+from joi.chat import ChatEngine, CompanionEngine
 from joi.train import evaluate, load_data
 
 
@@ -15,8 +15,8 @@ def literal_recall(expected, reply):
     return bool(re.search(r"\b"+re.escape(expected)+r"\b",reply,flags=re.I))
 
 
-def evaluate_chat(checkpoint, data, probes, *, seed=123, tokens=128, batches=16):
-    engine = ChatEngine(checkpoint, tokens=tokens)
+def evaluate_chat(checkpoint, data, probes, *, seed=123, tokens=128, batches=16, with_recall=False):
+    engine = CompanionEngine(checkpoint,tokens=tokens) if with_recall else ChatEngine(checkpoint,tokens=tokens)
     tokenizer, splits, hashes, _ = load_data(data)
     if hashes != engine.checkpoint["data_hashes"] or tokenizer.chars != engine.tokenizer.chars:
         raise ValueError("Use the checkpoint's dialogue dataset and vocabulary")
@@ -40,6 +40,7 @@ def evaluate_chat(checkpoint, data, probes, *, seed=123, tokens=128, batches=16)
                          "literal_recall_check":literal_recall(expected,last_reply) if expected else None})
     return {
         "checkpoint":str(checkpoint), "checkpoint_sha256":engine.checkpoint_sha256,
+        "runtime":engine.status(),
         "phase_step":engine.checkpoint["step"], "model_config":asdict(engine.model.config),
         "initialization":engine.checkpoint.get("initialization"), "dataset_hashes":hashes,
         "tokenizer_type":tokenizer.kind,
@@ -48,7 +49,7 @@ def evaluate_chat(checkpoint, data, probes, *, seed=123, tokens=128, batches=16)
         **({"character_perplexity":math.exp(losses["val_loss"])} if tokenizer.kind=="char" else {}),
         "protocol":{"seed":seed, "validation_batches":batches, "validation_batch_size":8,
                     "new_tokens_per_reply":tokens, "temperature":0.65, "top_k":15,
-                    "no_repeat_ngram_size":3 if tokenizer.kind=="word" else 0,
+                    "no_repeat_ngram_size":engine.no_repeat_ngram_size,
                     "literal_recall":"case-insensitive whole-word match",
                     "stop":"first generated newline; turn marker is removed"},
         "note":"Development probes, not an independent test set. Each episode uses the model's actual earlier replies. Literal name/topic checks do not establish reliable memory, fluency or cheerfulness.",
@@ -65,12 +66,14 @@ def main():
     parser.add_argument("--seed", type=int, default=123)
     parser.add_argument("--tokens", type=int, default=128)
     parser.add_argument("--batches", type=int, default=16)
+    parser.add_argument("--with-recall-specialist",action="store_true")
     args = parser.parse_args()
     if min(args.tokens, args.batches) < 1:
         parser.error("Use positive tokens and batches")
     try:
         report = evaluate_chat(args.checkpoint, args.data, args.probes,
-                               seed=args.seed, tokens=args.tokens, batches=args.batches)
+                               seed=args.seed, tokens=args.tokens, batches=args.batches,
+                               with_recall=args.with_recall_specialist)
     except (ValueError, FileNotFoundError) as exc:
         parser.error(str(exc))
     args.out.parent.mkdir(parents=True, exist_ok=True)
