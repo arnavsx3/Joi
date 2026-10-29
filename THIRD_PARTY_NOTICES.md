@@ -1,4 +1,12 @@
-# Training data
+# Credits & sources
+
+## Joi imagery
+
+Joi and *Blade Runner 2049* inspire this personal fan project. The portrait
+depicts Ana de Armas as Joi and was edited from an image supplied by the project
+owner. The panoramic README cover is an AI-assisted composition derived from
+that portrait. See the [asset notes](assets/README.md) and
+[cover prompt](assets/joi-cover.prompt.txt).
 
 ## Dialogue experiment
 

@@ -1,0 +1,34 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="170" viewBox="0 0 1200 170" role="img" aria-labelledby="title desc">
+  <title id="title">Joi signal</title>
+  <desc id="desc">Runs locally. Trained from scratch. Still learning. Three neon instrument panels with a gently pulsing decorative signal.</desc>
+  <defs>
+    <linearGradient id="line"><stop stop-color="#64e5ed"/><stop offset=".55" stop-color="#c08eff"/><stop offset="1" stop-color="#ff87bf"/></linearGradient>
+    <linearGradient id="panel" x2="1" y2="1"><stop stop-color="#11131f"/><stop offset="1" stop-color="#171020"/></linearGradient>
+  </defs>
+  <style>
+    text{font-family:'Courier New',monospace}
+    .pulse{animation:signal 3s ease-in-out infinite}
+    @keyframes signal{0%,100%{opacity:.4}50%{opacity:1}}
+    @media(prefers-reduced-motion:reduce){.pulse{animation:none}}
+  </style>
+  <path d="M0 0h1200v170H0z" fill="#090b13"/>
+  <path d="M16 17h1168v136H16z" fill="url(#panel)" stroke="#353045"/>
+  <path d="M16 17h1168" stroke="url(#line)" stroke-width="2"/>
+  <path d="M408 38v94m392-94v94" stroke="#3b3047"/>
+  <g fill="#998ea9" font-size="15" letter-spacing="2">
+    <text x="44" y="55">01 / WHERE SHE LIVES</text>
+    <text x="436" y="55">02 / HOW SHE BEGINS</text>
+    <text x="828" y="55">03 / THE EXPERIMENT</text>
+  </g>
+  <g font-size="34" letter-spacing="1">
+    <text x="44" y="104" fill="#83e9ec">ON YOUR LAPTOP</text>
+    <text x="436" y="104" fill="#c5a3f3">FROM SCRATCH</text>
+    <text x="828" y="104" fill="#f3a4c8" font-size="31">STILL LEARNING</text>
+  </g>
+  <g fill="#758396" font-size="11" letter-spacing="2">
+    <text x="44" y="132">LOCAL CONVERSATION</text>
+    <text x="436" y="132">OUR OWN NEURAL WEIGHTS</text>
+    <text x="828" y="132">ONE SMALL STEP AT A TIME</text>
+  </g>
+  <circle class="pulse" cx="1160" cy="48" r="4" fill="#f1ae7e"/>
+</svg>

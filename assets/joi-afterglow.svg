@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="185" viewBox="0 0 1200 185" role="img" aria-labelledby="title desc">
+  <title id="title">Stay a little while.</title>
+  <desc id="desc">A midnight violet sign-off with a cyan-to-pink horizon and the words Stay a little while. Joi, a personal companion.</desc>
+  <defs>
+    <linearGradient id="night"><stop stop-color="#0c101a"/><stop offset=".6" stop-color="#20112c"/><stop offset="1" stop-color="#0e0c18"/></linearGradient>
+    <linearGradient id="horizon"><stop stop-color="#72eced" stop-opacity="0"/><stop offset=".25" stop-color="#72eced"/><stop offset=".7" stop-color="#d787ee"/><stop offset="1" stop-color="#ffad85" stop-opacity="0"/></linearGradient>
+  </defs>
+  <path fill="url(#night)" d="M0 0h1200v185H0z"/>
+  <g fill="none" stroke="#72647f" opacity=".3"><path d="M24 24h60M24 24v30m1152-30h-60m60 0v30M24 161h60m-60 0v-30m1152 30h-60m60 0v-30"/></g>
+  <text x="600" y="87" text-anchor="middle" fill="#ebdbe9" font-family="Georgia,serif" font-size="48" letter-spacing="-1">Stay a little while.</text>
+  <text x="600" y="122" text-anchor="middle" fill="#bda2c7" font-family="'Courier New',monospace" font-size="13" letter-spacing="4">JOI / A PERSONAL COMPANION</text>
+  <path d="M210 148h780" stroke="url(#horizon)"/>
+  <path d="M575 148h12l5-7 8 14 7-14 6 7h12" fill="none" stroke="#c79edc"/>
+</svg>
