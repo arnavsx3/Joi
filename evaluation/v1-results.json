@@ -1,0 +1,46 @@
+{
+  "checkpoint": "checkpoints/v1/best.pt",
+  "step": 1500,
+  "parameters": 425472,
+  "validation_loss_nats": 1.3408852964639664,
+  "character_perplexity": 3.8224259881064566,
+  "evaluation": {
+    "batches": 32,
+    "batch_size": 16,
+    "context": 128,
+    "seed": 123,
+    "note": "Sampled windows from the held-out split; not the full validation corpus."
+  },
+  "generation": {
+    "temperature": 0.8,
+    "top_k": 20,
+    "new_characters": 200
+  },
+  "limitations": "Loss measures next-character prediction. Samples require human review; this does not establish cheerful or conversational ability.",
+  "samples": [
+    {
+      "purpose": "story continuation",
+      "prompt": "Once upon a time, a little girl",
+      "seed": 123,
+      "continuation": " was very said.\nHe for see and Ben was his so explore. They shougher gething far was stayber him. They parted to stopper. She dre she was so the ched a start the pathey enard no for two somethertle go"
+    },
+    {
+      "purpose": "friendship",
+      "prompt": "Mia saw her friend sitting alone. She said, \"",
+      "seed": 124,
+      "continuation": "What is my looke why you for to knew you, him don't ask to live it that in the say.\"\nSuddept their new it's a for and the mom fix them in and shing bright not the rappy and whit of the sand the was th"
+    },
+    {
+      "purpose": "comfort",
+      "prompt": "I feel sad today. Can you help me?",
+      "seed": 125,
+      "continuation": "\"\nYou they hugged her pever it was on his hopped it be not she grabbed. It was appy happy and the put and in the bear the bear to it. She happy up it is happed in the cries could with to how don't sho"
+    },
+    {
+      "purpose": "cheerful greeting",
+      "prompt": "Hello Joi! How are you today?",
+      "seed": 126,
+      "continuation": "\"\nLily look was again. They sand \"Now, you careful the cared his some, they stoppenary striesk was on other shark. He bout smiled the tried out to time them. The more nexcited to started the doar had "
+    }
+  ]
+}

@@ -63,7 +63,7 @@ def load_data(directory):
 def write_metrics(directory, rows):
     temporary = directory / "metrics.csv.tmp"
     with temporary.open("w", newline="") as stream:
-        writer = csv.DictWriter(stream, fieldnames=list(rows[0]))
+        writer = csv.DictWriter(stream, fieldnames=list(rows[0]), lineterminator="\n")
         writer.writeheader()
         writer.writerows(rows)
     temporary.replace(directory / "metrics.csv")
