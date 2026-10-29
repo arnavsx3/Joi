@@ -40,7 +40,7 @@ def main():
         axis.set_ylabel("Next-character loss (nats; lower is better)")
         axis.grid(alpha=0.18)
         axis.spines[["top", "right"]].set_visible(False)
-        axis.legend(frameon=False)
+        axis.legend(frameon=False, loc="upper right", bbox_to_anchor=(0.99, 0.84))
         axis.text(0.98, 0.94, f"Validation: {validation[0]:.2f} → {validation[-1]:.2f}",
                   transform=axis.transAxes, ha="right", va="top", color="#19766b")
         figure.supxlabel("Fixed sampled windows from separate story splits · CPU",

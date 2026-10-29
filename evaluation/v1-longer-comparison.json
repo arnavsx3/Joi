@@ -1,0 +1,139 @@
+{
+  "schema_version": 1,
+  "loss_change_nats": -0.22395589388906956,
+  "relative_loss_reduction_percent": 16.702091855258697,
+  "lower_loss_checkpoint": "candidate",
+  "interpretation": "Negative loss change means improved next-character prediction on identical sampled validation windows. This is not a dialogue or cheerfulness score.",
+  "baseline": {
+    "schema_version": 2,
+    "checkpoint": "checkpoints/v1/best.pt",
+    "step": 1500,
+    "checkpoint_sha256": "7b9e5cab554daa551a677267de46b58ca4f5751cff70b02ec12f6458fc06d953",
+    "parameters": 425472,
+    "model_config": {
+      "vocab_size": 96,
+      "block_size": 128,
+      "n_embd": 128,
+      "n_heads": 4,
+      "n_layers": 2,
+      "dropout": 0.1
+    },
+    "vocabulary_sha256": "358a210d7cedd02492a7c29ad13716843c2179747bb31a3c8b4b7e07b307de0a",
+    "dataset": {
+      "source": "roneneldan/TinyStories",
+      "revision": "f54c09fd23315a6f9c86f9dc80f725de7d8f9c64",
+      "split_sha256": {
+        "train": "5d33a5e04e23334626664754ed254adb09dd0ef09a10717dc7473de72dfa1615",
+        "val": "8ae9ce882fe882112eb0c0a7ab8ba13e555c251e9cb91bca2dcd036413b07e33"
+      }
+    },
+    "torch_version": "2.15.0+cpu",
+    "validation_loss_nats": 1.3408852964639664,
+    "character_perplexity": 3.8224259881064566,
+    "evaluation": {
+      "batches": 32,
+      "batch_size": 16,
+      "context": 128,
+      "seed": 123,
+      "note": "Sampled windows from the held-out split; not the full validation corpus."
+    },
+    "generation": {
+      "temperature": 0.8,
+      "top_k": 20,
+      "new_characters": 200
+    },
+    "limitations": "Loss measures next-character prediction. Samples require human review; this does not establish cheerful or conversational ability.",
+    "samples": [
+      {
+        "purpose": "story continuation",
+        "prompt": "Once upon a time, a little girl",
+        "seed": 123,
+        "continuation": " was very said.\nHe for see and Ben was his so explore. They shougher gething far was stayber him. They parted to stopper. She dre she was so the ched a start the pathey enard no for two somethertle go"
+      },
+      {
+        "purpose": "friendship",
+        "prompt": "Mia saw her friend sitting alone. She said, \"",
+        "seed": 124,
+        "continuation": "What is my looke why you for to knew you, him don't ask to live it that in the say.\"\nSuddept their new it's a for and the mom fix them in and shing bright not the rappy and whit of the sand the was th"
+      },
+      {
+        "purpose": "comfort",
+        "prompt": "I feel sad today. Can you help me?",
+        "seed": 125,
+        "continuation": "\"\nYou they hugged her pever it was on his hopped it be not she grabbed. It was appy happy and the put and in the bear the bear to it. She happy up it is happed in the cries could with to how don't sho"
+      },
+      {
+        "purpose": "cheerful greeting",
+        "prompt": "Hello Joi! How are you today?",
+        "seed": 126,
+        "continuation": "\"\nLily look was again. They sand \"Now, you careful the cared his some, they stoppenary striesk was on other shark. He bout smiled the tried out to time them. The more nexcited to started the doar had "
+      }
+    ]
+  },
+  "candidate": {
+    "schema_version": 2,
+    "checkpoint": "checkpoints/v1-longer/best.pt",
+    "step": 4000,
+    "checkpoint_sha256": "e1df46710170cccbf9136241010305faf007bb9db13be9323f44da6abc28efa9",
+    "parameters": 425472,
+    "model_config": {
+      "vocab_size": 96,
+      "block_size": 128,
+      "n_embd": 128,
+      "n_heads": 4,
+      "n_layers": 2,
+      "dropout": 0.1
+    },
+    "vocabulary_sha256": "358a210d7cedd02492a7c29ad13716843c2179747bb31a3c8b4b7e07b307de0a",
+    "dataset": {
+      "source": "roneneldan/TinyStories",
+      "revision": "f54c09fd23315a6f9c86f9dc80f725de7d8f9c64",
+      "split_sha256": {
+        "train": "5d33a5e04e23334626664754ed254adb09dd0ef09a10717dc7473de72dfa1615",
+        "val": "8ae9ce882fe882112eb0c0a7ab8ba13e555c251e9cb91bca2dcd036413b07e33"
+      }
+    },
+    "torch_version": "2.15.0+cpu",
+    "validation_loss_nats": 1.1169294025748968,
+    "character_perplexity": 3.0554577036847657,
+    "evaluation": {
+      "batches": 32,
+      "batch_size": 16,
+      "context": 128,
+      "seed": 123,
+      "note": "Sampled windows from the held-out split; not the full validation corpus."
+    },
+    "generation": {
+      "temperature": 0.8,
+      "top_k": 20,
+      "new_characters": 200
+    },
+    "limitations": "Loss measures next-character prediction. Samples require human review; this does not establish cheerful or conversational ability.",
+    "samples": [
+      {
+        "purpose": "story continuation",
+        "prompt": "Once upon a time, a little girl",
+        "seed": 123,
+        "continuation": " named Timmy.\n\"Let's go to be careful,\" Lily said a will take with it. She said to the robout what she was a bike to be and nodded.\n\"No,\" Ben said. \"Yes, mom things some tasty. I want to gatch other's"
+      },
+      {
+        "purpose": "friendship",
+        "prompt": "Mia saw her friend sitting alone. She said, \"",
+        "seed": 124,
+        "continuation": "What is not to the ground!\" She and could him to watch a small with his mom and the bell of the couldn't find for a little girl was a sign been.\nThe bird car flower playing with other help. The was st"
+      },
+      {
+        "purpose": "comfort",
+        "prompt": "I feel sad today. Can you help me?",
+        "seed": 125,
+        "continuation": "\"\nBen they hugged her heard it was on his horse. They played together. They all play with them and thanked a big flam. They both a man down and story is good things like to come to remom. Lily and Mia"
+      },
+      {
+        "purpose": "cheerful greeting",
+        "prompt": "Hello Joi! How are you today?",
+        "seed": 126,
+        "continuation": "\"\nLily looked at he had to helled and reliever to the hoppid on his not anymore. And you can keep you own myst to share. She shouldn't big go to do.\"\n\"OK, Mommy, more is a great with a spoppid a littl"
+      }
+    ]
+  }
+}
