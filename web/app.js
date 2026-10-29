@@ -79,8 +79,7 @@ $('about').addEventListener('click', (event) => { if (event.target === $('about'
 fetch('/api/status').then((response) => {
   if (!response.ok) throw new Error('Model unavailable');
   return response.json();
-}).then((status) => {
-  $('connection-status').textContent = 'local companion · still learning';
-  $('model-note').textContent = `Our own general model · ${status.parameters.toLocaleString()} parameters · training step ${status.step.toLocaleString()} · ${status.context_size} ${status.tokenizer === 'word' ? 'tokens' : 'characters'} of context.${status.recall_specialist ? ' A separate locally trained model handles experimental name recall.' : ''}`;
-}).catch(() => { $('connection-status').textContent = 'waiting for the local model'; $('model-note').textContent = 'The local model is not connected yet.'; });
+}).then(() => {
+  $('connection-status').textContent = 'local companion';
+}).catch(() => { $('connection-status').textContent = 'waiting for the local model'; });
 render();

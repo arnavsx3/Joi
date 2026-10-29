@@ -100,7 +100,7 @@ uv run --offline python -m joi.compare --baseline checkpoints/v1/best.pt --candi
 ```
 
 The copy requires a fresh destination and an existing completed v1 run. See the
-[README](../README.md) for environment setup and training v1 from random weights.
+[development guide](development.md) for environment setup and training v1 from random weights.
 The datasets and trained checkpoints remain local; code, summaries, plots, and
 [metrics](../evaluation/v1-longer-metrics.csv) are tracked in Git.
 

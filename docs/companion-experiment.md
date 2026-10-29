@@ -16,7 +16,7 @@ Open http://127.0.0.1:7860 from this laptop. The browser stores the transcript
 locally. The model receives recent complete turns within its context window.
 It does not learn permanently from chat messages. “New conversation” clears the
 browser transcript. The app is served on loopback; it uses no external chat API.
-A fresh clone needs environment setup and training, as described in the README.
+A fresh clone needs [environment setup and training](development.md).
 
 ![Joi on desktop](assets/joi-chat-desktop.jpg)
 

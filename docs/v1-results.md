@@ -71,7 +71,7 @@ produced identical model tensors and random-number states in the same CPU
 environment. Offline generation was also run using the actual trained checkpoint.
 
 The training code, dataset revision, hashes, model config, and dependencies are
-recorded. See [the README](../README.md) for setup, training, resume, evaluation,
+recorded. See [the development guide](development.md) for setup, training, resume, evaluation,
 and generation commands. Timing itself is not deterministic across workloads.
 
 - [Training metrics](../evaluation/v1-metrics.csv)
