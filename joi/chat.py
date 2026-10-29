@@ -1,6 +1,8 @@
 """A local conversation engine backed only by Joi's own learned weights."""
 
 import argparse
+import hashlib
+import io
 from pathlib import Path
 import threading
 import time
@@ -14,7 +16,9 @@ from joi.dialogue import build_prompt
 class ChatEngine:
     def __init__(self, checkpoint, *, threads=2, tokens=180, temperature=0.65, top_k=15):
         torch.set_num_threads(threads)
-        self.model, self.tokenizer, self.checkpoint = load_checkpoint(Path(checkpoint))
+        raw = Path(checkpoint).read_bytes()
+        self.model, self.tokenizer, self.checkpoint = load_checkpoint(io.BytesIO(raw))
+        self.checkpoint_sha256 = hashlib.sha256(raw).hexdigest()
         if self.checkpoint.get("dataset_manifest", {}).get("format") != "joi-dialogue-v1":
             raise ValueError("Select a dialogue-trained checkpoint; prepare and train dialogue first")
         self.model.eval()

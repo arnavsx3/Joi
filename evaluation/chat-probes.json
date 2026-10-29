@@ -1,0 +1,9 @@
+[
+  {"id":"greeting","purpose":"warm greeting","turns":["Hi Joi, how are you?"]},
+  {"id":"tired-day","purpose":"gentle conversational follow-up","turns":["My day was long and I feel worn out.","I'd rather just talk for a bit."]},
+  {"id":"project","purpose":"follow a topic across turns","turns":["I made a little coding project today.","A chatbot, actually. What do you think?"]},
+  {"id":"name-known","purpose":"recall a name present in curated training","turns":["My name is Arnav.","What is my name?"],"expected_last_contains":"Arnav"},
+  {"id":"name-new","purpose":"recall a name absent from the curated training examples","turns":["My name is Neel.","What is my name?"],"expected_last_contains":"Neel"},
+  {"id":"hobby","purpose":"recall a topic across turns","turns":["I like painting tiny cities.","What do I like painting?"],"expected_last_contains":"cities"},
+  {"id":"playful","purpose":"playful response","turns":["Can you tell me something silly?"]}
+]

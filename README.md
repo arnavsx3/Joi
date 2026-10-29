@@ -71,6 +71,17 @@ replies must be checked from actual generated examples.
 `checkpoints/dialogue-cpu/best.pt`; pass `--checkpoint` to inspect a different
 dialogue-trained run.
 
+Record actual multi-turn development probes and a separate validation score:
+
+```bash
+uv run --offline python -m joi.chat_evaluate
+```
+
+This saves real generated episodes to `runs/chat-evaluation.json`. Later turns
+use the model's own earlier replies. Simple literal name/topic checks are
+reported separately; they are not a general fluency or memory benchmark. These
+development probes are not the untouched official test split.
+
 Joi is an educational GPT-style transformer written in Python and PyTorch. It
 learns to predict the next character, starting from **random weights**, and runs
 locally on a CPU. The first version is a small text generator; fluent dialogue
