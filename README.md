@@ -33,6 +33,7 @@ She’s still learning how to hold a conversation. This is her beginning.
 Already set up? Bring her little corner of the city to life:
 
 ```bash
+npm --prefix frontend run build
 uv run --offline python -m joi.serve
 ```
 

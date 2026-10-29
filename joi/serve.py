@@ -3,19 +3,18 @@
 import argparse
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 import json
+import mimetypes
 from pathlib import Path
-from urllib.parse import urlparse
+from urllib.parse import unquote, urlparse
 
 from joi.chat import CompanionEngine
 
 ROOT = Path(__file__).resolve().parent.parent
-FILES = {"/": ("web/index.html", "text/html; charset=utf-8"),
-         "/app.css": ("web/app.css", "text/css; charset=utf-8"),
-         "/app.js": ("web/app.js", "application/javascript; charset=utf-8"),
-         "/assets/joi-portrait.png": ("assets/joi-portrait.png", "image/png")}
+FRONTEND = ROOT / "frontend/dist"
 
 
-def handler_for(engine):
+def handler_for(engine, frontend_root=FRONTEND):
+    frontend_root = Path(frontend_root).resolve()
     class Handler(BaseHTTPRequestHandler):
         def log_message(self, *_):
             pass
@@ -31,14 +30,29 @@ def handler_for(engine):
             self.wfile.write(body)
 
         def do_GET(self):
-            path = urlparse(self.path).path
+            path = unquote(urlparse(self.path).path)
             if path == "/api/status":
                 self.respond(200, engine.status())
-            elif path in FILES:
-                filename, content_type = FILES[path]
-                self.respond(200, (ROOT / filename).read_bytes(), content_type)
-            else:
+                return
+            if path.startswith("/api/"):
                 self.respond(404, {"error":"Not found"})
+                return
+            relative = path.lstrip("/") or "index.html"
+            if relative == "index.html" and not (frontend_root / relative).is_file():
+                self.respond(503, {"error":"Build Joi's frontend first: npm --prefix frontend ci, then npm --prefix frontend run build."})
+                return
+            try:
+                filename = (frontend_root / relative).resolve()
+                if not filename.is_relative_to(frontend_root) or not filename.is_file():
+                    raise FileNotFoundError
+                body = filename.read_bytes()
+            except (OSError, ValueError):
+                self.respond(404, {"error":"Not found"})
+                return
+            content_type = mimetypes.guess_type(filename.name)[0] or "application/octet-stream"
+            if content_type.startswith("text/") or content_type == "application/javascript":
+                content_type += "; charset=utf-8"
+            self.respond(200, body, content_type)
 
         def do_POST(self):
             if self.path != "/api/chat":

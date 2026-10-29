@@ -16,8 +16,13 @@ supplied image; its [edit prompt](../assets/joi-portrait.prompt.txt) is recorded
 The local chat uses our own word model with assistant-only dialogue tuning:
 
 ```bash
+npm --prefix frontend ci
+npm --prefix frontend run build
 uv run --offline python -m joi.serve
 ```
+
+The screen uses Vite, React, TypeScript, and Tailwind. See the
+[frontend guide](frontend.md) for live development and frontend checks.
 
 Open **http://127.0.0.1:7860**. The selected checkpoint is
 `checkpoints/joi-chat/best.pt`: 691,712 parameters and a 256-token context.
@@ -79,6 +84,7 @@ continue, while the optimizer starts fresh for this separate experiment.
 After completing the learned-word and general assistant-only training steps:
 
 ```bash
+npm --prefix frontend run build
 uv run --offline python -m joi.serve
 ```
 
@@ -243,7 +249,8 @@ GPT-4; using those as training examples is distinct from loading their weights.
 
 ## Setup on Ubuntu
 
-Requirements: Git, Python, and [uv](https://docs.astral.sh/uv/). This checkout
+Requirements: Git, Python, [uv](https://docs.astral.sh/uv/), and Node.js 22.12+
+with npm for the frontend. This checkout
 already has uv available. uv manages the project environment and dependencies;
 you do not need a system-wide pip installation or Anaconda.
 

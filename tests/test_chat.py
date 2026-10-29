@@ -1,5 +1,7 @@
 from http.server import ThreadingHTTPServer
 import json
+from pathlib import Path
+from tempfile import TemporaryDirectory
 import threading
 import unittest
 from unittest.mock import patch
@@ -49,7 +51,16 @@ class LocalChatApiTests(unittest.TestCase):
                 self.received = messages
                 return {"reply":"Hi, Arnav! What are you making?", "included_messages":len(messages)}
         self.engine = Engine()
-        self.server = ThreadingHTTPServer(("127.0.0.1",0), handler_for(self.engine))
+        self.workspace = TemporaryDirectory()
+        self.frontend = Path(self.workspace.name) / "dist"
+        (self.frontend / "assets").mkdir(parents=True)
+        (self.frontend / "index.html").write_text('<div id="root"></div><script type="module" src="/assets/app-123.js"></script>')
+        (self.frontend / "assets/app-123.js").write_bytes(b"export const ready = true;")
+        (self.frontend / "assets/style-123.css").write_bytes(b"body{margin:0}")
+        (self.frontend / "assets/portrait-123.png").write_bytes(b"\x89PNG\r\n\x1a\n")
+        (Path(self.workspace.name) / "private.bin").write_bytes(b"not a frontend asset")
+        (self.frontend / "assets/linked.bin").symlink_to(Path(self.workspace.name) / "private.bin")
+        self.server = ThreadingHTTPServer(("127.0.0.1",0), handler_for(self.engine,self.frontend))
         self.thread = threading.Thread(target=self.server.serve_forever,daemon=True)
         self.thread.start()
         self.url = f"http://127.0.0.1:{self.server.server_address[1]}"
@@ -58,6 +69,7 @@ class LocalChatApiTests(unittest.TestCase):
         self.server.shutdown()
         self.server.server_close()
         self.thread.join(timeout=2)
+        self.workspace.cleanup()
 
     def request(self, path, payload=None, headers=None):
         request = urllib.request.Request(self.url+path,
@@ -66,14 +78,34 @@ class LocalChatApiTests(unittest.TestCase):
         with urllib.request.urlopen(request,timeout=3) as response:
             return response.status, response.read(), response.headers
 
-    def test_page_portrait_and_status_are_served_locally(self):
+    def test_built_page_assets_and_status_are_served_locally(self):
         status, html, _ = self.request("/")
         self.assertEqual(status,200)
-        self.assertIn(b"Come as you are.",html)
-        _, portrait, headers = self.request("/assets/joi-portrait.png")
+        self.assertIn(b'id="root"',html)
+        _, script, headers = self.request("/assets/app-123.js?v=1")
+        self.assertEqual(script,b"export const ready = true;")
+        self.assertIn(headers["Content-Type"].split(";")[0],("text/javascript","application/javascript"))
+        _, _, headers = self.request("/assets/style-123.css")
+        self.assertEqual(headers["Content-Type"],"text/css; charset=utf-8")
+        _, portrait, headers = self.request("/assets/portrait-123.png")
         self.assertTrue(portrait.startswith(b"\x89PNG"))
         self.assertEqual(headers["Content-Type"],"image/png")
         self.assertEqual(json.loads(self.request("/api/status")[1])["context_size"],384)
+
+    def test_missing_build_is_actionable_and_api_still_works(self):
+        (self.frontend / "index.html").unlink()
+        with self.assertRaises(urllib.error.HTTPError) as error:
+            self.request("/")
+        self.assertEqual(error.exception.code,503)
+        self.assertIn("frontend run build",json.loads(error.exception.read())["error"])
+        self.assertEqual(self.request("/api/status")[0],200)
+
+    def test_unknown_paths_and_traversal_do_not_expose_other_files(self):
+        for path in ("/api/missing", "/missing", "/../private.bin",
+                     "/assets/%2e%2e/%2e%2e/private.bin", "/assets/linked.bin", "/%00"):
+            with self.subTest(path=path), self.assertRaises(urllib.error.HTTPError) as error:
+                self.request(path)
+            self.assertEqual(error.exception.code,404)
 
     def test_history_reaches_engine_and_response_reaches_client(self):
         messages = [{"role":"user","content":"My name is Arnav."},
