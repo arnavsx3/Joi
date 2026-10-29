@@ -19,6 +19,7 @@ dist/
 checkpoints/
 runs/
 data/raw/
+data/processed/
 *.pt
 *.pth
 *.ckpt

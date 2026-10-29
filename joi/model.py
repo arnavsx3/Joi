@@ -1,0 +1,123 @@
+"""A GPT-style, decoder-only transformer built from PyTorch components."""
+
+from dataclasses import dataclass
+import math
+
+import torch
+from torch import nn
+from torch.nn import functional as F
+
+
+@dataclass
+class ModelConfig:
+    vocab_size: int
+    block_size: int = 128
+    n_embd: int = 128
+    n_heads: int = 4
+    n_layers: int = 2
+    dropout: float = 0.1
+
+    def __post_init__(self):
+        for name in ("vocab_size", "block_size", "n_embd", "n_heads", "n_layers"):
+            value = getattr(self, name)
+            if not isinstance(value, int) or isinstance(value, bool) or value < 1:
+                raise ValueError(f"{name} must be a positive integer")
+        if self.n_embd % self.n_heads:
+            raise ValueError("n_embd must be divisible by n_heads")
+        if not 0 <= self.dropout < 1:
+            raise ValueError("dropout must be in [0, 1)")
+
+
+class CausalAttention(nn.Module):
+    def __init__(self, config):
+        super().__init__()
+        self.n_heads = config.n_heads
+        self.dropout = config.dropout
+        self.qkv = nn.Linear(config.n_embd, 3 * config.n_embd)
+        self.proj = nn.Linear(config.n_embd, config.n_embd)
+        self.residual_dropout = nn.Dropout(config.dropout)
+
+    def forward(self, x):
+        batch, length, width = x.shape
+        q, k, v = self.qkv(x).chunk(3, dim=-1)
+        q, k, v = [
+            t.view(batch, length, self.n_heads, width // self.n_heads).transpose(1, 2)
+            for t in (q, k, v)
+        ]
+        # A character can only attend to itself and earlier characters.
+        y = F.scaled_dot_product_attention(
+            q, k, v, is_causal=True,
+            dropout_p=self.dropout if self.training else 0.0,
+        )
+        y = y.transpose(1, 2).contiguous().view(batch, length, width)
+        return self.residual_dropout(self.proj(y))
+
+
+class Block(nn.Module):
+    def __init__(self, config):
+        super().__init__()
+        self.ln1 = nn.LayerNorm(config.n_embd)
+        self.attention = CausalAttention(config)
+        self.ln2 = nn.LayerNorm(config.n_embd)
+        self.mlp = nn.Sequential(
+            nn.Linear(config.n_embd, 4 * config.n_embd),
+            nn.GELU(),
+            nn.Linear(4 * config.n_embd, config.n_embd),
+            nn.Dropout(config.dropout),
+        )
+
+    def forward(self, x):
+        x = x + self.attention(self.ln1(x))
+        return x + self.mlp(self.ln2(x))
+
+
+class Joi(nn.Module):
+    def __init__(self, config):
+        super().__init__()
+        self.config = config
+        self.token_embedding = nn.Embedding(config.vocab_size, config.n_embd)
+        self.position_embedding = nn.Embedding(config.block_size, config.n_embd)
+        self.dropout = nn.Dropout(config.dropout)
+        self.blocks = nn.Sequential(*(Block(config) for _ in range(config.n_layers)))
+        self.final_norm = nn.LayerNorm(config.n_embd)
+        self.head = nn.Linear(config.n_embd, config.vocab_size, bias=False)
+        self.apply(self._init_weights)
+        # Reuse the character embeddings as the output projection.
+        self.head.weight = self.token_embedding.weight
+
+    @staticmethod
+    def _init_weights(module):
+        if isinstance(module, (nn.Linear, nn.Embedding)):
+            nn.init.normal_(module.weight, mean=0.0, std=0.02)
+            if isinstance(module, nn.Linear) and module.bias is not None:
+                nn.init.zeros_(module.bias)
+
+    def forward(self, tokens, targets=None):
+        if tokens.ndim != 2 or not 1 <= tokens.shape[1] <= self.config.block_size:
+            raise ValueError(f"Expected a nonempty [batch, length] up to {self.config.block_size}")
+        positions = torch.arange(tokens.shape[1], device=tokens.device)
+        x = self.dropout(self.token_embedding(tokens) + self.position_embedding(positions))
+        logits = self.head(self.final_norm(self.blocks(x)))
+        loss = None
+        if targets is not None:
+            loss = F.cross_entropy(logits.reshape(-1, logits.size(-1)), targets.reshape(-1))
+        return logits, loss
+
+    @torch.inference_mode()
+    def generate(self, tokens, max_new_tokens=300, temperature=0.8, top_k=20):
+        if max_new_tokens < 0 or not math.isfinite(temperature) or temperature <= 0 or top_k < 0:
+            raise ValueError("Use nonnegative length/top_k and a finite, positive temperature")
+        was_training = self.training
+        self.eval()
+        try:
+            for _ in range(max_new_tokens):
+                logits, _ = self(tokens[:, -self.config.block_size:])
+                logits = logits[:, -1] / temperature
+                if top_k:
+                    cutoff = torch.topk(logits, min(top_k, logits.size(-1))).values[:, [-1]]
+                    logits = logits.masked_fill(logits < cutoff, float("-inf"))
+                token = torch.multinomial(F.softmax(logits, dim=-1), num_samples=1)
+                tokens = torch.cat((tokens, token), dim=1)
+            return tokens
+        finally:
+            self.train(was_training)
