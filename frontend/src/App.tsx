@@ -29,7 +29,7 @@ export default function App() {
 
   useEffect(() => {
     const element = scroll.current
-    if (element) element.scrollTop = element.scrollHeight
+    if (element) element.scrollTop = chat.messages.length ? element.scrollHeight : 0
   }, [chat.messages, chat.sending])
 
   useEffect(() => {

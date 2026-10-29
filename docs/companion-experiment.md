@@ -9,6 +9,7 @@ The software tests passing must not be confused with conversational competence.
 ## What you can use
 
 ```bash
+npm --prefix frontend run build
 uv run --offline python -m joi.serve
 ```
 
@@ -17,6 +18,10 @@ locally. The model receives recent complete turns within its context window.
 It does not learn permanently from chat messages. “New conversation” clears the
 browser transcript. The app is served on loopback; it uses no external chat API.
 A fresh clone needs [environment setup and training](development.md).
+
+The fullscreen interface uses Vite, React, TypeScript, and Tailwind CSS, with
+the same local neural API and existing browser history. See the
+[frontend guide](frontend.md) for setup, development, and migration checks.
 
 ![Joi on desktop](assets/joi-chat-desktop.jpg)
 

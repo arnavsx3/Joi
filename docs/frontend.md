@@ -60,3 +60,14 @@ The old `web/` implementation is removed. Existing browser history keeps its
 send only the latest 38 completed messages plus the current user message, within
 the API limit. Actual model context is smaller and is selected by the model engine.
 Assistant messages still come only from our own locally trained models.
+
+## Migration verification
+
+- TypeScript checking and the Vite production build pass.
+- Six frontend tests and 31 Python tests pass.
+- Desktop (1440 × 900), phone (390 × 844), and small phone (320 × 568) layouts
+  keep the composer visible without horizontal page overflow.
+- Browser checks exercise real two-turn local chat, saved history after reload,
+  Enter/Shift+Enter, reset, and the About dialog's Escape dismissal.
+- The Vite development proxy handles real status and chat requests. External
+  request origins still receive HTTP 403 from the local API.
