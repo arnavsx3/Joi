@@ -62,6 +62,21 @@ class EvaluationTests(unittest.TestCase):
             self.assertAlmostEqual(result["relative_loss_reduction_percent"], 20)
             self.assertEqual(result["lower_loss_checkpoint"], "candidate")
 
+            expected_hash = hashlib.sha256(checkpoint.read_bytes()).hexdigest()
+            original_generate = Joi.generate
+
+            def generate_while_checkpoint_is_replaced(instance, *args, **kwargs):
+                # Simulate a training process publishing a newer best.pt while
+                # the already-loaded model is generating evaluation samples.
+                checkpoint.write_bytes(b"replacement checkpoint")
+                return original_generate(instance, *args, **kwargs)
+
+            with patch.object(Joi, "generate", generate_while_checkpoint_is_replaced):
+                snapshot = evaluate_checkpoint(checkpoint, root, prompts, batches=2, tokens=12)
+            self.assertEqual(snapshot["checkpoint_sha256"], expected_hash)
+            self.assertEqual(snapshot["validation_loss_nats"], first["validation_loss_nats"])
+            self.assertEqual(snapshot["samples"], first["samples"])
+
 
 if __name__ == "__main__":
     unittest.main()

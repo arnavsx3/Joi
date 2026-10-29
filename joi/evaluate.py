@@ -3,6 +3,7 @@
 import argparse
 from dataclasses import asdict
 import hashlib
+import io
 import json
 import math
 from pathlib import Path
@@ -20,7 +21,10 @@ def evaluate_checkpoint(checkpoint_path, data_directory, prompts_path, *, batche
         raise ValueError("Use positive batches and a nonnegative token count")
     if not math.isfinite(temperature) or temperature <= 0 or top_k < 0:
         raise ValueError("Use a finite, positive temperature and nonnegative top-k")
-    model, tokenizer, checkpoint = load_checkpoint(checkpoint_path)
+    # Read one snapshot: a concurrent training save can replace this path while
+    # evaluation runs. The reported hash must identify the bytes we loaded.
+    checkpoint_bytes = checkpoint_path.read_bytes()
+    model, tokenizer, checkpoint = load_checkpoint(io.BytesIO(checkpoint_bytes))
     data_tokenizer, splits, hashes, manifest = load_data(data_directory)
     if hashes != checkpoint["data_hashes"] or data_tokenizer.chars != tokenizer.chars:
         raise ValueError("Evaluation data must match the checkpoint's recorded dataset")
@@ -38,7 +42,7 @@ def evaluate_checkpoint(checkpoint_path, data_directory, prompts_path, *, batche
     return {
         "schema_version": 2,
         "checkpoint": str(checkpoint_path), "step": checkpoint["step"],
-        "checkpoint_sha256": hashlib.sha256(checkpoint_path.read_bytes()).hexdigest(),
+        "checkpoint_sha256": hashlib.sha256(checkpoint_bytes).hexdigest(),
         "parameters": sum(p.numel() for p in model.parameters()),
         "model_config": asdict(model.config),
         "vocabulary_sha256": hashlib.sha256(json.dumps(tokenizer.chars).encode()).hexdigest(),
