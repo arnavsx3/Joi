@@ -9,6 +9,31 @@ The goal is a warm, playful personal chat companion inspired by Joi in
 weights or remote inference services. The portrait is edited from the owner's
 supplied image; its [edit prompt](assets/joi-portrait.prompt.txt) is recorded.
 
+## Dialogue training
+
+Joi now has a separate conversation-training path. It starts from our own
+random-initialized model's learned weights, expands the context from 128 to 384
+characters, and trains on DailyDialog plus original warm, playful Joi examples.
+No third-party model weights are used. Context growth preserves learned weights;
+only the extra position embeddings start randomly. The optimizer starts fresh.
+
+```bash
+uv run python -m joi.prepare_dialogue
+uv run --offline python -m joi.train --data data/processed/dialogue --config configs/dialogue.json --init-from checkpoints/v1-longer/best.pt --out checkpoints/dialogue --steps 2400 --batch-size 8 --learning-rate 0.0005 --eval-every 200 --eval-batches 4
+```
+
+The first command needs internet on its first run. It verifies the original
+DailyDialog archive hash and keeps whole conversations in their official splits.
+Project-written scenario families marked `holdout` stay out of training.
+The manifest reports unique examples separately from repeated persona examples.
+The official test split remains untouched. See
+[data sources and licenses](THIRD_PARTY_NOTICES.md).
+
+`--init-from` is different from `--resume`: initialization can change the dataset
+and grow the context, while resume restores the same experiment and optimizer.
+New runs save `initial.pt` as well as `best.pt` and `last.pt`, allowing a fair
+before/after comparison on the dialogue data.
+
 Joi is an educational GPT-style transformer written in Python and PyTorch. It
 learns to predict the next character, starting from **random weights**, and runs
 locally on a CPU. The first version is a small text generator; fluent dialogue

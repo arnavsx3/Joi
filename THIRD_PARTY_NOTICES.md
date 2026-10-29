@@ -1,5 +1,31 @@
 # Training data
 
+## Dialogue experiment
+
+The dialogue preparation command uses **DailyDialog: A Manually Labelled
+Multi-turn Dialogue Dataset** (Li et al., 2017).
+
+- Paper and original dataset attachment: https://aclanthology.org/I17-1099/
+- Archive: https://aclanthology.org/attachments/I17-1099.Datasets.zip
+- Archive SHA-256: `2de93416a95060057d8b95ef9e2ab9b17a317906f1e352414001a1887f081193`
+- Author-associated dataset card and license declaration:
+  https://huggingface.co/datasets/li2017dailydialog/daily_dialog
+- License: **Creative Commons Attribution-NonCommercial-ShareAlike 4.0**
+  (https://creativecommons.org/licenses/by-nc-sa/4.0/).
+
+Joi selects bounded subsets of the official train and validation splits, limits
+turn length, normalizes punctuation and whitespace to ASCII, labels speakers
+`User` and `Joi`, and removes exact duplicate complete conversations. The test
+split is not used for training or validation. Downloaded and adapted dataset
+files remain in Git-ignored directories. Dataset redistribution must follow the
+linked license, including attribution, noncommercial use, and share-alike terms.
+
+`data/curated/joi_dialogue_seeds.json` contains original project-written dialogue
+examples, with reserved holdout scenario families. Training repeats the curated
+examples to increase their style weight; repeats are not extra unique examples.
+
+## Story experiments
+
 Joi's default preparation command downloads a small portion of **TinyStories**
 by Ronen Eldan and Yuanzhi Li. TinyStories contains synthetic stories generated
 using GPT-3.5 and GPT-4. No existing model weights are downloaded or used.

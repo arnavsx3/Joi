@@ -4,6 +4,7 @@ import argparse
 import csv
 from dataclasses import asdict
 import hashlib
+import io
 import json
 import math
 from pathlib import Path
@@ -14,6 +15,34 @@ import torch
 from joi.checkpoint import load_checkpoint, save_checkpoint
 from joi.model import Joi, ModelConfig
 from joi.tokenizer import CharTokenizer
+
+
+def initialize_from_checkpoint(path, config, tokenizer):
+    raw = path.read_bytes()
+    source, source_tokenizer, payload = load_checkpoint(io.BytesIO(raw))
+    previous = asdict(source.config)
+    requested = asdict(config)
+    if source_tokenizer.chars != tokenizer.chars:
+        raise ValueError("Initialization requires the same vocabulary")
+    if any(previous[key] != requested[key] for key in previous if key != "block_size"):
+        raise ValueError("Initialization can change context length, but not the other architecture settings")
+    if config.block_size < source.config.block_size:
+        raise ValueError("Initialization cannot shrink the original context")
+    model = Joi(config)
+    state = model.state_dict()
+    for key, value in source.state_dict().items():
+        if key == "position_embedding.weight":
+            state[key][:source.config.block_size].copy_(value)
+        else:
+            state[key].copy_(value)
+    model.load_state_dict(state)
+    return model, {
+        "mode": "own-checkpoint", "source": str(path),
+        "source_sha256": hashlib.sha256(raw).hexdigest(), "source_step": payload.get("step"),
+        "source_model_config": previous,
+        "new_positions": config.block_size - source.config.block_size,
+        "note": "Copied learned parameters; added position embeddings keep their random initialization. New optimizer and step counter.",
+    }
 
 
 def sample_batch(data, block_size, batch_size, generator):
@@ -77,7 +106,9 @@ def main():
     parser.add_argument("--data", type=Path, default=Path("data/processed"))
     parser.add_argument("--config", type=Path, default=Path("configs/tiny.json"))
     parser.add_argument("--out", type=Path, default=Path("checkpoints/v1"))
-    parser.add_argument("--resume", type=Path)
+    initialization_args = parser.add_mutually_exclusive_group()
+    initialization_args.add_argument("--resume", type=Path)
+    initialization_args.add_argument("--init-from", type=Path, help="Continue our own learned weights on a new dataset, with a fresh optimizer")
     parser.add_argument("--steps", type=int, default=1500, help="Total target step, including previous training")
     parser.add_argument("--batch-size", type=int, default=16)
     parser.add_argument("--learning-rate", type=float, default=0.001)
@@ -118,10 +149,14 @@ def main():
             if training_settings != checkpoint["training_settings"]:
                 raise ValueError("Resume requires the original batch size, learning rate, evaluation batches, threads and seed")
             first_step = checkpoint["step"]
+            initialization = checkpoint.get("initialization", {"mode": "random"})
             if args.steps <= first_step:
                 raise ValueError(f"--steps must exceed the saved step ({first_step})")
         else:
-            model = Joi(config)
+            if args.init_from:
+                model, initialization = initialize_from_checkpoint(args.init_from, config, tokenizer)
+            else:
+                model, initialization = Joi(config), {"mode": "random"}
             checkpoint = {}
             first_step = 0
     except (ValueError, FileNotFoundError) as exc:
@@ -141,7 +176,9 @@ def main():
     parameter_count = sum(p.numel() for p in model.parameters())
     print(f"Joi: {parameter_count:,} parameters | CPU | {args.threads} threads | context {config.block_size}", flush=True)
     print(f"Data: {len(splits['train']):,} training / {len(splits['val']):,} validation characters", flush=True)
-    print("Resuming learned weights." if args.resume else "Starting from randomly initialized weights.", flush=True)
+    print("Resuming learned weights." if args.resume else
+          f"Initializing from our own checkpoint: {args.init_from}" if args.init_from else
+          "Starting from randomly initialized weights.", flush=True)
     started = time.monotonic()
 
     def record(step):
@@ -163,10 +200,13 @@ def main():
             "best_val_loss": best_loss, "best_step": best_step,
             "elapsed_seconds": elapsed, "parameter_count": parameter_count,
             "torch_version": str(torch.__version__),
+            "initialization": initialization,
         }
         save_checkpoint(args.out / "last.pt", model, tokenizer, **state)
         if improved:
             save_checkpoint(args.out / "best.pt", model, tokenizer, **state)
+        if step == 0:
+            save_checkpoint(args.out / "initial.pt", model, tokenizer, **state)
         write_metrics(args.out, rows)
         print(f"step {step:5d} | train {losses['train_loss']:.4f} | val {losses['val_loss']:.4f} | {elapsed:.1f}s", flush=True)
 
