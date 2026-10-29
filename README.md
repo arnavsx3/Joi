@@ -153,6 +153,30 @@ uv run --with matplotlib python -m joi.plot
 
 The plot is saved to `runs/v1-loss.png`.
 
+### Compare experiments fairly
+
+```bash
+uv run --offline python -m joi.compare --baseline checkpoints/v1/best.pt --candidate checkpoints/v1-longer/best.pt
+```
+
+This evaluates both checkpoints on the same validation windows and prompt
+seeds, then writes the scores and both sets of generated samples to
+`runs/comparison.json`. Reports include model settings, dataset hashes, the
+checkpoint hash, and evaluation settings. Comparisons require matching data,
+vocabulary, context length, sampling settings, and PyTorch version. A lower
+loss measures improved character prediction; inspect the samples to assess
+readability and response quality.
+
+Keep a reference run intact before continuing it as a separate experiment:
+
+```bash
+cp -a checkpoints/v1 checkpoints/v1-longer
+uv run python -m joi.train --resume checkpoints/v1-longer/last.pt --out checkpoints/v1-longer --steps 4000 --eval-every 250
+```
+
+Use a new directory name for each experiment. This changes the training budget
+while keeping the model, data, optimizer, and random-number sequence fixed.
+
 ## What to learn next
 
 Read [How Joi learns](docs/how-joi-learns.md) for a short explanation of the
