@@ -58,6 +58,8 @@ the model may be memorizing patterns too specific to its training data.
 | `joi/checkpoint.py` | Save and reload model and training state |
 | `joi/generate.py` | Continue a prompt using a local checkpoint |
 | `joi/evaluate.py` | Score validation examples and save sample continuations |
+| `joi/compare.py` | Compare checkpoints with matching validation windows and prompts |
+| `joi/play.py` | Try independent prompts in an offline terminal session |
 | `configs/tiny.json` | Choose the model's size and context length |
 
 ## What this first experiment can tell us

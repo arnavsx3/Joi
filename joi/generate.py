@@ -8,6 +8,16 @@ import torch
 from joi.checkpoint import load_checkpoint
 
 
+def generate_text(model, tokenizer, prompt, *, tokens=300, temperature=0.8, top_k=20, seed=42):
+    """Continue a prompt without updating the model; return prompt plus output."""
+    if not prompt:
+        raise ValueError("Prompt must contain at least one character")
+    encoded = torch.tensor([tokenizer.encode(prompt)], dtype=torch.long)
+    torch.manual_seed(seed)
+    result = model.generate(encoded, tokens, temperature, top_k)
+    return tokenizer.decode(result[0].tolist())
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--checkpoint", type=Path, default=Path("checkpoints/v1/best.pt"))
@@ -25,12 +35,11 @@ def main():
     torch.set_num_threads(args.threads)
     try:
         model, tokenizer, _ = load_checkpoint(args.checkpoint)
-        tokens = torch.tensor([tokenizer.encode(args.prompt)], dtype=torch.long)
-        torch.manual_seed(args.seed)
-        result = model.generate(tokens, args.tokens, args.temperature, args.top_k)
+        text = generate_text(model, tokenizer, args.prompt, tokens=args.tokens,
+                             temperature=args.temperature, top_k=args.top_k, seed=args.seed)
     except (ValueError, FileNotFoundError) as exc:
         parser.error(str(exc))
-    print(tokenizer.decode(result[0].tolist()))
+    print(text)
 
 
 if __name__ == "__main__":

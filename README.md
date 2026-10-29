@@ -129,6 +129,18 @@ Lower temperature usually makes output less varied. The model accepts newline
 and printable ASCII characters; unsupported prompt characters produce an error.
 Only the last 128 characters of context influence each prediction.
 
+To try several prompts without reloading the model:
+
+```bash
+uv run --offline python -m joi.play
+```
+
+Use `/quit` to leave or `/help` for controls. You can select an experiment with
+`--checkpoint checkpoints/v1-longer/best.pt` and adjust `--tokens`,
+`--temperature`, or `--seed`. Each prompt starts independently, and using the
+playground does not train the model. It is a way to inspect text continuation;
+the story-trained model does not retain conversation history.
+
 ## Evaluate and test
 
 ```bash
