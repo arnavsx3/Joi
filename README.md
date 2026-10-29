@@ -109,6 +109,26 @@ Word-model chat also blocks repeated three-token patterns in newly generated
 text. Prompt patterns are not blocked, so this does not prevent copying a name
 from the conversation. This is a decoding constraint, not proof of coherence.
 
+### Warm personality and recall curriculum
+
+This optional continuation keeps the word vocabulary and learned network. It
+mixes general-dialogue replay, the project-written warm examples, and synthetic
+four-turn conversations that teach copying a supplied name into a later reply:
+
+```bash
+uv run --offline python -m joi.prepare_persona
+uv run --offline python -m joi.train --data data/processed/persona --config configs/word-dialogue.json --init-from checkpoints/dialogue-words/best.pt --out checkpoints/companion --steps 1200 --batch-size 8 --learning-rate 0.0003 --eval-every 200 --eval-batches 4
+uv run --offline python -m joi.chat_evaluate --checkpoint checkpoints/companion/best.pt --data data/processed/persona --out runs/chat-companion.json
+```
+
+The 1,200 generated training names and 200 generated validation names are
+disjoint, absent from the parent vocabulary and text, and exclude the reserved
+development names. They are artificial letter combinations. The base curated
+examples still contain their original named characters, as the manifest notes.
+The model must learn recall from these examples; the runtime does not substitute
+stored names or template answers. Passing a few development checks would still
+not establish reliable memory in unrestricted conversation.
+
 Joi is an educational GPT-style transformer written in Python and PyTorch. It
 learns to predict the next character, starting from **random weights**, and runs
 locally on a CPU. The first version is a small text generator; fluent dialogue
