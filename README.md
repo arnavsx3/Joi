@@ -2,6 +2,13 @@
 
 A small language model, learning to be cheerful.
 
+<img src="assets/joi-portrait.png" alt="Joi, with blue hair in violet and pink neon light" width="280">
+
+The goal is a warm, playful personal chat companion inspired by Joi in
+*Blade Runner 2049*. The model stays strictly our own: no third-party pretrained
+weights or remote inference services. The portrait is edited from the owner's
+supplied image; its [edit prompt](assets/joi-portrait.prompt.txt) is recorded.
+
 Joi is an educational GPT-style transformer written in Python and PyTorch. It
 learns to predict the next character, starting from **random weights**, and runs
 locally on a CPU. The first version is a small text generator; fluent dialogue
