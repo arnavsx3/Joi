@@ -164,6 +164,9 @@ uv run --with matplotlib python -m joi.plot
 ```
 
 The plot is saved to `runs/v1-loss.png`.
+For another experiment, pass `--metrics` and `--out`. Use `--min-step 1500` to
+zoom in on later training, `--reference-step 1500` to mark the v1 endpoint,
+and `--title` to label the experiment.
 
 ### Compare experiments fairly
 
