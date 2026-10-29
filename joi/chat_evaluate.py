@@ -4,10 +4,15 @@ import argparse
 from dataclasses import asdict
 import json
 import math
+import re
 from pathlib import Path
 
 from joi.chat import ChatEngine
 from joi.train import evaluate, load_data
+
+
+def literal_recall(expected, reply):
+    return bool(re.search(r"\b"+re.escape(expected)+r"\b",reply,flags=re.I))
 
 
 def evaluate_chat(checkpoint, data, probes, *, seed=123, tokens=128, batches=16):
@@ -32,7 +37,7 @@ def evaluate_chat(checkpoint, data, probes, *, seed=123, tokens=128, batches=16)
         expected = probe.get("expected_last_contains")
         last_reply = results[-1].get("reply", "") if results else ""
         episodes.append({**probe, "results":results,
-                         "literal_recall_check":expected.lower() in last_reply.lower() if expected else None})
+                         "literal_recall_check":literal_recall(expected,last_reply) if expected else None})
     return {
         "checkpoint":str(checkpoint), "checkpoint_sha256":engine.checkpoint_sha256,
         "phase_step":engine.checkpoint["step"], "model_config":asdict(engine.model.config),
@@ -44,6 +49,7 @@ def evaluate_chat(checkpoint, data, probes, *, seed=123, tokens=128, batches=16)
         "protocol":{"seed":seed, "validation_batches":batches, "validation_batch_size":8,
                     "new_tokens_per_reply":tokens, "temperature":0.65, "top_k":15,
                     "no_repeat_ngram_size":3 if tokenizer.kind=="word" else 0,
+                    "literal_recall":"case-insensitive whole-word match",
                     "stop":"first generated newline; turn marker is removed"},
         "note":"Development probes, not an independent test set. Each episode uses the model's actual earlier replies. Literal name/topic checks do not establish reliable memory, fluency or cheerfulness.",
         "episodes":episodes,

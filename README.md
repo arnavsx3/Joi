@@ -149,6 +149,20 @@ model loss. Selection still requires reviewing generated replies and unseen-name
 results. The short tuning command saves checkpoints but does not implement resume;
 use a fresh output directory to repeat it.
 
+General assistant-only tuning is a separate experiment, starting from the
+general word model rather than the recall specialist:
+
+```bash
+uv run --offline python -m joi.tune_dialogue
+uv run --offline python -m joi.chat_evaluate --checkpoint checkpoints/joi-chat/best.pt --data data/processed/dialogue-words --out runs/chat-assistant.json
+```
+
+It uses 75% general-dialogue batches and 25% project-written warm-dialogue
+batches. Only assistant reply tokens contribute to loss. Replies over 96 tokens
+are excluded, and the nearest context is retained when an example exceeds the
+model's window. As with the focused correction, this short experiment is repeated
+from a fresh output directory rather than resumed through `joi.train`.
+
 Joi is an educational GPT-style transformer written in Python and PyTorch. It
 learns to predict the next character, starting from **random weights**, and runs
 locally on a CPU. The first version is a small text generator; fluent dialogue

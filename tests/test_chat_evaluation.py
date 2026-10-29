@@ -7,12 +7,16 @@ import unittest
 import torch
 
 from joi.checkpoint import save_checkpoint
-from joi.chat_evaluate import evaluate_chat
+from joi.chat_evaluate import evaluate_chat, literal_recall
 from joi.model import Joi, ModelConfig
 from joi.tokenizer import CharTokenizer
 
 
 class ChatEvaluationTests(unittest.TestCase):
+    def test_partial_name_is_not_counted_as_correct_recall(self):
+        self.assertTrue(literal_recall("Neel","Your name is Neel."))
+        self.assertFalse(literal_recall("Neel","Your name is Neell."))
+
     def test_real_checkpoint_probe_is_reproducible_and_records_generated_history(self):
         torch.set_num_threads(1)
         torch.manual_seed(7)
