@@ -19,7 +19,8 @@ only the extra position embeddings start randomly. The optimizer starts fresh.
 
 ```bash
 uv run python -m joi.prepare_dialogue
-uv run --offline python -m joi.train --data data/processed/dialogue --config configs/dialogue.json --init-from checkpoints/v1-longer/best.pt --out checkpoints/dialogue --steps 2400 --batch-size 8 --learning-rate 0.0005 --eval-every 200 --eval-batches 4
+uv run --offline python -m joi.train --data data/processed/dialogue --config configs/dialogue.json --init-from checkpoints/v1-longer/best.pt --out checkpoints/dialogue --steps 800 --batch-size 8 --learning-rate 0.0005 --eval-every 200 --eval-batches 4
+uv run --offline python -m joi.train --data data/processed/dialogue --config configs/dialogue-cpu.json --init-from checkpoints/dialogue/best.pt --out checkpoints/dialogue-cpu --steps 1600 --batch-size 8 --learning-rate 0.0005 --eval-every 200 --eval-batches 4
 ```
 
 The first command needs internet on its first run. It verifies the original
@@ -33,6 +34,42 @@ The official test split remains untouched. See
 and grow the context, while resume restores the same experiment and optimizer.
 New runs save `initial.pt` as well as `best.pt` and `last.pt`, allowing a fair
 before/after comparison on the dialogue data.
+
+The second stage disables dropout inside attention to enable the faster CPU
+attention path; embedding, feed-forward, and residual dropout remain 0.1.
+Inference predictions are unchanged when transferring weights between the two
+configs because all dropout is disabled during inference. The learned weights
+continue, while the optimizer starts fresh for this separate experiment.
+
+## Chat with Joi locally
+
+After preparing and training the dialogue model:
+
+```bash
+uv run --offline python -m joi.serve
+```
+
+Open **http://127.0.0.1:7860** for the portrait, chat screen, and starter prompts.
+The page and neural inference both run on your laptop. Your browser keeps the
+current transcript locally; “new conversation” clears it. Recent complete turns
+are supplied to the model within its 384-character context, and generation stops
+at a turn boundary. This is contextual input, not permanent learned memory.
+
+For a terminal conversation with the same history handling:
+
+```bash
+uv run --offline python -m joi.chat
+```
+
+Use `/new` to start fresh and `/quit` to leave. This dialogue model is still an
+experiment: the interface and history mechanism work, while coherent, cheerful
+replies must be checked from actual generated examples.
+
+![Joi chat screen](docs/assets/joi-chat-desktop.jpg)
+
+[Phone layout](docs/assets/joi-chat-mobile.jpg). The default chat checkpoint is
+`checkpoints/dialogue-cpu/best.pt`; pass `--checkpoint` to inspect a different
+dialogue-trained run.
 
 Joi is an educational GPT-style transformer written in Python and PyTorch. It
 learns to predict the next character, starting from **random weights**, and runs

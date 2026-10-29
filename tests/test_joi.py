@@ -107,6 +107,9 @@ class JoiTests(unittest.TestCase):
             full, resumed = root / "full", root / "resumed"
             run("--out", str(full), "--steps", "6")
             run("--out", str(resumed), "--steps", "4")
+            legacy = torch.load(resumed / "last.pt", weights_only=True)
+            legacy["model_config"].pop("attention_dropout", None)
+            torch.save(legacy, resumed / "last.pt")
             run("--out", str(resumed), "--resume", str(resumed / "last.pt"), "--steps", "6")
             _, _, left = load_checkpoint(full / "last.pt")
             _, _, right = load_checkpoint(resumed / "last.pt")

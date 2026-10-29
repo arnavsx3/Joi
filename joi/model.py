@@ -16,6 +16,7 @@ class ModelConfig:
     n_heads: int = 4
     n_layers: int = 2
     dropout: float = 0.1
+    attention_dropout: float | None = None
 
     def __post_init__(self):
         for name in ("vocab_size", "block_size", "n_embd", "n_heads", "n_layers"):
@@ -26,13 +27,15 @@ class ModelConfig:
             raise ValueError("n_embd must be divisible by n_heads")
         if not 0 <= self.dropout < 1:
             raise ValueError("dropout must be in [0, 1)")
+        if self.attention_dropout is not None and not 0 <= self.attention_dropout < 1:
+            raise ValueError("attention_dropout must be in [0, 1) or None")
 
 
 class CausalAttention(nn.Module):
     def __init__(self, config):
         super().__init__()
         self.n_heads = config.n_heads
-        self.dropout = config.dropout
+        self.dropout = config.dropout if config.attention_dropout is None else config.attention_dropout
         self.qkv = nn.Linear(config.n_embd, 3 * config.n_embd)
         self.proj = nn.Linear(config.n_embd, config.n_embd)
         self.residual_dropout = nn.Dropout(config.dropout)
@@ -104,13 +107,15 @@ class Joi(nn.Module):
         return logits, loss
 
     @torch.inference_mode()
-    def generate(self, tokens, max_new_tokens=300, temperature=0.8, top_k=20):
+    def generate(self, tokens, max_new_tokens=300, temperature=0.8, top_k=20, stop_sequences=None):
         if max_new_tokens < 0 or not math.isfinite(temperature) or temperature <= 0 or top_k < 0:
             raise ValueError("Use nonnegative length/top_k and a finite, positive temperature")
+        if stop_sequences and (tokens.shape[0] != 1 or any(not sequence for sequence in stop_sequences)):
+            raise ValueError("Stop sequences require one prompt and nonempty sequences")
         was_training = self.training
         self.eval()
         try:
-            for _ in range(max_new_tokens):
+            for index in range(max_new_tokens):
                 logits, _ = self(tokens[:, -self.config.block_size:])
                 logits = logits[:, -1] / temperature
                 if top_k:
@@ -118,6 +123,9 @@ class Joi(nn.Module):
                     logits = logits.masked_fill(logits < cutoff, float("-inf"))
                 token = torch.multinomial(F.softmax(logits, dim=-1), num_samples=1)
                 tokens = torch.cat((tokens, token), dim=1)
+                for sequence in stop_sequences or ():
+                    if index + 1 >= len(sequence) and tokens[0, -len(sequence):].tolist() == list(sequence):
+                        return tokens[:, :-len(sequence)]
             return tokens
         finally:
             self.train(was_training)

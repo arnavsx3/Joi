@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#131019">
+  <title>Joi — a little company</title>
+  <link rel="icon" href="/assets/joi-portrait.png">
+  <link rel="stylesheet" href="/app.css">
+  <script src="/app.js" defer></script>
+</head>
+<body>
+  <main class="shell">
+    <header class="topbar">
+      <a href="/" class="wordmark" aria-label="Joi home">joi<span>✦</span></a>
+      <span class="top-caption">a little company, in your own little world.</span>
+      <button class="notes-button" id="about-open">a note about Joi <span>↗</span></button>
+    </header>
+
+    <section class="experience" aria-label="Chat with Joi">
+      <aside class="portrait-panel">
+        <img class="portrait" src="/assets/joi-portrait.png" alt="Joi with blue hair, lit by violet and magenta neon">
+        <div class="portrait-shade"></div>
+        <div class="portrait-top"><span class="little-star">✧</span><span>YOUR PERSONAL CHAT PERSON</span></div>
+        <div class="portrait-caption"><span class="eyebrow">A SOFTER LITTLE CORNER</span><h1>Hey,<br>I'm Joi.</h1><p>A curious thought. A little warmth.<br>A conversation that's yours.</p></div>
+        <div class="portrait-bottom"><span class="status-dot"></span><span>right here, on your laptop</span><span>✦</span></div>
+      </aside>
+
+      <section class="chat-panel">
+        <header class="chat-header">
+          <div class="chat-identity"><img src="/assets/joi-portrait.png" alt=""><div><h2>Joi</h2><p id="connection-status">finding my little corner…</p></div></div>
+          <button class="new-chat" id="new-chat" aria-label="Start a new conversation"><span>＋</span><span>new conversation</span></button>
+        </header>
+
+        <div class="conversation" id="conversation" role="log" aria-label="Conversation" aria-live="polite">
+          <div class="welcome" id="welcome"><div class="welcome-photo"><img src="/assets/joi-portrait.png" alt="Joi"></div><span class="welcome-star">✧</span><span class="eyebrow">NO BIG OCCASION NEEDED</span><h2>Come as you are.</h2><p>A good day, a messy day, a completely ordinary day.<br>What's on your mind?</p><div class="star-line"><i></i><span>✦</span><i></i></div></div>
+          <div id="messages"></div>
+          <div class="thinking" id="thinking" hidden><img src="/assets/joi-portrait.png" alt=""><div><span></span><span></span><span></span></div><span class="sr-only">Joi is thinking</span></div>
+        </div>
+
+        <div class="composer-area">
+          <div class="suggestions" id="suggestions"><button data-prompt="Hey Joi, how are you?">just saying hello <span>↗</span></button><button data-prompt="I had a tiring day.">today was a lot <span>↗</span></button><button data-prompt="Can we talk about music?">a little music talk <span>↗</span></button></div>
+          <p class="error" id="error" role="alert" hidden></p>
+          <form id="chat-form" class="composer"><label class="sr-only" for="message">Your message to Joi</label><textarea id="message" placeholder="Tell me a little something…" rows="2" maxlength="240" required></textarea><button id="send" class="send" type="submit" aria-label="Send message"><span>↗</span></button></form>
+          <div class="composer-footer"><span>made here. runs here. <i>✧</i> just a personal little project.</span><span id="counter">0 / 240</span></div>
+        </div>
+      </section>
+    </section>
+    <footer class="page-footer"><span>A LITTLE WARMTH IN THE NEON.</span><span>joi / personal project</span></footer>
+  </main>
+
+  <dialog id="about"><button id="about-close" class="close-dialog" aria-label="Close note">×</button><span class="eyebrow">A NOTE FROM THIS LITTLE PROJECT</span><h2>Built here.<br>Learning still.</h2><p>Joi is a personal companion experiment, inspired by a little warmth in a neon world.</p><p>Her replies come from our own small neural network, trained locally from scratch. No outside chat service writes them. She's still learning dialogue, so her words can be a little wonky.</p><p>The last few turns are included when she replies. This browser saves your conversation on this device; “new conversation” clears it.</p><div class="model-note" id="model-note">Loading local model details…</div></dialog>
+</body>
+</html>

@@ -24,8 +24,8 @@ def initialize_from_checkpoint(path, config, tokenizer):
     requested = asdict(config)
     if source_tokenizer.chars != tokenizer.chars:
         raise ValueError("Initialization requires the same vocabulary")
-    if any(previous[key] != requested[key] for key in previous if key != "block_size"):
-        raise ValueError("Initialization can change context length, but not the other architecture settings")
+    if any(previous[key] != requested[key] for key in previous if key not in ("block_size", "attention_dropout")):
+        raise ValueError("Initialization can change context length and attention dropout, but not the parameter layout")
     if config.block_size < source.config.block_size:
         raise ValueError("Initialization cannot shrink the original context")
     model = Joi(config)
@@ -40,6 +40,7 @@ def initialize_from_checkpoint(path, config, tokenizer):
         "mode": "own-checkpoint", "source": str(path),
         "source_sha256": hashlib.sha256(raw).hexdigest(), "source_step": payload.get("step"),
         "source_model_config": previous,
+        "source_initialization": payload.get("initialization", {"mode":"random"}),
         "new_positions": config.block_size - source.config.block_size,
         "note": "Copied learned parameters; added position embeddings keep their random initialization. New optimizer and step counter.",
     }
@@ -144,7 +145,7 @@ def main():
             model, saved_tokenizer, checkpoint = load_checkpoint(args.resume)
             if hashes != checkpoint["data_hashes"] or tokenizer.chars != saved_tokenizer.chars:
                 raise ValueError("Resume requires the same dataset and vocabulary")
-            if asdict(config) != checkpoint["model_config"]:
+            if asdict(config) != asdict(ModelConfig(**checkpoint["model_config"])):
                 raise ValueError("Resume requires the original model config")
             if training_settings != checkpoint["training_settings"]:
                 raise ValueError("Resume requires the original batch size, learning rate, evaluation batches, threads and seed")

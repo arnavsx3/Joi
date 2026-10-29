@@ -47,7 +47,7 @@ class DialogueTests(unittest.TestCase):
         source = Joi(ModelConfig(vocab_size=3, block_size=8, n_embd=8,
                                  n_heads=2, n_layers=1, dropout=0.1))
         source.eval()
-        config = ModelConfig(**{**asdict(source.config), "block_size":16})
+        config = ModelConfig(**{**asdict(source.config), "block_size":16, "attention_dropout":0.0})
         with tempfile.TemporaryDirectory() as directory:
             path = Path(directory) / "source.pt"
             save_checkpoint(path, source, tokenizer, step=7)
