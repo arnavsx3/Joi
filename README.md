@@ -119,6 +119,7 @@ four-turn conversations that teach copying a supplied name into a later reply:
 uv run --offline python -m joi.prepare_persona
 uv run --offline python -m joi.train --data data/processed/persona --config configs/word-dialogue.json --init-from checkpoints/dialogue-words/best.pt --out checkpoints/companion --steps 1200 --batch-size 8 --learning-rate 0.0003 --eval-every 200 --eval-batches 4
 uv run --offline python -m joi.chat_evaluate --checkpoint checkpoints/companion/best.pt --data data/processed/persona --out runs/chat-companion.json
+uv run --offline python -m joi.recall_evaluate
 ```
 
 The 1,200 generated training names and 200 generated validation names are
@@ -128,6 +129,9 @@ examples still contain their original named characters, as the manifest notes.
 The model must learn recall from these examples; the runtime does not substitute
 stored names or template answers. Passing a few development checks would still
 not establish reliable memory in unrestricted conversation.
+`recall_evaluate` checks 20 generated validation names absent from training text,
+using the model's own earlier reply rather than supplying a correct greeting.
+It reports exact-name occurrence and retains every generated trial.
 
 Joi is an educational GPT-style transformer written in Python and PyTorch. It
 learns to predict the next character, starting from **random weights**, and runs

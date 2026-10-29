@@ -1,6 +1,7 @@
 import unittest
 
 from joi.prepare_persona import RESERVED_NAMES, make_names, recall_conversations
+from joi.recall_evaluate import recall_trial
 
 
 class PersonaCurriculumTests(unittest.TestCase):
@@ -20,6 +21,18 @@ class PersonaCurriculumTests(unittest.TestCase):
             self.assertTrue(lines[-1].startswith("Joi:"))
             self.assertIn(name,lines[1])
             self.assertIn(name,lines[-1])
+
+    def test_recall_probe_never_supplies_the_reference_assistant_turn(self):
+        class Engine:
+            seen=[]
+            def reply(self,history,**kwargs):
+                self.seen.append([dict(message) for message in history])
+                return {"reply":"Actual generated greeting." if len(history)==1 else "Your name is Bavodi."}
+        engine=Engine()
+        conversation=recall_conversations(["Bavodi"],21)[0]
+        trial=recall_trial(engine,conversation,1000)
+        self.assertTrue(trial["correct"])
+        self.assertEqual(engine.seen[1][1]["content"],"Actual generated greeting.")
 
 
 if __name__ == "__main__":
