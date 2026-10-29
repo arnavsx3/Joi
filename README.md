@@ -105,6 +105,9 @@ The vocabulary is fitted on training text only. Word-model loss is measured per
 learned token and **cannot be compared numerically with character-model loss**.
 Use actual conversation probes to judge the different replies. Checkpoint loading
 remains compatible with the earlier character models.
+Word-model chat also blocks repeated three-token patterns in newly generated
+text. Prompt patterns are not blocked, so this does not prevent copying a name
+from the conversation. This is a decoding constraint, not proof of coherence.
 
 Joi is an educational GPT-style transformer written in Python and PyTorch. It
 learns to predict the next character, starting from **random weights**, and runs

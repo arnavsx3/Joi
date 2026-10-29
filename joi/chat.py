@@ -33,6 +33,7 @@ class ChatEngine:
             torch.manual_seed(seed)
             output = self.model.generate(encoded, max_new_tokens=self.tokens,
                                          temperature=self.temperature, top_k=self.top_k,
+                                         no_repeat_ngram_size=3 if self.tokenizer.kind=="word" else 0,
                                          stop_sequences=[self.tokenizer.encode("\n")])
         reply = self.tokenizer.decode(output[0, encoded.shape[1]:].tolist()).strip()
         if not reply:

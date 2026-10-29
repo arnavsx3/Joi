@@ -107,17 +107,30 @@ class Joi(nn.Module):
         return logits, loss
 
     @torch.inference_mode()
-    def generate(self, tokens, max_new_tokens=300, temperature=0.8, top_k=20, stop_sequences=None):
+    def generate(self, tokens, max_new_tokens=300, temperature=0.8, top_k=20, stop_sequences=None,
+                 no_repeat_ngram_size=0):
         if max_new_tokens < 0 or not math.isfinite(temperature) or temperature <= 0 or top_k < 0:
             raise ValueError("Use nonnegative length/top_k and a finite, positive temperature")
         if stop_sequences and (tokens.shape[0] != 1 or any(not sequence for sequence in stop_sequences)):
             raise ValueError("Stop sequences require one prompt and nonempty sequences")
+        if no_repeat_ngram_size < 0 or (no_repeat_ngram_size and tokens.shape[0] != 1):
+            raise ValueError("Repeated-pattern blocking requires one prompt and a nonnegative size")
+        prompt_length = tokens.shape[1]
         was_training = self.training
         self.eval()
         try:
             for index in range(max_new_tokens):
                 logits, _ = self(tokens[:, -self.config.block_size:])
                 logits = logits[:, -1] / temperature
+                if no_repeat_ngram_size:
+                    generated = tokens[0,prompt_length:].tolist()
+                    size = no_repeat_ngram_size
+                    if len(generated) >= size - 1:
+                        prefix = generated[-(size-1):] if size>1 else []
+                        banned = {generated[start+size-1] for start in range(len(generated)-size+1)
+                                  if generated[start:start+size-1] == prefix}
+                        if banned:
+                            logits[:,list(banned)] = float("-inf")
                 if top_k:
                     cutoff = torch.topk(logits, min(top_k, logits.size(-1))).values[:, [-1]]
                     logits = logits.masked_fill(logits < cutoff, float("-inf"))

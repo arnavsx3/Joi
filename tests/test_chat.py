@@ -13,6 +13,21 @@ from joi.serve import handler_for
 
 
 class StopSequenceTests(unittest.TestCase):
+    def test_repetition_blocking_applies_only_to_generated_patterns(self):
+        model = Joi(ModelConfig(vocab_size=5,block_size=16,n_embd=8,n_heads=2,n_layers=1,dropout=0))
+        with torch.no_grad():
+            for parameter in model.parameters():
+                parameter.zero_()
+        def choose(probabilities, **kwargs):
+            token = next(index for index in (1,2,3,4,0) if probabilities[0,index] > 0)
+            return torch.tensor([[token]])
+        with patch("torch.multinomial",side_effect=choose):
+            result=model.generate(torch.tensor([[1,1]]),max_new_tokens=5,no_repeat_ngram_size=2)
+        generated=result[0,2:].tolist()
+        self.assertEqual(generated[:2],[1,1])  # Prompt patterns do not forbid copying a name.
+        pairs=list(zip(generated,generated[1:]))
+        self.assertEqual(len(pairs),len(set(pairs)))
+
     def test_generated_turn_marker_is_removed_without_generating_another_speaker(self):
         torch.set_num_threads(1)
         model = Joi(ModelConfig(vocab_size=5, block_size=8, n_embd=8,

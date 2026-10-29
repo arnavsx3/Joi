@@ -43,6 +43,7 @@ def evaluate_chat(checkpoint, data, probes, *, seed=123, tokens=128, batches=16)
         **({"character_perplexity":math.exp(losses["val_loss"])} if tokenizer.kind=="char" else {}),
         "protocol":{"seed":seed, "validation_batches":batches, "validation_batch_size":8,
                     "new_tokens_per_reply":tokens, "temperature":0.65, "top_k":15,
+                    "no_repeat_ngram_size":3 if tokenizer.kind=="word" else 0,
                     "stop":"first generated newline; turn marker is removed"},
         "note":"Development probes, not an independent test set. Each episode uses the model's actual earlier replies. Literal name/topic checks do not establish reliable memory, fluency or cheerfulness.",
         "episodes":episodes,
