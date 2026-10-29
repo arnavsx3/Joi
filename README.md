@@ -133,6 +133,22 @@ not establish reliable memory in unrestricted conversation.
 using the model's own earlier reply rather than supplying a correct greeting.
 It reports exact-name occurrence and retains every generated trial.
 
+For the focused correction experiment:
+
+```bash
+uv run --offline python -m joi.tune_recall
+uv run --offline python -m joi.recall_evaluate --checkpoint checkpoints/companion-recall/best.pt --out runs/recall-supervised.json
+```
+
+This starts again from the general word model. It trains only on assistant
+reply tokens, gives supplied-name tokens eight times the loss weight, and mixes
+75% recall batches with 25% warm-dialogue batches. The supplied reference greeting
+is neutral; generated greetings are used during the actual recall evaluation.
+Its weighted validation loss is a different objective from whole-corpus language
+model loss. Selection still requires reviewing generated replies and unseen-name
+results. The short tuning command saves checkpoints but does not implement resume;
+use a fresh output directory to repeat it.
+
 Joi is an educational GPT-style transformer written in Python and PyTorch. It
 learns to predict the next character, starting from **random weights**, and runs
 locally on a CPU. The first version is a small text generator; fluent dialogue
