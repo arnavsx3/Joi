@@ -37,9 +37,12 @@ def evaluate_chat(checkpoint, data, probes, *, seed=123, tokens=128, batches=16)
         "checkpoint":str(checkpoint), "checkpoint_sha256":engine.checkpoint_sha256,
         "phase_step":engine.checkpoint["step"], "model_config":asdict(engine.model.config),
         "initialization":engine.checkpoint.get("initialization"), "dataset_hashes":hashes,
-        "validation_loss_nats":losses["val_loss"], "character_perplexity":math.exp(losses["val_loss"]),
+        "tokenizer_type":tokenizer.kind,
+        "loss_unit":"nats per character" if tokenizer.kind=="char" else "nats per learned token",
+        "validation_loss_nats":losses["val_loss"], "token_perplexity":math.exp(losses["val_loss"]),
+        **({"character_perplexity":math.exp(losses["val_loss"])} if tokenizer.kind=="char" else {}),
         "protocol":{"seed":seed, "validation_batches":batches, "validation_batch_size":8,
-                    "new_characters_per_reply":tokens, "temperature":0.65, "top_k":15,
+                    "new_tokens_per_reply":tokens, "temperature":0.65, "top_k":15,
                     "stop":"first generated newline; turn marker is removed"},
         "note":"Development probes, not an independent test set. Each episode uses the model's actual earlier replies. Literal name/topic checks do not establish reliable memory, fluency or cheerfulness.",
         "episodes":episodes,
@@ -65,7 +68,7 @@ def main():
         parser.error(str(exc))
     args.out.parent.mkdir(parents=True, exist_ok=True)
     args.out.write_text(json.dumps(report, indent=2) + "\n")
-    print(f"Validation loss: {report['validation_loss_nats']:.4f} nats/character")
+    print(f"Validation loss: {report['validation_loss_nats']:.4f} {report['loss_unit']}")
     for episode in report["episodes"]:
         print(f"{episode['id']}: literal recall = {episode['literal_recall_check']}")
         for result in episode["results"]:

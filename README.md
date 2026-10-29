@@ -82,6 +82,30 @@ use the model's own earlier replies. Simple literal name/topic checks are
 reported separately; they are not a general fluency or memory benchmark. These
 development probes are not the untouched official test split.
 
+### Learned word vocabulary experiment
+
+The word experiment trains a **new model from random weights**, with a
+2,048-piece vocabulary learned only from its own training text. Common words
+are single units; unfamiliar words fall back to ASCII characters, so text still
+roundtrips exactly. This is an original simple word/character tokenizer, not a
+downloaded tokenizer or pretrained model.
+
+```bash
+uv run python -m joi.prepare_dialogue --output data/processed/dialogue-wide --train-dialogues 8000 --persona-repeats 30
+uv run --offline python -m joi.prepare_words
+uv run --offline python -m joi.train --data data/processed/dialogue-words --config configs/word-dialogue.json --out checkpoints/dialogue-words --steps 4000 --batch-size 8 --learning-rate 0.001 --eval-every 250 --eval-batches 4
+uv run --offline python -m joi.serve --checkpoint checkpoints/dialogue-words/best.pt
+uv run --offline python -m joi.chat_evaluate --checkpoint checkpoints/dialogue-words/best.pt --data data/processed/dialogue-words --out runs/chat-words.json
+```
+
+It uses 691,712 parameters, 256 tokens of context, 8,088 unique training
+conversations, and 279 validation conversations after deduplication. Persona
+examples are repeated for style weight and counted separately in the manifest.
+The vocabulary is fitted on training text only. Word-model loss is measured per
+learned token and **cannot be compared numerically with character-model loss**.
+Use actual conversation probes to judge the different replies. Checkpoint loading
+remains compatible with the earlier character models.
+
 Joi is an educational GPT-style transformer written in Python and PyTorch. It
 learns to predict the next character, starting from **random weights**, and runs
 locally on a CPU. The first version is a small text generator; fluent dialogue

@@ -11,6 +11,7 @@ def clean_turn(text):
     if not isinstance(text, str):
         raise ValueError("Message content must be text")
     text = " ".join(normalize(text).split())
+    text = "".join(character for character in text if 32 <= ord(character) <= 126)
     text = re.sub(r"\b(\w+)\s*'\s*(s|t|re|ve|ll|d|m)\b", r"\1'\2", text, flags=re.I)
     text = re.sub(r"\s+([,.!?;:%])", r"\1", text)
     return re.sub(r"([.!?])(?=[A-Za-z])", r"\1 ", text)
@@ -29,7 +30,7 @@ def format_conversation(messages):
     return "".join(lines)
 
 
-def build_prompt(messages, block_size):
+def build_prompt(messages, block_size, tokenizer=None):
     if not messages or messages[-1].get("role") != "user":
         raise ValueError("A conversation must end with your message")
     cleaned = []
@@ -42,9 +43,10 @@ def build_prompt(messages, block_size):
             raise ValueError("Please enter a message with readable text")
         cleaned.append({"role": role, "content": content})
     suffix = "Joi: "
+    size = (lambda text:len(tokenizer.encode(text))) if tokenizer else len
     # Leave some room for a reply before the sliding context loses old turns.
     budget = block_size - min(64, block_size // 4)
-    if len(format_conversation(cleaned[-1:]) + suffix) > budget:
+    if size(format_conversation(cleaned[-1:]) + suffix) > budget:
         raise ValueError(f"That message is a little long; try under {max(1, budget - len(PERSONA) - 14)} characters")
     start = len(cleaned) - 1
     while start > 0:
@@ -52,7 +54,7 @@ def build_prompt(messages, block_size):
         # Prefer dropping/including complete user-assistant pairs.
         if cleaned[candidate]["role"] == "assistant" and candidate > 0:
             candidate -= 1
-        if len(format_conversation(cleaned[candidate:]) + suffix) > budget:
+        if size(format_conversation(cleaned[candidate:]) + suffix) > budget:
             break
         start = candidate
     return format_conversation(cleaned[start:]) + suffix, len(cleaned) - start

@@ -14,7 +14,7 @@ import torch
 
 from joi.checkpoint import load_checkpoint, save_checkpoint
 from joi.model import Joi, ModelConfig
-from joi.tokenizer import CharTokenizer
+from joi.tokenizer import tokenizer_from_state
 
 
 def initialize_from_checkpoint(path, config, tokenizer):
@@ -76,7 +76,7 @@ def evaluate(model, splits, batch_size, batches, seed):
 
 
 def load_data(directory):
-    tokenizer = CharTokenizer(json.loads((directory / "tokenizer.json").read_text()))
+    tokenizer = tokenizer_from_state(json.loads((directory / "tokenizer.json").read_text()))
     manifest = json.loads((directory / "manifest.json").read_text())
     splits = {}
     hashes = {}
@@ -176,7 +176,7 @@ def main():
     args.out.mkdir(parents=True, exist_ok=True)
     parameter_count = sum(p.numel() for p in model.parameters())
     print(f"Joi: {parameter_count:,} parameters | CPU | {args.threads} threads | context {config.block_size}", flush=True)
-    print(f"Data: {len(splits['train']):,} training / {len(splits['val']):,} validation characters", flush=True)
+    print(f"Data: {len(splits['train']):,} training / {len(splits['val']):,} validation {tokenizer.kind} tokens", flush=True)
     print("Resuming learned weights." if args.resume else
           f"Initializing from our own checkpoint: {args.init_from}" if args.init_from else
           "Starting from randomly initialized weights.", flush=True)

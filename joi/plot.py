@@ -12,6 +12,7 @@ def main():
     parser.add_argument("--title", default="Joi · learning from random weights")
     parser.add_argument("--reference-step", type=int, help="Mark a previous experiment's final step")
     parser.add_argument("--min-step", type=int, default=0, help="Zoom in on later training updates")
+    parser.add_argument("--unit",choices=("character","token"),default="character")
     args = parser.parse_args()
     try:
         import matplotlib
@@ -37,7 +38,7 @@ def main():
                          label=f"Reference at {args.reference_step:,} updates")
         axis.set_title(args.title, loc="left", fontsize=15, pad=14)
         axis.set_xlabel("Training updates")
-        axis.set_ylabel("Next-character loss (nats; lower is better)")
+        axis.set_ylabel(f"Next-{args.unit} loss (nats; lower is better)")
         axis.grid(alpha=0.18)
         axis.spines[["top", "right"]].set_visible(False)
         axis.legend(frameon=False, loc="upper right", bbox_to_anchor=(0.99, 0.84))

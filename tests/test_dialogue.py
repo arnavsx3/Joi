@@ -39,6 +39,7 @@ class DialogueTests(unittest.TestCase):
     def test_dialogue_normalization_removes_spurious_punctuation_spacing(self):
         self.assertEqual(clean_turn("I ' m here . Let ' s talk !"), "I'm here. Let's talk!")
         self.assertEqual(clean_turn("Hey\nthere!"), "Hey there!")
+        self.assertEqual(clean_turn("hello\x7f there"), "hello there")
         self.assertIn("Joi: Hi!\n", format_conversation([{"role":"assistant", "content":"Hi !"}]))
 
     def test_context_expansion_preserves_learned_weights_and_original_predictions(self):

@@ -26,7 +26,7 @@ class ChatEngine:
         self.lock = threading.Lock()
 
     def reply(self, messages, *, seed=42):
-        prompt, included = build_prompt(messages, self.model.config.block_size)
+        prompt, included = build_prompt(messages, self.model.config.block_size, self.tokenizer)
         encoded = torch.tensor([self.tokenizer.encode(prompt)], dtype=torch.long)
         started = time.monotonic()
         with self.lock:
@@ -44,6 +44,7 @@ class ChatEngine:
         return {"name":"Joi", "step":self.checkpoint.get("step"),
                 "context_size":self.model.config.block_size,
                 "parameters":sum(parameter.numel() for parameter in self.model.parameters()),
+                "tokenizer":self.tokenizer.kind,
                 "mode":"our-own-dialogue-model", "training_format":"joi-dialogue-v1"}
 
 

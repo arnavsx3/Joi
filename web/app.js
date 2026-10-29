@@ -81,6 +81,6 @@ fetch('/api/status').then((response) => {
   return response.json();
 }).then((status) => {
   $('connection-status').textContent = 'local companion · still learning';
-  $('model-note').textContent = `Our own dialogue model · ${status.parameters.toLocaleString()} learned parameters · training step ${status.step.toLocaleString()} · ${status.context_size} characters of context.`;
+  $('model-note').textContent = `Our own dialogue model · ${status.parameters.toLocaleString()} learned parameters · training step ${status.step.toLocaleString()} · ${status.context_size} ${status.tokenizer === 'word' ? 'tokens' : 'characters'} of context.`;
 }).catch(() => { $('connection-status').textContent = 'waiting for the local model'; $('model-note').textContent = 'The local model is not connected yet.'; });
 render();

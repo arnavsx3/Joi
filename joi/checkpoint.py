@@ -6,7 +6,7 @@ from pathlib import Path
 import torch
 
 from joi.model import Joi, ModelConfig
-from joi.tokenizer import CharTokenizer
+from joi.tokenizer import tokenizer_from_state
 
 
 def save_checkpoint(path, model, tokenizer, **state):
@@ -17,6 +17,7 @@ def save_checkpoint(path, model, tokenizer, **state):
         "model_config": asdict(model.config),
         "model_state": model.state_dict(),
         "tokenizer_chars": tokenizer.chars,
+        "tokenizer_type": tokenizer.kind,
         **state,
     }
     temporary = path.with_suffix(path.suffix + ".tmp")
@@ -28,7 +29,7 @@ def load_checkpoint(path):
     payload = torch.load(path, map_location="cpu", weights_only=True)
     if payload.get("format_version") != 1:
         raise ValueError("Unsupported checkpoint version")
-    tokenizer = CharTokenizer(payload["tokenizer_chars"])
+    tokenizer = tokenizer_from_state(payload["tokenizer_chars"], payload.get("tokenizer_type"))
     config = ModelConfig(**payload["model_config"])
     if config.vocab_size != len(tokenizer.chars):
         raise ValueError("Checkpoint vocabulary does not match model")
