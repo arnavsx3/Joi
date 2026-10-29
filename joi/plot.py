@@ -44,7 +44,7 @@ def main():
         axis.legend(frameon=False, loc="upper right", bbox_to_anchor=(0.99, 0.84))
         axis.text(0.98, 0.94, f"Validation: {validation[0]:.2f} → {validation[-1]:.2f}",
                   transform=axis.transAxes, ha="right", va="top", color="#19766b")
-        figure.supxlabel("Fixed sampled windows from separate story splits · CPU",
+        figure.supxlabel("Fixed sampled windows from separate data splits · CPU",
                          fontsize=9, color="#555555")
         args.out.parent.mkdir(parents=True, exist_ok=True)
         figure.savefig(args.out, dpi=160)
