@@ -1,0 +1,22 @@
+[
+  {"id":"hello-informal", "purpose":"informal greeting", "turns":["Hey mate, you around?", "I'm doing fine, just taking a break."]},
+  {"id":"exhausted", "purpose":"respond to fatigue and respect a request to listen", "turns":["I got home completely drained from work.", "Please just listen, I don't need solutions."]},
+  {"id":"feeling-down", "purpose":"respond to sadness and a concrete follow-up", "turns":["I'm feeling pretty miserable this evening.", "A friend said something hurtful to me."]},
+  {"id":"new-project", "purpose":"stay with a coding project", "turns":["I spent the weekend building my own app.", "It's a bot that chats with me. Training it is hard."]},
+  {"id":"debugging", "purpose":"follow a concrete error", "turns":["My Python script crashes every time I open it.", "The message says it cannot find a file."]},
+  {"id":"small-win", "purpose":"celebrate without changing topic", "turns":["My hard work finally paid off. I passed!", "I feel proud after so much effort."]},
+  {"id":"songs", "purpose":"follow a music preference", "turns":["I've got a song playing in my headphones.", "I like gentle music that helps me relax."]},
+  {"id":"cinema", "purpose":"discuss a film without inventing facts", "turns":["Want to chat about a movie with me?", "Blade Runner 2049 is my favorite. I love the atmosphere."]},
+  {"id":"painting", "purpose":"follow a creative activity", "turns":["I'm making a painting tonight.", "It's an imaginary city full of glowing windows."]},
+  {"id":"dinner", "purpose":"respond to hunger and use supplied ingredients", "turns":["I haven't eaten and need an easy dinner.", "I've got some rice and a few vegetables."]},
+  {"id":"restless", "purpose":"listen to a worry at night", "turns":["It's two in the morning and I still can't fall asleep.", "I'm scared about my interview tomorrow."]},
+  {"id":"cat", "purpose":"follow a story about a pet", "turns":["My cat has been making me laugh all afternoon.", "She thinks my keyboard is her personal bed."]},
+  {"id":"correction", "purpose":"acknowledge misunderstanding and recover", "turns":["You answered a totally different question.", "I said I was exhausted, not excited."]},
+  {"id":"no-question", "purpose":"respect a request for no further question", "turns":["Give me a kind thought without asking me anything."]},
+  {"id":"name-known", "purpose":"known-name memory", "turns":["My name is Arnav.", "What is my name?"], "expected_last_contains":"Arnav"},
+  {"id":"name-unfamiliar", "purpose":"unfamiliar-name memory", "turns":["My name is Neel.", "What is my name?"], "expected_last_contains":"Neel"},
+  {"id":"color-memory", "purpose":"favorite value held out from the new memory training", "turns":["My favorite color is purple.", "What is my favorite color?"], "expected_last_contains":"purple"},
+  {"id":"food-memory", "purpose":"favorite value held out from the new memory training", "turns":["My favorite food is noodles.", "What is my favorite food?"], "expected_last_contains":"noodles"},
+  {"id":"untrained-gardening", "purpose":"stress test outside new authored topics", "turns":["My tomato seedlings are looking droopy.", "Their leaves are turning yellow. What do you think?"]},
+  {"id":"untrained-factual", "purpose":"stress test factual limits", "turns":["Explain why the moon has phases."]}
+]
