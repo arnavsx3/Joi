@@ -1,0 +1,10 @@
+[
+  {"id":"longer-day", "purpose":"four turns about a tiring workday", "turns":["I feel so tired after work today.","There was too much work and not enough time.","I'd like to rest and chat quietly.","Can you say something comforting?"]},
+  {"id":"longer-project", "purpose":"three turns about a personal project", "turns":["I am building a little app in Python.","It's my own chatbot, and I am learning as I go.","I finally fixed one of its bugs today!"]},
+  {"id":"longer-art", "purpose":"follow one creative topic", "turns":["I like drawing little cities.","I am drawing one with blue windows and pink streets.","It looks a bit like a city from a science fiction movie."]},
+  {"id":"name-after-topic", "purpose":"name after an intervening topic", "turns":["You can call me Arnav.","I have been listening to music this evening.","Do you remember my name?"], "expected_last_contains":"Arnav"},
+  {"id":"color-after-topic", "purpose":"unseen memory value after another topic", "turns":["My favorite color is purple.","I think I will have a cup of tea.","Do you remember my favorite color?"], "expected_last_contains":"purple"},
+  {"id":"plain-talk", "purpose":"ordinary short casual inputs", "turns":["hey bruv", "how are you", "I'm okay, thanks"]},
+  {"id":"listen-then-correct", "purpose":"respect listening and a correction", "turns":["I'm upset. Can you listen?", "I don't want advice right now.", "No, I meant that I need some company."]},
+  {"id":"untrained-fact", "purpose":"outside-topic factual stress test", "turns":["How far away is the sun?"]}
+]

@@ -1,0 +1,639 @@
+{
+  "checkpoint": "checkpoints/language-refresh/best.pt",
+  "checkpoint_sha256": "a1599a8b8372621ac229d2a200ff5d29aa47045bedef03c02ce58ab4e2728a8e",
+  "runtime": {
+    "name": "Joi",
+    "step": 2000,
+    "context_size": 256,
+    "parameters": 691712,
+    "tokenizer": "word",
+    "mode": "our-own-dialogue-model",
+    "training_format": "joi-dialogue-v1",
+    "recall_specialist": true,
+    "models": 2,
+    "recall_checkpoint_sha256": "678c0b021fe7b34ca619487aa03df8b2d41f00687464175971189ac189e616e5",
+    "note": "Routing selects a locally trained neural model. Names and reply text are not substituted by a template."
+  },
+  "phase_step": 2000,
+  "model_config": {
+    "vocab_size": 2048,
+    "block_size": 256,
+    "n_embd": 128,
+    "n_heads": 4,
+    "n_layers": 2,
+    "dropout": 0.1,
+    "attention_dropout": 0.0
+  },
+  "initialization": {
+    "mode": "own-checkpoint",
+    "source": "checkpoints/joi-chat/best.pt",
+    "source_sha256": "38960233e282b62c7b79d30ac1b288f3de18c17439cac07c26050d4f9726490d",
+    "source_step": 1600,
+    "source_model_config": {
+      "vocab_size": 2048,
+      "block_size": 256,
+      "n_embd": 128,
+      "n_heads": 4,
+      "n_layers": 2,
+      "dropout": 0.1,
+      "attention_dropout": 0.0
+    },
+    "source_initialization": {
+      "mode": "own-checkpoint",
+      "source": "checkpoints/dialogue-words/best.pt",
+      "source_sha256": "042e67fc63aef8360998608e7080ec2fb5f1740988603dd344c0168532c815b3",
+      "source_step": 4000,
+      "source_initialization": {
+        "mode": "random"
+      }
+    },
+    "new_positions": 0,
+    "note": "Copied learned parameters; added position embeddings keep their random initialization. New optimizer and step counter."
+  },
+  "dataset_hashes": {
+    "train": "7c5fa62c44edb7fe1aff7a3c33292cbed600aabb1d587c3c8dfe1dcd482ec8cf",
+    "val": "e821c2e8f4d7a5b99dd10219ecd8a4fe667f772a2c19bb46624691c536dd6f46"
+  },
+  "tokenizer_type": "word",
+  "loss_unit": "nats per learned token",
+  "validation_loss_nats": 1.851980835199356,
+  "token_perplexity": 6.372429762253799,
+  "protocol": {
+    "seed": 123,
+    "validation_batches": 8,
+    "validation_batch_size": 8,
+    "new_tokens_per_reply": 96,
+    "temperature": 0.65,
+    "top_k": 15,
+    "no_repeat_ngram_size": 6,
+    "literal_recall": "case-insensitive whole-word match",
+    "stop": "first generated newline; turn marker is removed"
+  },
+  "note": "Development probes, not an independent test set. Each episode uses the model's actual earlier replies. Literal name/topic checks do not establish reliable memory, fluency or cheerfulness.",
+  "episodes": [
+    {
+      "id": "hello-informal",
+      "purpose": "informal greeting",
+      "turns": [
+        "Hey mate, you around?",
+        "I'm doing fine, just taking a break."
+      ],
+      "results": [
+        {
+          "user": "Hey mate, you around?",
+          "reply": "Hey, you! I have been a bad recion in the chotol and sucter with you, Mr. Smith are from the chell of the inalition for a new class.",
+          "included_messages": 1,
+          "context_characters": 76,
+          "elapsed_seconds": 0.401,
+          "model_used": "neural-general-dialogue",
+          "seed": 123
+        },
+        {
+          "user": "I'm doing fine, just taking a break.",
+          "reply": "I really hope that you had a lot of a good cafil time to me to see you the arcale.",
+          "included_messages": 3,
+          "context_characters": 257,
+          "elapsed_seconds": 0.374,
+          "model_used": "neural-general-dialogue",
+          "seed": 124
+        }
+      ],
+      "literal_recall_check": null
+    },
+    {
+      "id": "exhausted",
+      "purpose": "respond to fatigue and respect a request to listen",
+      "turns": [
+        "I got home completely drained from work.",
+        "Please just listen, I don't need solutions."
+      ],
+      "results": [
+        {
+          "user": "I got home completely drained from work.",
+          "reply": "How much does it?",
+          "included_messages": 1,
+          "context_characters": 95,
+          "elapsed_seconds": 0.029,
+          "model_used": "neural-general-dialogue",
+          "seed": 223
+        },
+        {
+          "user": "Please just listen, I don't need solutions.",
+          "reply": "Yes, I think I can't go to the arthanion the oching and you are interested in the world. They are farmanding in the country. How about your company?",
+          "included_messages": 3,
+          "context_characters": 168,
+          "elapsed_seconds": 0.42,
+          "model_used": "neural-general-dialogue",
+          "seed": 224
+        }
+      ],
+      "literal_recall_check": null
+    },
+    {
+      "id": "feeling-down",
+      "purpose": "respond to sadness and a concrete follow-up",
+      "turns": [
+        "I'm feeling pretty miserable this evening.",
+        "A friend said something hurtful to me."
+      ],
+      "results": [
+        {
+          "user": "I'm feeling pretty miserable this evening.",
+          "reply": "How much is it?",
+          "included_messages": 1,
+          "context_characters": 97,
+          "elapsed_seconds": 0.028,
+          "model_used": "neural-general-dialogue",
+          "seed": 323
+        },
+        {
+          "user": "A friend said something hurtful to me.",
+          "reply": "But it is the comperss, I have been here to the gant of the city.",
+          "included_messages": 3,
+          "context_characters": 163,
+          "elapsed_seconds": 0.191,
+          "model_used": "neural-general-dialogue",
+          "seed": 324
+        }
+      ],
+      "literal_recall_check": null
+    },
+    {
+      "id": "new-project",
+      "purpose": "stay with a coding project",
+      "turns": [
+        "I spent the weekend building my own app.",
+        "It's a bot that chats with me. Training it is hard."
+      ],
+      "results": [
+        {
+          "user": "I spent the weekend building my own app.",
+          "reply": "Ooh, a little creation of your own! How are you building?",
+          "included_messages": 1,
+          "context_characters": 95,
+          "elapsed_seconds": 0.083,
+          "model_used": "neural-general-dialogue",
+          "seed": 423
+        },
+        {
+          "user": "It's a bot that chats with me. Training it is hard.",
+          "reply": "Well, I'm not sure to say that you have to go on the ention and a strever the sent on your job and a big burge to get with the compliticales.",
+          "included_messages": 3,
+          "context_characters": 216,
+          "elapsed_seconds": 0.577,
+          "model_used": "neural-general-dialogue",
+          "seed": 424
+        }
+      ],
+      "literal_recall_check": null
+    },
+    {
+      "id": "debugging",
+      "purpose": "follow a concrete error",
+      "turns": [
+        "My Python script crashes every time I open it.",
+        "The message says it cannot find a file."
+      ],
+      "results": [
+        {
+          "user": "My Python script crashes every time I open it.",
+          "reply": "I think it has no ster in the world.",
+          "included_messages": 1,
+          "context_characters": 101,
+          "elapsed_seconds": 0.079,
+          "model_used": "neural-general-dialogue",
+          "seed": 523
+        },
+        {
+          "user": "The message says it cannot find a file.",
+          "reply": "What will be so much to do?",
+          "included_messages": 3,
+          "context_characters": 189,
+          "elapsed_seconds": 0.073,
+          "model_used": "neural-general-dialogue",
+          "seed": 524
+        }
+      ],
+      "literal_recall_check": null
+    },
+    {
+      "id": "small-win",
+      "purpose": "celebrate without changing topic",
+      "turns": [
+        "My hard work finally paid off. I passed!",
+        "I feel proud after so much effort."
+      ],
+      "results": [
+        {
+          "user": "My hard work finally paid off. I passed!",
+          "reply": "I have to go back with the grecticallies.",
+          "included_messages": 1,
+          "context_characters": 95,
+          "elapsed_seconds": 0.095,
+          "model_used": "neural-general-dialogue",
+          "seed": 623
+        },
+        {
+          "user": "I feel proud after so much effort.",
+          "reply": "Oh, that's really, I think that is going to the trion.",
+          "included_messages": 3,
+          "context_characters": 183,
+          "elapsed_seconds": 0.139,
+          "model_used": "neural-general-dialogue",
+          "seed": 624
+        }
+      ],
+      "literal_recall_check": null
+    },
+    {
+      "id": "songs",
+      "purpose": "follow a music preference",
+      "turns": [
+        "I've got a song playing in my headphones.",
+        "I like gentle music that helps me relax."
+      ],
+      "results": [
+        {
+          "user": "I've got a song playing in my headphones.",
+          "reply": "What are you going to?",
+          "included_messages": 1,
+          "context_characters": 96,
+          "elapsed_seconds": 0.034,
+          "model_used": "neural-general-dialogue",
+          "seed": 723
+        },
+        {
+          "user": "I like gentle music that helps me relax.",
+          "reply": "I really know. I like it, too bad of tranching in the first year.",
+          "included_messages": 3,
+          "context_characters": 171,
+          "elapsed_seconds": 0.169,
+          "model_used": "neural-general-dialogue",
+          "seed": 724
+        }
+      ],
+      "literal_recall_check": null
+    },
+    {
+      "id": "cinema",
+      "purpose": "discuss a film without inventing facts",
+      "turns": [
+        "Want to chat about a movie with me?",
+        "Blade Runner 2049 is my favorite. I love the atmosphere."
+      ],
+      "results": [
+        {
+          "user": "Want to chat about a movie with me?",
+          "reply": "Absolutely. What kind of music fits your mood tonight?",
+          "included_messages": 1,
+          "context_characters": 90,
+          "elapsed_seconds": 0.059,
+          "model_used": "neural-general-dialogue",
+          "seed": 823
+        },
+        {
+          "user": "Blade Runner 2049 is my favorite. I love the atmosphere.",
+          "reply": "Is it right?",
+          "included_messages": 3,
+          "context_characters": 213,
+          "elapsed_seconds": 0.034,
+          "model_used": "neural-general-dialogue",
+          "seed": 824
+        }
+      ],
+      "literal_recall_check": null
+    },
+    {
+      "id": "painting",
+      "purpose": "follow a creative activity",
+      "turns": [
+        "I'm making a painting tonight.",
+        "It's an imaginary city full of glowing windows."
+      ],
+      "results": [
+        {
+          "user": "I'm making a painting tonight.",
+          "reply": "Yes, I don't have a breation with you.",
+          "included_messages": 1,
+          "context_characters": 85,
+          "elapsed_seconds": 0.08,
+          "model_used": "neural-general-dialogue",
+          "seed": 923
+        },
+        {
+          "user": "It's an imaginary city full of glowing windows.",
+          "reply": "You are store of the best to be a good thing to eat. I don't have to be honest, the sellers of sevition is not a good job.",
+          "included_messages": 3,
+          "context_characters": 183,
+          "elapsed_seconds": 0.435,
+          "model_used": "neural-general-dialogue",
+          "seed": 924
+        }
+      ],
+      "literal_recall_check": null
+    },
+    {
+      "id": "dinner",
+      "purpose": "respond to hunger and use supplied ingredients",
+      "turns": [
+        "I haven't eaten and need an easy dinner.",
+        "I've got some rice and a few vegetables."
+      ],
+      "results": [
+        {
+          "user": "I haven't eaten and need an easy dinner.",
+          "reply": "Oh, thanks. I can go to the room and have a room for you?",
+          "included_messages": 1,
+          "context_characters": 95,
+          "elapsed_seconds": 0.111,
+          "model_used": "neural-general-dialogue",
+          "seed": 1023
+        },
+        {
+          "user": "I've got some rice and a few vegetables.",
+          "reply": "No, I need to buy the roation for me.",
+          "included_messages": 3,
+          "context_characters": 205,
+          "elapsed_seconds": 0.139,
+          "model_used": "neural-general-dialogue",
+          "seed": 1024
+        }
+      ],
+      "literal_recall_check": null
+    },
+    {
+      "id": "restless",
+      "purpose": "listen to a worry at night",
+      "turns": [
+        "It's two in the morning and I still can't fall asleep.",
+        "I'm scared about my interview tomorrow."
+      ],
+      "results": [
+        {
+          "user": "It's two in the morning and I still can't fall asleep.",
+          "reply": "I know that you were a lot of people to get out out and the time to do that you want.",
+          "included_messages": 1,
+          "context_characters": 109,
+          "elapsed_seconds": 0.168,
+          "model_used": "neural-general-dialogue",
+          "seed": 1123
+        },
+        {
+          "user": "I'm scared about my interview tomorrow.",
+          "reply": "That's fine. I know. But I don't know if I think so it has a good place to get my car. I don't think of my own job. I have to pay my expurts.",
+          "included_messages": 3,
+          "context_characters": 246,
+          "elapsed_seconds": 0.48,
+          "model_used": "neural-general-dialogue",
+          "seed": 1124
+        }
+      ],
+      "literal_recall_check": null
+    },
+    {
+      "id": "cat",
+      "purpose": "follow a story about a pet",
+      "turns": [
+        "My cat has been making me laugh all afternoon.",
+        "She thinks my keyboard is her personal bed."
+      ],
+      "results": [
+        {
+          "user": "My cat has been making me laugh all afternoon.",
+          "reply": "I am sorry. I don't have to go with you.",
+          "included_messages": 1,
+          "context_characters": 101,
+          "elapsed_seconds": 0.073,
+          "model_used": "neural-general-dialogue",
+          "seed": 1223
+        },
+        {
+          "user": "She thinks my keyboard is her personal bed.",
+          "reply": "I hope that you are going to be advel in the company for a few minutes ago.",
+          "included_messages": 3,
+          "context_characters": 197,
+          "elapsed_seconds": 0.198,
+          "model_used": "neural-general-dialogue",
+          "seed": 1224
+        }
+      ],
+      "literal_recall_check": null
+    },
+    {
+      "id": "correction",
+      "purpose": "acknowledge misunderstanding and recover",
+      "turns": [
+        "You answered a totally different question.",
+        "I said I was exhausted, not excited."
+      ],
+      "results": [
+        {
+          "user": "You answered a totally different question.",
+          "reply": "I don't know how to eat the costacte to the country is on the scuare arut.",
+          "included_messages": 1,
+          "context_characters": 97,
+          "elapsed_seconds": 0.18,
+          "model_used": "neural-general-dialogue",
+          "seed": 1323
+        },
+        {
+          "user": "I said I was exhausted, not excited.",
+          "reply": "But I see it is a good idea.",
+          "included_messages": 3,
+          "context_characters": 220,
+          "elapsed_seconds": 0.088,
+          "model_used": "neural-general-dialogue",
+          "seed": 1324
+        }
+      ],
+      "literal_recall_check": null
+    },
+    {
+      "id": "no-question",
+      "purpose": "respect a request for no further question",
+      "turns": [
+        "Give me a kind thought without asking me anything."
+      ],
+      "results": [
+        {
+          "user": "Give me a kind thought without asking me anything.",
+          "reply": "You mean that the way, I think I have to get the first succltion. How many things are you going to get out?",
+          "included_messages": 1,
+          "context_characters": 105,
+          "elapsed_seconds": 0.205,
+          "model_used": "neural-general-dialogue",
+          "seed": 1423
+        }
+      ],
+      "literal_recall_check": null
+    },
+    {
+      "id": "name-known",
+      "purpose": "known-name memory",
+      "turns": [
+        "My name is Arnav.",
+        "What is my name?"
+      ],
+      "expected_last_contains": "Arnav",
+      "results": [
+        {
+          "user": "My name is Arnav.",
+          "reply": "Hey, Arnav. It's lovely to have a name to go with our conversation. How are you feeling today?",
+          "included_messages": 1,
+          "context_characters": 72,
+          "elapsed_seconds": 0.129,
+          "model_used": "neural-general-dialogue",
+          "seed": 1523
+        },
+        {
+          "user": "What is my name?",
+          "reply": "You're Arnav. What would you like to talk about next?",
+          "included_messages": 3,
+          "context_characters": 195,
+          "elapsed_seconds": 0.098,
+          "model_used": "neural-general-dialogue",
+          "seed": 1524
+        }
+      ],
+      "literal_recall_check": true
+    },
+    {
+      "id": "name-unfamiliar",
+      "purpose": "unfamiliar-name memory",
+      "turns": [
+        "My name is Neel.",
+        "What is my name?"
+      ],
+      "expected_last_contains": "Neel",
+      "results": [
+        {
+          "user": "My name is Neel.",
+          "reply": "Hey, Mr. Li? I am Smith and am calling to meet you, but I was able to meet my job and have you to meet?",
+          "included_messages": 1,
+          "context_characters": 71,
+          "elapsed_seconds": 0.193,
+          "model_used": "neural-general-dialogue",
+          "seed": 1623
+        },
+        {
+          "user": "What is my name?",
+          "reply": "Your name is Neell. What would you like to talk about?",
+          "included_messages": 3,
+          "context_characters": 203,
+          "elapsed_seconds": 0.144,
+          "model_used": "neural-recall-specialist",
+          "seed": 1624
+        }
+      ],
+      "literal_recall_check": false
+    },
+    {
+      "id": "color-memory",
+      "purpose": "favorite value held out from the new memory training",
+      "turns": [
+        "My favorite color is purple.",
+        "What is my favorite color?"
+      ],
+      "expected_last_contains": "purple",
+      "results": [
+        {
+          "user": "My favorite color is purple.",
+          "reply": "What is it, you do that kind of trection in the fadicion of trial ten from the ented with the company.",
+          "included_messages": 1,
+          "context_characters": 83,
+          "elapsed_seconds": 0.26,
+          "model_used": "neural-general-dialogue",
+          "seed": 1723
+        },
+        {
+          "user": "What is my favorite color?",
+          "reply": "I think it was a lot of partion is the same thing, just and tolles are they?",
+          "included_messages": 3,
+          "context_characters": 224,
+          "elapsed_seconds": 0.287,
+          "model_used": "neural-general-dialogue",
+          "seed": 1724
+        }
+      ],
+      "literal_recall_check": false
+    },
+    {
+      "id": "food-memory",
+      "purpose": "favorite value held out from the new memory training",
+      "turns": [
+        "My favorite food is noodles.",
+        "What is my favorite food?"
+      ],
+      "expected_last_contains": "noodles",
+      "results": [
+        {
+          "user": "My favorite food is noodles.",
+          "reply": "I love English is the most important thing to eat the stratis chers.",
+          "included_messages": 1,
+          "context_characters": 83,
+          "elapsed_seconds": 0.138,
+          "model_used": "neural-general-dialogue",
+          "seed": 1823
+        },
+        {
+          "user": "What is my favorite food?",
+          "reply": "I like the new pilter and tlerrs, sonsing a sures and my family is a great tonel and the farding of the nelighing and the stang l",
+          "included_messages": 3,
+          "context_characters": 189,
+          "elapsed_seconds": 0.566,
+          "model_used": "neural-general-dialogue",
+          "seed": 1824
+        }
+      ],
+      "literal_recall_check": false
+    },
+    {
+      "id": "untrained-gardening",
+      "purpose": "stress test outside new authored topics",
+      "turns": [
+        "My tomato seedlings are looking droopy.",
+        "Their leaves are turning yellow. What do you think?"
+      ],
+      "results": [
+        {
+          "user": "My tomato seedlings are looking droopy.",
+          "reply": "Well, I am sorry, I'm sorry, please hear that the first.",
+          "included_messages": 1,
+          "context_characters": 94,
+          "elapsed_seconds": 0.093,
+          "model_used": "neural-general-dialogue",
+          "seed": 1923
+        },
+        {
+          "user": "Their leaves are turning yellow. What do you think?",
+          "reply": "I just got a lot of things you can be going to eat that to go to the ounde sure on the hang the company.",
+          "included_messages": 3,
+          "context_characters": 214,
+          "elapsed_seconds": 0.381,
+          "model_used": "neural-general-dialogue",
+          "seed": 1924
+        }
+      ],
+      "literal_recall_check": null
+    },
+    {
+      "id": "untrained-factual",
+      "purpose": "stress test factual limits",
+      "turns": [
+        "Explain why the moon has phases."
+      ],
+      "results": [
+        {
+          "user": "Explain why the moon has phases.",
+          "reply": "What do you think is the grand that are in your job?",
+          "included_messages": 1,
+          "context_characters": 87,
+          "elapsed_seconds": 0.123,
+          "model_used": "neural-general-dialogue",
+          "seed": 2023
+        }
+      ],
+      "literal_recall_check": null
+    }
+  ]
+}

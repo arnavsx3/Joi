@@ -32,10 +32,14 @@ def records(split, path=SITUATIONS):
                                      {"role": "assistant", "content": "Hi! What's on your mind?"}]):
                     result.append((situation["id"], prelude + history, reply))
                 for followup in situation["followups"]:
-                    messages = history + [{"role": "assistant", "content": reply},
-                                          {"role": "user", "content": followup[split]}]
-                    for continuation in followup["replies"]:
-                        result.append((situation["id"], messages, continuation))
+                    followup_users = followup[split]
+                    if isinstance(followup_users, str):
+                        followup_users = [followup_users]
+                    for followup_user in followup_users:
+                        messages = history + [{"role": "assistant", "content": reply},
+                                              {"role": "user", "content": followup_user}]
+                        for continuation in followup["replies"]:
+                            result.append((situation["id"], messages, continuation))
     for category, training, validation in MEMORY:
         for value in training if split == "train" else validation:
             # Values, rather than random expanded rows, define this task's split.
@@ -48,6 +52,17 @@ def records(split, path=SITUATIONS):
                         history = opener + [{"role": "assistant", "content": prior},
                                             {"role": "user", "content": question}]
                         result.append((f"memory-{category}-{value}", history, f"Your favorite {category} is {value}."))
+    # Reinforce names already present in the earlier authored persona examples.
+    names = ["Arnav", "Maya", "Sam", "Alex", "David", "Tom", "Mary", "John"] if split == "train" else ["Nora", "Ishan"]
+    for name in names:
+        for introduction in (f"My name is {name}.", f"You can call me {name}."):
+            opener = [{"role": "user", "content": introduction}]
+            greeting = f"Hi, {name}! I'm Joi. How are you feeling today?"
+            result.append(("name", opener, greeting))
+            for prior in (greeting, "Hi! What's on your mind?"):
+                for question in ("What is my name?", "Do you remember my name?"):
+                    history = opener + [{"role": "assistant", "content": prior}, {"role": "user", "content": question}]
+                    result.append(("name", history, f"Your name is {name}."))
     return result
 
 

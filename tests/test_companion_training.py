@@ -14,7 +14,7 @@ class CompanionTrainingTests(unittest.TestCase):
         train, validation = records("train"), records("validation")
         # Prelude greetings and memory question formats are intentionally shared.
         # Situation user phrasings and memory introductions/values are held out.
-        users = lambda rows: {m["content"] for topic, history, _ in rows if not topic.startswith("memory-") for m in history
+        users = lambda rows: {m["content"] for topic, history, _ in rows if not topic.startswith("memory-") and topic != "name" for m in history
                               if m["role"] == "user" and m["content"] != "Hello!"}
         self.assertFalse(users(train) & users(validation))
         self.assertTrue(any("purple" in target for _, _, target in validation))
@@ -47,6 +47,16 @@ class CompanionTrainingTests(unittest.TestCase):
         torch.testing.assert_close(losses, per_example_loss(model, altered))
         losses.mean().backward()
         self.assertGreater(model.token_embedding.weight.grad.abs().sum().item(), 0)
+
+        model.zero_grad(set_to_none=True)
+        logits, _, hidden = model(positive[0], return_hidden=True)
+        normal_logits, _ = model(positive[0])
+        torch.testing.assert_close(logits, normal_logits)
+        prefix_ends = (positive[1] != -100).long().argmax(1)
+        head = torch.nn.Linear(8, 2)
+        topic_logits = head(hidden[torch.arange(4), prefix_ends])
+        torch.nn.functional.cross_entropy(topic_logits, torch.tensor([0, 1, 0, 1])).backward()
+        self.assertGreater(model.blocks[0].attention.qkv.weight.grad.abs().sum().item(), 0)
 
 
 if __name__ == "__main__":

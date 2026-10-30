@@ -12,6 +12,7 @@ import torch
 
 from joi.checkpoint import load_checkpoint
 from joi.dialogue import build_prompt, clean_turn
+from joi.lexical import WordBoundaryConstraint
 
 
 class ChatEngine:
@@ -29,16 +30,19 @@ class ChatEngine:
         # Blocking three raw tokens would forbid ordinary repeated words.
         self.no_repeat_ngram_size = 6 if self.tokenizer.kind=="word" else 0
         self.lock = threading.Lock()
+        self.lexical_words = self.checkpoint.get("lexical_words") if self.tokenizer.kind == "word" else None
 
     def reply(self, messages, *, seed=42):
         prompt, included = build_prompt(messages, self.model.config.block_size, self.tokenizer)
         encoded = torch.tensor([self.tokenizer.encode(prompt)], dtype=torch.long)
         started = time.monotonic()
+        constraint = WordBoundaryConstraint(self.tokenizer, self.lexical_words, prompt) if self.lexical_words else None
         with self.lock:
             torch.manual_seed(seed)
             output = self.model.generate(encoded, max_new_tokens=self.tokens,
                                          temperature=self.temperature, top_k=self.top_k,
                                          no_repeat_ngram_size=self.no_repeat_ngram_size,
+                                         allowed_tokens_fn=constraint,
                                          stop_sequences=[self.tokenizer.encode("\n")])
         reply = self.tokenizer.decode(output[0, encoded.shape[1]:].tolist()).strip()
         if not reply:
@@ -51,19 +55,22 @@ class ChatEngine:
                 "context_size":self.model.config.block_size,
                 "parameters":sum(parameter.numel() for parameter in self.model.parameters()),
                 "tokenizer":self.tokenizer.kind,
+                "word_boundary_constraint":bool(self.lexical_words),
+                "temperature":self.temperature, "top_k":self.top_k, "max_new_tokens":self.tokens,
                 "mode":"our-own-dialogue-model", "training_format":"joi-dialogue-v1"}
 
 
 class CompanionEngine:
     """Use our general model for chat and a compatible neural recall specialist."""
-    def __init__(self, checkpoint, *, use_recall=True, tokens=None):
-        self.general=ChatEngine(checkpoint,tokens=tokens)
+    def __init__(self, checkpoint, *, use_recall=True, tokens=None, temperature=0.65, top_k=15):
+        self.general=ChatEngine(checkpoint,tokens=tokens,temperature=temperature,top_k=top_k)
         self.recall=None
         recall_path=Path(__file__).resolve().parent.parent/"checkpoints/companion-recall/best.pt"
         if use_recall and self.general.tokenizer.kind=="word" and recall_path.is_file():
-            candidate=ChatEngine(recall_path,tokens=tokens)
+            candidate=ChatEngine(recall_path,tokens=tokens,temperature=temperature,top_k=top_k)
             if candidate.tokenizer.chars==self.general.tokenizer.chars:
                 candidate.lock=self.general.lock
+                candidate.lexical_words=self.general.lexical_words
                 self.recall=candidate
         for name in ("model","tokenizer","checkpoint","checkpoint_sha256","no_repeat_ngram_size"):
             setattr(self,name,getattr(self.general,name))
@@ -97,6 +104,7 @@ class CompanionEngine:
         return {**self.general.status(),"recall_specialist":self.recall is not None,
                 "models":2 if self.recall else 1,
                 "recall_checkpoint_sha256":self.recall.checkpoint_sha256 if self.recall else None,
+                "recall_word_boundary_constraint":bool(self.recall and self.recall.lexical_words),
                 "note":"Routing selects a locally trained neural model. Names and reply text are not substituted by a template."}
 
 

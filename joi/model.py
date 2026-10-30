@@ -95,26 +95,29 @@ class Joi(nn.Module):
             if isinstance(module, nn.Linear) and module.bias is not None:
                 nn.init.zeros_(module.bias)
 
-    def forward(self, tokens, targets=None):
+    def forward(self, tokens, targets=None, *, return_hidden=False):
         if tokens.ndim != 2 or not 1 <= tokens.shape[1] <= self.config.block_size:
             raise ValueError(f"Expected a nonempty [batch, length] up to {self.config.block_size}")
         positions = torch.arange(tokens.shape[1], device=tokens.device)
         x = self.dropout(self.token_embedding(tokens) + self.position_embedding(positions))
-        logits = self.head(self.final_norm(self.blocks(x)))
+        hidden = self.final_norm(self.blocks(x))
+        logits = self.head(hidden)
         loss = None
         if targets is not None:
             loss = F.cross_entropy(logits.reshape(-1, logits.size(-1)), targets.reshape(-1))
-        return logits, loss
+        return (logits, loss, hidden) if return_hidden else (logits, loss)
 
     @torch.inference_mode()
     def generate(self, tokens, max_new_tokens=300, temperature=0.8, top_k=20, stop_sequences=None,
-                 no_repeat_ngram_size=0):
+                 no_repeat_ngram_size=0, allowed_tokens_fn=None):
         if max_new_tokens < 0 or not math.isfinite(temperature) or temperature <= 0 or top_k < 0:
             raise ValueError("Use nonnegative length/top_k and a finite, positive temperature")
         if stop_sequences and (tokens.shape[0] != 1 or any(not sequence for sequence in stop_sequences)):
             raise ValueError("Stop sequences require one prompt and nonempty sequences")
         if no_repeat_ngram_size < 0 or (no_repeat_ngram_size and tokens.shape[0] != 1):
             raise ValueError("Repeated-pattern blocking requires one prompt and a nonnegative size")
+        if allowed_tokens_fn is not None and tokens.shape[0] != 1:
+            raise ValueError("Token constraints require one prompt")
         prompt_length = tokens.shape[1]
         was_training = self.training
         self.eval()
@@ -122,6 +125,11 @@ class Joi(nn.Module):
             for index in range(max_new_tokens):
                 logits, _ = self(tokens[:, -self.config.block_size:])
                 logits = logits[:, -1] / temperature
+                if allowed_tokens_fn is not None:
+                    allowed = allowed_tokens_fn(tokens[0, prompt_length:].tolist())
+                    mask = torch.ones_like(logits, dtype=torch.bool)
+                    mask[:, allowed] = False
+                    logits = logits.masked_fill(mask, float("-inf"))
                 if no_repeat_ngram_size:
                     generated = tokens[0,prompt_length:].tolist()
                     size = no_repeat_ngram_size
@@ -131,6 +139,8 @@ class Joi(nn.Module):
                                   if generated[start:start+size-1] == prefix}
                         if banned:
                             logits[:,list(banned)] = float("-inf")
+                if not torch.isfinite(logits).any():
+                    raise ValueError("No valid next token under the generation constraints")
                 if top_k:
                     cutoff = torch.topk(logits, min(top_k, logits.size(-1))).values[:, [-1]]
                     logits = logits.masked_fill(logits < cutoff, float("-inf"))

@@ -15,8 +15,10 @@ def literal_recall(expected, reply):
     return bool(re.search(r"\b"+re.escape(expected)+r"\b",reply,flags=re.I))
 
 
-def evaluate_chat(checkpoint, data, probes, *, seed=123, tokens=128, batches=16, with_recall=False):
-    engine = CompanionEngine(checkpoint,tokens=tokens) if with_recall else ChatEngine(checkpoint,tokens=tokens)
+def evaluate_chat(checkpoint, data, probes, *, seed=123, tokens=128, batches=16, with_recall=False,
+                  temperature=0.65, top_k=15):
+    engine_class = CompanionEngine if with_recall else ChatEngine
+    engine = engine_class(checkpoint, tokens=tokens, temperature=temperature, top_k=top_k)
     tokenizer, splits, hashes, _ = load_data(data)
     if hashes != engine.checkpoint["data_hashes"] or tokenizer.chars != engine.tokenizer.chars:
         raise ValueError("Use the checkpoint's dialogue dataset and vocabulary")
@@ -48,7 +50,8 @@ def evaluate_chat(checkpoint, data, probes, *, seed=123, tokens=128, batches=16,
         "validation_loss_nats":losses["val_loss"], "token_perplexity":math.exp(losses["val_loss"]),
         **({"character_perplexity":math.exp(losses["val_loss"])} if tokenizer.kind=="char" else {}),
         "protocol":{"seed":seed, "validation_batches":batches, "validation_batch_size":8,
-                    "new_tokens_per_reply":tokens, "temperature":0.65, "top_k":15,
+                    "new_tokens_per_reply":tokens, "temperature":engine.general.temperature if with_recall else engine.temperature,
+                    "top_k":engine.general.top_k if with_recall else engine.top_k,
                     "no_repeat_ngram_size":engine.no_repeat_ngram_size,
                     "literal_recall":"case-insensitive whole-word match",
                     "stop":"first generated newline; turn marker is removed"},
@@ -67,13 +70,15 @@ def main():
     parser.add_argument("--tokens", type=int, default=128)
     parser.add_argument("--batches", type=int, default=16)
     parser.add_argument("--with-recall-specialist",action="store_true")
+    parser.add_argument("--temperature", type=float, default=0.65)
+    parser.add_argument("--top-k", type=int, default=15)
     args = parser.parse_args()
-    if min(args.tokens, args.batches) < 1:
-        parser.error("Use positive tokens and batches")
+    if min(args.tokens, args.batches) < 1 or not math.isfinite(args.temperature) or args.temperature <= 0 or args.top_k < 0:
+        parser.error("Use positive tokens/batches/temperature and nonnegative top-k")
     try:
         report = evaluate_chat(args.checkpoint, args.data, args.probes,
                                seed=args.seed, tokens=args.tokens, batches=args.batches,
-                               with_recall=args.with_recall_specialist)
+                               with_recall=args.with_recall_specialist, temperature=args.temperature, top_k=args.top_k)
     except (ValueError, FileNotFoundError) as exc:
         parser.error(str(exc))
     args.out.parent.mkdir(parents=True, exist_ok=True)

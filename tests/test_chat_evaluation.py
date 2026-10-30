@@ -37,8 +37,10 @@ class ChatEvaluationTests(unittest.TestCase):
             probes.write_text(json.dumps([{"id":"two-turn","turns":["Hi!","How are you?"]}]))
             checkpoint = root/"model.pt"
             save_checkpoint(checkpoint,model,tokenizer,step=2,data_hashes=hashes,dataset_manifest=manifest)
-            first = evaluate_chat(checkpoint,root,probes,tokens=8,batches=1)
-            second = evaluate_chat(checkpoint,root,probes,tokens=8,batches=1)
+            first = evaluate_chat(checkpoint,root,probes,tokens=8,batches=1,temperature=0.45,top_k=7)
+            second = evaluate_chat(checkpoint,root,probes,tokens=8,batches=1,temperature=0.45,top_k=7)
+            self.assertEqual(first["protocol"]["temperature"],0.45)
+            self.assertEqual(first["protocol"]["top_k"],7)
             self.assertEqual(first["checkpoint_sha256"],second["checkpoint_sha256"])
             self.assertEqual(first["validation_loss_nats"],second["validation_loss_nats"])
             left = first["episodes"][0]["results"]

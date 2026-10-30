@@ -1,0 +1,44 @@
+[
+  {
+    "step": 0,
+    "companion_reply_nll": 2.3262550830841064,
+    "context_preference_accuracy": 0.703125,
+    "general_reply_nll": 2.124807596206665,
+    "elapsed_seconds": 1.977
+  },
+  {
+    "step": 400,
+    "companion_reply_nll": 1.0188684463500977,
+    "context_preference_accuracy": 0.890625,
+    "general_reply_nll": 2.2616617679595947,
+    "elapsed_seconds": 155.111
+  },
+  {
+    "step": 800,
+    "companion_reply_nll": 0.7523156404495239,
+    "context_preference_accuracy": 0.9140625,
+    "general_reply_nll": 2.305116653442383,
+    "elapsed_seconds": 305.661
+  },
+  {
+    "step": 1200,
+    "companion_reply_nll": 0.6838798522949219,
+    "context_preference_accuracy": 0.90625,
+    "general_reply_nll": 2.2889230251312256,
+    "elapsed_seconds": 460.99
+  },
+  {
+    "step": 1600,
+    "companion_reply_nll": 0.6824641227722168,
+    "context_preference_accuracy": 0.8984375,
+    "general_reply_nll": 2.281622886657715,
+    "elapsed_seconds": 614.001
+  },
+  {
+    "step": 2000,
+    "companion_reply_nll": 0.665191650390625,
+    "context_preference_accuracy": 0.921875,
+    "general_reply_nll": 2.277625560760498,
+    "elapsed_seconds": 764.492
+  }
+]
