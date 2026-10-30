@@ -15,6 +15,12 @@ from joi.dialogue import build_prompt, clean_turn
 from joi.lexical import WordBoundaryConstraint
 
 
+def default_checkpoint(root=None):
+    root = Path(root) if root is not None else Path(__file__).resolve().parent.parent
+    upgraded = root / "checkpoints/joi-v2/best.pt"
+    return upgraded if upgraded.is_file() else root / "checkpoints/joi-chat/best.pt"
+
+
 class ChatEngine:
     def __init__(self, checkpoint, *, threads=2, tokens=None, temperature=None, top_k=None, beams=None):
         torch.set_num_threads(threads)
@@ -62,15 +68,17 @@ class ChatEngine:
                 "parameters":sum(parameter.numel() for parameter in self.model.parameters()),
                 "tokenizer":self.tokenizer.kind,
                 "word_boundary_constraint":bool(self.lexical_words),
+                "checkpoint_sha256":self.checkpoint_sha256,
                 "temperature":self.temperature, "top_k":self.top_k, "max_new_tokens":self.tokens, "beams":self.beams,
                 "mode":"our-own-dialogue-model", "training_format":"joi-dialogue-v1"}
 
 
 class CompanionEngine:
-    """Use our general model for chat and a compatible neural recall specialist."""
+    """Route to our chat/recall networks; optionally preserve familiar-name replies."""
     def __init__(self, checkpoint, *, use_recall=True, tokens=None, temperature=None, top_k=None, beams=None):
         self.general=ChatEngine(checkpoint,tokens=tokens,temperature=temperature,top_k=top_k,beams=beams)
         self.recall=None
+        self.familiar=None
         recall_path=Path(__file__).resolve().parent.parent/"checkpoints/companion-recall/best.pt"
         if use_recall and self.general.tokenizer.kind=="word" and recall_path.is_file():
             candidate=ChatEngine(recall_path,tokens=tokens if tokens is not None else self.general.tokens,
@@ -82,14 +90,46 @@ class CompanionEngine:
                 candidate.lock=self.general.lock
                 candidate.lexical_words=self.general.lexical_words
                 self.recall=candidate
+        familiar_path=Path(__file__).resolve().parent.parent/"checkpoints/joi-chat/best.pt"
+        if use_recall and self.general.checkpoint.get("preserve_familiar_names") and familiar_path.is_file():
+            candidate=ChatEngine(familiar_path,tokens=self.general.tokens,temperature=self.general.temperature,
+                                 top_k=self.general.top_k,beams=self.general.beams)
+            if candidate.checkpoint_sha256 != self.general.checkpoint_sha256:
+                candidate.lock=self.general.lock
+                candidate.lexical_words=self.general.lexical_words
+                self.familiar=candidate
         for name in ("model","tokenizer","checkpoint","checkpoint_sha256","no_repeat_ngram_size"):
             setattr(self,name,getattr(self.general,name))
+
+    @staticmethod
+    def introduced_name(text):
+        match=re.search(r"(?:my name is|you can call me|call me)\s+([A-Za-z]+)",clean_turn(text),flags=re.I)
+        if not match:
+            match=re.search(r"I'm\s+([A-Za-z]+),?\s+by the way",clean_turn(text),flags=re.I)
+        return match.group(1) if match else None
+
+    @staticmethod
+    def name_question(text):
+        return bool(re.search(r"(?:what.*\bmy name\b|remember.*\bmy name\b|recall.*\bmy name\b|say.*\bmy name\b)",clean_turn(text).lower()))
+
+    def uses_familiar(self,messages):
+        familiar=getattr(self,"familiar",None)
+        if not familiar or not messages:
+            return False
+        latest=messages[-1]
+        name=self.introduced_name(latest.get("content",""))
+        if not name and self.name_question(latest.get("content","")):
+            for message in reversed(messages[:-1]):
+                if message.get("role")=="user":
+                    name=self.introduced_name(message.get("content",""))
+                    if name:
+                        break
+        return bool(name and name in familiar.tokenizer.stoi)
 
     def uses_recall(self,messages):
         if not self.recall or not messages:
             return False
-        question=clean_turn(messages[-1].get("content","")).lower()
-        if not re.search(r"(?:what.*\bmy name\b|remember.*\bmy name\b|recall.*\bmy name\b|say.*\bmy name\b)",question):
+        if not self.name_question(messages[-1].get("content","")):
             return False
         for message in reversed(messages[:-1]):
             if message.get("role")!="user":
@@ -105,6 +145,8 @@ class CompanionEngine:
         return False
 
     def reply(self,messages,*,seed=42):
+        if self.uses_familiar(messages):
+            return {**self.familiar.reply(messages,seed=seed),"model_used":"neural-familiar-name-dialogue"}
         specialist=self.uses_recall(messages)
         engine=self.recall if specialist else self.general
         return {**engine.reply(messages,seed=seed),
@@ -112,15 +154,16 @@ class CompanionEngine:
 
     def status(self):
         return {**self.general.status(),"recall_specialist":self.recall is not None,
-                "models":2 if self.recall else 1,
+                "models":1+int(self.recall is not None)+int(self.familiar is not None),
                 "recall_checkpoint_sha256":self.recall.checkpoint_sha256 if self.recall else None,
                 "recall_word_boundary_constraint":bool(self.recall and self.recall.lexical_words),
+                "familiar_name_checkpoint_sha256":self.familiar.checkpoint_sha256 if self.familiar else None,
                 "note":"Routing selects a locally trained neural model. Names and reply text are not substituted by a template."}
 
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--checkpoint", type=Path, default=Path("checkpoints/joi-chat/best.pt"))
+    parser.add_argument("--checkpoint", type=Path, default=default_checkpoint())
     parser.add_argument("--no-recall-specialist",action="store_true")
     args = parser.parse_args()
     try:

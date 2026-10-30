@@ -7,7 +7,7 @@ import mimetypes
 from pathlib import Path
 from urllib.parse import unquote, urlparse
 
-from joi.chat import CompanionEngine
+from joi.chat import CompanionEngine, default_checkpoint
 
 ROOT = Path(__file__).resolve().parent.parent
 FRONTEND = ROOT / "frontend/dist"
@@ -92,7 +92,7 @@ def handler_for(engine, frontend_root=FRONTEND):
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--checkpoint", type=Path, default=ROOT / "checkpoints/joi-chat/best.pt")
+    parser.add_argument("--checkpoint", type=Path, default=default_checkpoint())
     parser.add_argument("--port", type=int, default=7860)
     parser.add_argument("--no-recall-specialist",action="store_true")
     args = parser.parse_args()

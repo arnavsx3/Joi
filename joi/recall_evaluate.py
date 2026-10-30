@@ -1,11 +1,13 @@
 """Test generated replies on names held out from the synthetic curriculum."""
 
 import argparse
+import hashlib
 import json
 from pathlib import Path
 import re
 
 from joi.chat import ChatEngine, CompanionEngine
+from joi.companion_data import SITUATIONS, records
 
 
 def recall_trial(engine, conversation, seed):
@@ -48,6 +50,12 @@ def main():
     count=manifest["synthetic_names"]["validation"]
     records=(args.data/"val.txt").read_text().strip().split("\n\n")[-count:][:args.limit]
     train=(args.data/"train.txt").read_text()
+    general=engine.general if args.with_recall_specialist else engine
+    if general.checkpoint.get("curriculum_sha256"):
+        if general.checkpoint["curriculum_sha256"] != hashlib.sha256(SITUATIONS.read_bytes()).hexdigest():
+            parser.error("Restore the checkpoint's exact authored curriculum before checking held-out names")
+        train += "\n" + "\n".join(" ".join(message["content"] for message in history) + " " + target
+                                   for _, history, target in records("train"))
     trials=[recall_trial(engine,conversation,1000+index*10) for index,conversation in enumerate(records)]
     for trial in trials:
         if re.search(r"\b"+re.escape(trial["name"])+r"\b",train,flags=re.I):
@@ -57,7 +65,8 @@ def main():
             "runtime":engine.status(),
             "phase_step":engine.checkpoint["step"],"correct":correct,"total":len(trials),
             "literal_recall_fraction":correct/len(trials),
-            "protocol":{"tokens_per_reply":48,"temperature":0.65,"top_k":15,
+            "protocol":{"tokens_per_reply":general.tokens,"temperature":general.temperature,"top_k":general.top_k,
+                        "beams":general.beams,
                         "no_repeat_ngram_size":engine.no_repeat_ngram_size,
                         "seed":"1000 + example_index*10 + turn_index"},
             "note":"Held-out synthetic names with familiar question templates. Both replies are generated; reference assistant turns are never given to the model. Exact name occurrence does not establish unrestricted conversational memory.",
