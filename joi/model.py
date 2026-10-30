@@ -109,7 +109,7 @@ class Joi(nn.Module):
 
     @torch.inference_mode()
     def generate(self, tokens, max_new_tokens=300, temperature=0.8, top_k=20, stop_sequences=None,
-                 no_repeat_ngram_size=0, allowed_tokens_fn=None):
+                 no_repeat_ngram_size=0, allowed_tokens_fn=None, num_beams=1):
         if max_new_tokens < 0 or not math.isfinite(temperature) or temperature <= 0 or top_k < 0:
             raise ValueError("Use nonnegative length/top_k and a finite, positive temperature")
         if stop_sequences and (tokens.shape[0] != 1 or any(not sequence for sequence in stop_sequences)):
@@ -118,6 +118,13 @@ class Joi(nn.Module):
             raise ValueError("Repeated-pattern blocking requires one prompt and a nonnegative size")
         if allowed_tokens_fn is not None and tokens.shape[0] != 1:
             raise ValueError("Token constraints require one prompt")
+        if not isinstance(num_beams, int) or isinstance(num_beams, bool) or not 1 <= num_beams <= 8:
+            raise ValueError("Use between one and eight beams")
+        if num_beams > 1:
+            if tokens.shape[0] != 1:
+                raise ValueError("Beam search requires one prompt")
+            return self._beam_generate(tokens, max_new_tokens, temperature, top_k,
+                                       stop_sequences, no_repeat_ngram_size, allowed_tokens_fn, num_beams)
         prompt_length = tokens.shape[1]
         was_training = self.training
         self.eval()
@@ -150,5 +157,63 @@ class Joi(nn.Module):
                     if index + 1 >= len(sequence) and tokens[0, -len(sequence):].tolist() == list(sequence):
                         return tokens[:, :-len(sequence)]
             return tokens
+        finally:
+            self.train(was_training)
+
+    @torch.inference_mode()
+    def _beam_generate(self, prompt, limit, temperature, top_k, stops, repeat, allowed_fn, width):
+        """Explore multiple neural continuations; no response database or reranker."""
+        was_training = self.training
+        self.eval()
+        active = [(prompt, 0.0)]
+        finished = []
+        prefix_length = prompt.shape[1]
+        try:
+            for _ in range(limit):
+                candidates = []
+                sequences = torch.cat([sequence for sequence, _ in active])
+                logits, _ = self(sequences[:, -self.config.block_size:])
+                for row, (sequence, score) in enumerate(active):
+                    generated = sequence[0, prefix_length:].tolist()
+                    values = logits[row, -1] / temperature
+                    if allowed_fn is not None:
+                        mask = torch.ones_like(values, dtype=torch.bool)
+                        mask[allowed_fn(generated)] = False
+                        values = values.masked_fill(mask, float("-inf"))
+                    if repeat and len(generated) >= repeat - 1:
+                        suffix = generated[-(repeat - 1):] if repeat > 1 else []
+                        banned = {generated[start + repeat - 1] for start in range(len(generated) - repeat + 1)
+                                  if generated[start:start + repeat - 1] == suffix}
+                        if banned:
+                            values[list(banned)] = float("-inf")
+                    if top_k:
+                        cutoff = torch.topk(values, min(top_k, len(values))).values[-1]
+                        values = values.masked_fill(values < cutoff, float("-inf"))
+                    if not torch.isfinite(values).any():
+                        continue
+                    log_probs = F.log_softmax(values, dim=-1)
+                    scores, ids = torch.topk(log_probs, min(width, int(torch.isfinite(log_probs).sum())))
+                    for probability, token in zip(scores.tolist(), ids.tolist()):
+                        extended = torch.cat((sequence, torch.tensor([[token]], device=sequence.device)), dim=1)
+                        candidate_score = score + probability
+                        stop = next((s for s in stops or () if len(generated) + 1 >= len(s)
+                                     and extended[0, -len(s):].tolist() == list(s)), None)
+                        if stop is not None:
+                            # Count the end marker in scoring but remove it from text.
+                            if len(generated) + 1 > len(stop):
+                                normalized = candidate_score / ((len(generated) + 1) ** 0.7)
+                                finished.append((normalized, extended[:, :-len(stop)]))
+                        else:
+                            candidates.append((extended, candidate_score))
+                if not candidates:
+                    active = []
+                    break
+                active = sorted(candidates, key=lambda item: item[1], reverse=True)[:width]
+                finished = sorted(finished, key=lambda item: item[0], reverse=True)[:width]
+            if finished:
+                return max(finished, key=lambda item: item[0])[1]
+            if active:
+                return max(active, key=lambda item: item[1])[0]
+            raise ValueError("No valid continuation under the generation constraints")
         finally:
             self.train(was_training)

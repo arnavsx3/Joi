@@ -3,7 +3,7 @@ from unittest.mock import patch
 
 import torch
 
-from joi.lexical import WordBoundaryConstraint, training_words
+from joi.lexical import WordBoundaryConstraint
 from joi.model import Joi, ModelConfig
 from joi.tokenizer import WordTokenizer
 
@@ -35,6 +35,25 @@ class LexicalTests(unittest.TestCase):
         self.assertEqual(generated.tolist(), [[0, 1]])
         with self.assertRaisesRegex(ValueError, "No valid next token"):
             model.generate(torch.tensor([[0]]), max_new_tokens=1, allowed_tokens_fn=lambda _: [])
+
+    def test_beam_search_finds_a_better_complete_reply_and_restores_training_mode(self):
+        model = Joi(ModelConfig(vocab_size=4, block_size=8, n_embd=8, n_heads=2, n_layers=1, dropout=0))
+        model.train()
+        def forward(tokens):
+            logits = torch.full((tokens.shape[0], tokens.shape[1], 4), float("-inf"))
+            for row in range(tokens.shape[0]):
+                if tokens[row, -1] == 0:
+                    logits[row, -1, 1:3] = torch.tensor([0.6, 0.4]).log()
+                elif tokens[row, -1] == 1:
+                    logits[row, -1, [1, 3]] = torch.tensor([0.9, 0.1]).log()
+                else:
+                    logits[row, -1, [1, 3]] = torch.tensor([0.01, 0.99]).log()
+            return logits, None
+        with patch.object(model, "forward", side_effect=forward):
+            result = model.generate(torch.tensor([[0]]), max_new_tokens=2, temperature=1, top_k=0,
+                                    stop_sequences=[[3]], num_beams=2)
+        self.assertEqual(result.tolist(), [[0, 2]])
+        self.assertTrue(model.training)
 
 
 if __name__ == "__main__":

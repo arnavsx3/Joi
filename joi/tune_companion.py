@@ -109,6 +109,7 @@ def main():
     parser.add_argument("--out", type=Path, default=Path("checkpoints/companion-v2"))
     parser.add_argument("--curriculum", type=Path, default=SITUATIONS)
     parser.add_argument("--steps", type=int, default=2000)
+    parser.add_argument("--stop-after", type=int, help="Stop early without changing the full cosine schedule")
     parser.add_argument("--batch-size", type=int, default=12)
     parser.add_argument("--learning-rate", type=float, default=0.0003)
     parser.add_argument("--rank-weight", type=float, default=0.3)
@@ -117,6 +118,8 @@ def main():
     args = parser.parse_args()
     if min(args.steps, args.batch_size) < 1 or not math.isfinite(args.learning_rate) or args.learning_rate <= 0:
         parser.error("Use positive steps, batch size and learning rate")
+    if args.stop_after is not None and not 1 <= args.stop_after <= args.steps:
+        parser.error("--stop-after must be between one and --steps")
     if not math.isfinite(args.rank_weight) or args.rank_weight < 0:
         parser.error("Use a finite nonnegative ranking weight")
     if not math.isfinite(args.topic_weight) or args.topic_weight < 0 or not math.isfinite(args.opening_weight) or args.opening_weight < 1:
@@ -198,7 +201,8 @@ def main():
         model.train()
 
     record(0)
-    for step in range(1, args.steps + 1):
+    last_step = args.stop_after if args.stop_after is not None else args.steps
+    for step in range(1, last_step + 1):
         # Cosine decay gives the short run time to settle.
         lr = args.learning_rate * (0.15 + 0.85 * (1 + math.cos(math.pi * step / args.steps)) / 2)
         for group in optimizer.param_groups:
@@ -224,9 +228,13 @@ def main():
         loss.backward()
         torch.nn.utils.clip_grad_norm_(parameters, 1.0, error_if_nonfinite=True)
         optimizer.step()
-        if step % 400 == 0 or step == args.steps:
+        if step % 400 == 0 or step == last_step:
             record(step)
 
 
 if __name__ == "__main__":
-    main()
+    try:
+        main()
+    except KeyboardInterrupt:
+        print("Stopped. The last completed evaluation checkpoint is safe; use a new output directory for another tuning run.", flush=True)
+        raise SystemExit(130)

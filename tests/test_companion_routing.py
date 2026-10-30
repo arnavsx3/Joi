@@ -1,8 +1,25 @@
 import unittest
+import threading
+from types import SimpleNamespace
+from unittest.mock import patch
 from joi.chat import CompanionEngine
 
 
 class RoutingTests(unittest.TestCase):
+    def test_our_recall_network_keeps_its_own_tokenizer_after_vocabulary_growth(self):
+        def stub(pieces):
+            return SimpleNamespace(tokenizer=SimpleNamespace(kind="word", chars=pieces, stoi={"Arnav": 1}),
+                                   model=object(), checkpoint={}, checkpoint_sha256="test", no_repeat_ngram_size=6,
+                                   lock=threading.Lock(), lexical_words=["hello"], tokens=64,
+                                   temperature=1.0, top_k=15, beams=4)
+        general, recall = stub(["new", "vocabulary"]), stub(["old", "vocabulary"])
+        with patch("joi.chat.ChatEngine", side_effect=[general, recall]), patch("pathlib.Path.is_file", return_value=True):
+            engine = CompanionEngine("our-checkpoint.pt")
+        self.assertIs(engine.recall, recall)
+        self.assertIs(engine.recall.lock, general.lock)
+        self.assertIs(engine.recall.lexical_words, general.lexical_words)
+        self.assertNotEqual(engine.recall.tokenizer.chars, general.tokenizer.chars)
+
     def engine(self):
         class Vocabulary:
             stoi={"Arnav":1,"Sam":2}

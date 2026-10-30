@@ -16,7 +16,7 @@ from joi.lexical import WordBoundaryConstraint
 
 
 class ChatEngine:
-    def __init__(self, checkpoint, *, threads=2, tokens=None, temperature=0.65, top_k=15):
+    def __init__(self, checkpoint, *, threads=2, tokens=None, temperature=None, top_k=None, beams=None):
         torch.set_num_threads(threads)
         raw = Path(checkpoint).read_bytes()
         self.model, self.tokenizer, self.checkpoint = load_checkpoint(io.BytesIO(raw))
@@ -24,8 +24,11 @@ class ChatEngine:
         if self.checkpoint.get("dataset_manifest", {}).get("format") != "joi-dialogue-v1":
             raise ValueError("Select a dialogue-trained checkpoint; prepare and train dialogue first")
         self.model.eval()
-        self.tokens = tokens if tokens is not None else (96 if self.tokenizer.kind=="word" else 180)
-        self.temperature, self.top_k = temperature, top_k
+        decoding = self.checkpoint.get("decoding_settings", {})
+        self.tokens = tokens if tokens is not None else decoding.get("max_new_tokens", 96 if self.tokenizer.kind=="word" else 180)
+        self.temperature = temperature if temperature is not None else decoding.get("temperature", 0.65)
+        self.top_k = top_k if top_k is not None else decoding.get("top_k", 15)
+        self.beams = beams if beams is not None else decoding.get("beams", 1)
         # Spaces are tokens too, so six raw tokens cover roughly three words.
         # Blocking three raw tokens would forbid ordinary repeated words.
         self.no_repeat_ngram_size = 6 if self.tokenizer.kind=="word" else 0
@@ -43,11 +46,14 @@ class ChatEngine:
                                          temperature=self.temperature, top_k=self.top_k,
                                          no_repeat_ngram_size=self.no_repeat_ngram_size,
                                          allowed_tokens_fn=constraint,
+                                         num_beams=self.beams,
                                          stop_sequences=[self.tokenizer.encode("\n")])
         reply = self.tokenizer.decode(output[0, encoded.shape[1]:].tolist()).strip()
         if not reply:
             raise ValueError("Joi didn't finish a reply this time. Please try again.")
-        return {"reply":reply, "included_messages":included,
+        generated_tokens = output.shape[1] - encoded.shape[1]
+        return {"reply":reply, "included_messages":included, "generated_tokens":generated_tokens,
+                "stopped_at_turn_boundary":generated_tokens < self.tokens,
                 "context_characters":len(prompt), "elapsed_seconds":round(time.monotonic()-started,3)}
 
     def status(self):
@@ -56,19 +62,23 @@ class ChatEngine:
                 "parameters":sum(parameter.numel() for parameter in self.model.parameters()),
                 "tokenizer":self.tokenizer.kind,
                 "word_boundary_constraint":bool(self.lexical_words),
-                "temperature":self.temperature, "top_k":self.top_k, "max_new_tokens":self.tokens,
+                "temperature":self.temperature, "top_k":self.top_k, "max_new_tokens":self.tokens, "beams":self.beams,
                 "mode":"our-own-dialogue-model", "training_format":"joi-dialogue-v1"}
 
 
 class CompanionEngine:
     """Use our general model for chat and a compatible neural recall specialist."""
-    def __init__(self, checkpoint, *, use_recall=True, tokens=None, temperature=0.65, top_k=15):
-        self.general=ChatEngine(checkpoint,tokens=tokens,temperature=temperature,top_k=top_k)
+    def __init__(self, checkpoint, *, use_recall=True, tokens=None, temperature=None, top_k=None, beams=None):
+        self.general=ChatEngine(checkpoint,tokens=tokens,temperature=temperature,top_k=top_k,beams=beams)
         self.recall=None
         recall_path=Path(__file__).resolve().parent.parent/"checkpoints/companion-recall/best.pt"
         if use_recall and self.general.tokenizer.kind=="word" and recall_path.is_file():
-            candidate=ChatEngine(recall_path,tokens=tokens,temperature=temperature,top_k=top_k)
-            if candidate.tokenizer.chars==self.general.tokenizer.chars:
+            candidate=ChatEngine(recall_path,tokens=tokens if tokens is not None else self.general.tokens,
+                                 temperature=self.general.temperature,top_k=self.general.top_k,beams=self.general.beams)
+            # Each network encodes the shared text with its own vocabulary.
+            # Vocabulary growth in the general model need not discard our older
+            # neural recall model; token IDs never cross between networks.
+            if candidate.tokenizer.kind=="word":
                 candidate.lock=self.general.lock
                 candidate.lexical_words=self.general.lexical_words
                 self.recall=candidate

@@ -16,9 +16,9 @@ def literal_recall(expected, reply):
 
 
 def evaluate_chat(checkpoint, data, probes, *, seed=123, tokens=128, batches=16, with_recall=False,
-                  temperature=0.65, top_k=15):
+                  temperature=0.65, top_k=15, beams=1):
     engine_class = CompanionEngine if with_recall else ChatEngine
-    engine = engine_class(checkpoint, tokens=tokens, temperature=temperature, top_k=top_k)
+    engine = engine_class(checkpoint, tokens=tokens, temperature=temperature, top_k=top_k, beams=beams)
     tokenizer, splits, hashes, _ = load_data(data)
     if hashes != engine.checkpoint["data_hashes"] or tokenizer.chars != engine.tokenizer.chars:
         raise ValueError("Use the checkpoint's dialogue dataset and vocabulary")
@@ -52,6 +52,7 @@ def evaluate_chat(checkpoint, data, probes, *, seed=123, tokens=128, batches=16,
         "protocol":{"seed":seed, "validation_batches":batches, "validation_batch_size":8,
                     "new_tokens_per_reply":tokens, "temperature":engine.general.temperature if with_recall else engine.temperature,
                     "top_k":engine.general.top_k if with_recall else engine.top_k,
+                    "beams":beams,
                     "no_repeat_ngram_size":engine.no_repeat_ngram_size,
                     "literal_recall":"case-insensitive whole-word match",
                     "stop":"first generated newline; turn marker is removed"},
@@ -72,13 +73,17 @@ def main():
     parser.add_argument("--with-recall-specialist",action="store_true")
     parser.add_argument("--temperature", type=float, default=0.65)
     parser.add_argument("--top-k", type=int, default=15)
+    parser.add_argument("--beams", type=int, default=1)
     args = parser.parse_args()
     if min(args.tokens, args.batches) < 1 or not math.isfinite(args.temperature) or args.temperature <= 0 or args.top_k < 0:
         parser.error("Use positive tokens/batches/temperature and nonnegative top-k")
+    if not 1 <= args.beams <= 8:
+        parser.error("Use one to eight beams")
     try:
         report = evaluate_chat(args.checkpoint, args.data, args.probes,
                                seed=args.seed, tokens=args.tokens, batches=args.batches,
-                               with_recall=args.with_recall_specialist, temperature=args.temperature, top_k=args.top_k)
+                               with_recall=args.with_recall_specialist, temperature=args.temperature, top_k=args.top_k,
+                               beams=args.beams)
     except (ValueError, FileNotFoundError) as exc:
         parser.error(str(exc))
     args.out.parent.mkdir(parents=True, exist_ok=True)
