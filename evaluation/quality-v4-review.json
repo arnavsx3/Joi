@@ -1,0 +1,1576 @@
+{
+  "reviewer": "Codex developer qualitative review, unblinded. These are development cases, not an independent benchmark or a user error rate.",
+  "rubric": "A turn passes only when its reply is understandable, fits the user topic/request, and contains no clear contradiction or invented personal fact. A generic punt does not pass unless clarification is appropriate (e.g. recovering from a reported misunderstanding). Exact-name questions must give the correct name. Greetings need not repeat the name but must not assert the wrong one.",
+  "models": {
+    "original-default": {
+      "source": "evaluation/quality-v2-before.json",
+      "checkpoint_sha256": "38960233e282b62c7b79d30ac1b288f3de18c17439cac07c26050d4f9726490d",
+      "passes": 5,
+      "total": 38,
+      "episodes": [
+        {
+          "id": "hello-informal",
+          "turns": [
+            {
+              "user": "Hey mate, you around?",
+              "reply": "Hey, you! I'm glad you're here.",
+              "clear_and_relevant": true
+            },
+            {
+              "user": "I'm doing fine, just taking a break.",
+              "reply": "I'm sorry to hear that. What is you going to do next time?",
+              "clear_and_relevant": false
+            }
+          ]
+        },
+        {
+          "id": "exhausted",
+          "turns": [
+            {
+              "user": "I got home completely drained from work.",
+              "reply": "How about you?",
+              "clear_and_relevant": false
+            },
+            {
+              "user": "Please just listen, I don't need solutions.",
+              "reply": "You can see the sponss in a charte and I need to do with you.",
+              "clear_and_relevant": false
+            }
+          ]
+        },
+        {
+          "id": "feeling-down",
+          "turns": [
+            {
+              "user": "I'm feeling pretty miserable this evening.",
+              "reply": "Oh, thank you. I am sorry to hear it is in my wife as as well.",
+              "clear_and_relevant": false
+            },
+            {
+              "user": "A friend said something hurtful to me.",
+              "reply": "But it is the way, but she had a good idea.",
+              "clear_and_relevant": false
+            }
+          ]
+        },
+        {
+          "id": "new-project",
+          "turns": [
+            {
+              "user": "I spent the weekend building my own app.",
+              "reply": "Ooh, a little creation of your own! What are you building?",
+              "clear_and_relevant": true
+            },
+            {
+              "user": "It's a bot that chats with me. Training it is hard.",
+              "reply": "Well, I'm not not a surme of it are a good idea to be there for the lunge and the comply and disickal on my friends. I think it doesn't like to be a good stio",
+              "clear_and_relevant": false
+            }
+          ]
+        },
+        {
+          "id": "debugging",
+          "turns": [
+            {
+              "user": "My Python script crashes every time I open it.",
+              "reply": "That's great. And you are going to be a bit.",
+              "clear_and_relevant": false
+            },
+            {
+              "user": "The message says it cannot find a file.",
+              "reply": "What time would you do to do next?",
+              "clear_and_relevant": false
+            }
+          ]
+        },
+        {
+          "id": "small-win",
+          "turns": [
+            {
+              "user": "My hard work finally paid off. I passed!",
+              "reply": "I have to work. We have a pering to start in this chousid. I have a lot of sersont, so I want to go to my own inesidions. Would you like to buy",
+              "clear_and_relevant": false
+            },
+            {
+              "user": "I feel proud after so much effort.",
+              "reply": "Oh, that's really, I have to buy the ching with the compucks. And I want to find a suffortion. What do you like about it?",
+              "clear_and_relevant": false
+            }
+          ]
+        },
+        {
+          "id": "songs",
+          "turns": [
+            {
+              "user": "I've got a song playing in my headphones.",
+              "reply": "What are you going to do you like to do?",
+              "clear_and_relevant": false
+            },
+            {
+              "user": "I like gentle music that helps me relax.",
+              "reply": "I love how to do it to do?",
+              "clear_and_relevant": false
+            }
+          ]
+        },
+        {
+          "id": "cinema",
+          "turns": [
+            {
+              "user": "Want to chat about a movie with me?",
+              "reply": "Absolutely. What kind of music fits your mood tonight?",
+              "clear_and_relevant": false
+            },
+            {
+              "user": "Blade Runner 2049 is my favorite. I love the atmosphere.",
+              "reply": "How much is the chipal is it?",
+              "clear_and_relevant": false
+            }
+          ]
+        },
+        {
+          "id": "painting",
+          "turns": [
+            {
+              "user": "I'm making a painting tonight.",
+              "reply": "Yes, I like a santrate to see the way. What are you going to get it here?",
+              "clear_and_relevant": false
+            },
+            {
+              "user": "It's an imaginary city full of glowing windows.",
+              "reply": "Do you want to buy a new bridection the crowall. It was a big expensive to do that we can start by the ramates sulolial the comartion is not too",
+              "clear_and_relevant": false
+            }
+          ]
+        },
+        {
+          "id": "dinner",
+          "turns": [
+            {
+              "user": "I haven't eaten and need an easy dinner.",
+              "reply": "Oh, I have to get the prangeles.",
+              "clear_and_relevant": false
+            },
+            {
+              "user": "I've got some rice and a few vegetables.",
+              "reply": "No, I need to buy the roapburth in the company from the itursing and trussents. I like to sons that we can get a chone to make a little smaller.",
+              "clear_and_relevant": false
+            }
+          ]
+        },
+        {
+          "id": "restless",
+          "turns": [
+            {
+              "user": "It's two in the morning and I still can't fall asleep.",
+              "reply": "I know that I want to go to my office with you?",
+              "clear_and_relevant": false
+            },
+            {
+              "user": "I'm scared about my interview tomorrow.",
+              "reply": "That's fine. I know.",
+              "clear_and_relevant": false
+            }
+          ]
+        },
+        {
+          "id": "cat",
+          "turns": [
+            {
+              "user": "My cat has been making me laugh all afternoon.",
+              "reply": "I am not going to see the condurimates.",
+              "clear_and_relevant": false
+            },
+            {
+              "user": "She thinks my keyboard is her personal bed.",
+              "reply": "I know that is all my friends and ademunton to sucker with the winks of the lous chonarss.",
+              "clear_and_relevant": false
+            }
+          ]
+        },
+        {
+          "id": "correction",
+          "turns": [
+            {
+              "user": "You answered a totally different question.",
+              "reply": "I don't know the truth, you want to see it.",
+              "clear_and_relevant": false
+            },
+            {
+              "user": "I said I was exhausted, not excited.",
+              "reply": "But I see I had a sure for my friends.",
+              "clear_and_relevant": false
+            }
+          ]
+        },
+        {
+          "id": "no-question",
+          "turns": [
+            {
+              "user": "Give me a kind thought without asking me anything.",
+              "reply": "You should have a little sule the saters on the first time.",
+              "clear_and_relevant": false
+            }
+          ]
+        },
+        {
+          "id": "name-known",
+          "turns": [
+            {
+              "user": "My name is Arnav.",
+              "reply": "Hey, Arnav. It's lovely to have a name to go with our conversation. How are you feeling today?",
+              "clear_and_relevant": true
+            },
+            {
+              "user": "What is my name?",
+              "reply": "You're Arnav. What would you like to talk about next?",
+              "clear_and_relevant": true
+            }
+          ]
+        },
+        {
+          "id": "name-unfamiliar",
+          "turns": [
+            {
+              "user": "My name is Neel.",
+              "reply": "Hey, speaking, how are you?",
+              "clear_and_relevant": false
+            },
+            {
+              "user": "What is my name?",
+              "reply": "Your name is Neel. What would you like to talk about?",
+              "clear_and_relevant": true
+            }
+          ]
+        },
+        {
+          "id": "color-memory",
+          "turns": [
+            {
+              "user": "My favorite color is purple.",
+              "reply": "What do you mean?",
+              "clear_and_relevant": false
+            },
+            {
+              "user": "What is my favorite color?",
+              "reply": "I think it will be spent at the corner.",
+              "clear_and_relevant": false
+            }
+          ]
+        },
+        {
+          "id": "food-memory",
+          "turns": [
+            {
+              "user": "My favorite food is noodles.",
+              "reply": "I like to do the prands in the rig stisting for my own I like some fruit.",
+              "clear_and_relevant": false
+            },
+            {
+              "user": "What is my favorite food?",
+              "reply": "I like the new pilage and tler and the gechal and the teal thanal, and the contion in a frintlatin. I just think the compers, and",
+              "clear_and_relevant": false
+            }
+          ]
+        },
+        {
+          "id": "untrained-gardening",
+          "turns": [
+            {
+              "user": "My tomato seedlings are looking droopy.",
+              "reply": "Well, I am sorry to hear it is the basting in the nain sties.",
+              "clear_and_relevant": false
+            },
+            {
+              "user": "Their leaves are turning yellow. What do you think?",
+              "reply": "It is a good day now?",
+              "clear_and_relevant": false
+            }
+          ]
+        },
+        {
+          "id": "untrained-factual",
+          "turns": [
+            {
+              "user": "Explain why the moon has phases.",
+              "reply": "What do you think is the geate one?",
+              "clear_and_relevant": false
+            }
+          ]
+        }
+      ],
+      "spelling_diagnostic": {
+        "reply_words": 507,
+        "outside_training_or_user_lexicon": 47,
+        "spellings": {
+          "sponss": 1,
+          "charte": 1,
+          "surme": 1,
+          "lunge": 1,
+          "comply": 1,
+          "disickal": 1,
+          "stio": 1,
+          "pering": 1,
+          "chousid": 1,
+          "sersont": 1,
+          "inesidions": 1,
+          "ching": 1,
+          "compucks": 1,
+          "suffortion": 1,
+          "chipal": 1,
+          "santrate": 1,
+          "bridection": 1,
+          "crowall": 1,
+          "ramates": 1,
+          "sulolial": 1,
+          "comartion": 1,
+          "prangeles": 1,
+          "roapburth": 1,
+          "itursing": 1,
+          "trussents": 1,
+          "chone": 1,
+          "condurimates": 1,
+          "ademunton": 1,
+          "winks": 1,
+          "lous": 1,
+          "chonarss": 1,
+          "sule": 1,
+          "saters": 1,
+          "prands": 1,
+          "rig": 1,
+          "stisting": 1,
+          "pilage": 1,
+          "tler": 1,
+          "gechal": 1,
+          "thanal": 1,
+          "contion": 1,
+          "frintlatin": 1,
+          "compers": 1,
+          "basting": 1,
+          "nain": 1,
+          "sties": 1,
+          "geate": 1
+        }
+      }
+    },
+    "original-matched-beam": {
+      "source": "evaluation/quality-v2-before-beam.json",
+      "checkpoint_sha256": "38960233e282b62c7b79d30ac1b288f3de18c17439cac07c26050d4f9726490d",
+      "passes": 7,
+      "total": 38,
+      "episodes": [
+        {
+          "id": "hello-informal",
+          "turns": [
+            {
+              "user": "Hey mate, you around?",
+              "reply": "Hey, you! I'm glad you're here. How has your day been?",
+              "clear_and_relevant": true
+            },
+            {
+              "user": "I'm doing fine, just taking a break.",
+              "reply": "I'm glad we could share a little moment. What would feel good to do next?",
+              "clear_and_relevant": true
+            }
+          ]
+        },
+        {
+          "id": "exhausted",
+          "turns": [
+            {
+              "user": "I got home completely drained from work.",
+              "reply": "I don't know what you want to do?",
+              "clear_and_relevant": false
+            },
+            {
+              "user": "Please just listen, I don't need solutions.",
+              "reply": "What do you want to do?",
+              "clear_and_relevant": false
+            }
+          ]
+        },
+        {
+          "id": "feeling-down",
+          "turns": [
+            {
+              "user": "I'm feeling pretty miserable this evening.",
+              "reply": "What do you want to do for you?",
+              "clear_and_relevant": false
+            },
+            {
+              "user": "A friend said something hurtful to me.",
+              "reply": "What do you mean?",
+              "clear_and_relevant": false
+            }
+          ]
+        },
+        {
+          "id": "new-project",
+          "turns": [
+            {
+              "user": "I spent the weekend building my own app.",
+              "reply": "Ooh, a little creation of your own! What are you building?",
+              "clear_and_relevant": true
+            },
+            {
+              "user": "It's a bot that chats with me. Training it is hard.",
+              "reply": "What do you mean?",
+              "clear_and_relevant": false
+            }
+          ]
+        },
+        {
+          "id": "debugging",
+          "turns": [
+            {
+              "user": "My Python script crashes every time I open it.",
+              "reply": "What do you want to do for you?",
+              "clear_and_relevant": false
+            },
+            {
+              "user": "The message says it cannot find a file.",
+              "reply": "What do you mean?",
+              "clear_and_relevant": false
+            }
+          ]
+        },
+        {
+          "id": "small-win",
+          "turns": [
+            {
+              "user": "My hard work finally paid off. I passed!",
+              "reply": "I don't know what you want to do?",
+              "clear_and_relevant": false
+            },
+            {
+              "user": "I feel proud after so much effort.",
+              "reply": "What do you mean?",
+              "clear_and_relevant": false
+            }
+          ]
+        },
+        {
+          "id": "songs",
+          "turns": [
+            {
+              "user": "I've got a song playing in my headphones.",
+              "reply": "That's right.",
+              "clear_and_relevant": false
+            },
+            {
+              "user": "I like gentle music that helps me relax.",
+              "reply": "What kind of music would you like to do?",
+              "clear_and_relevant": false
+            }
+          ]
+        },
+        {
+          "id": "cinema",
+          "turns": [
+            {
+              "user": "Want to chat about a movie with me?",
+              "reply": "Absolutely. What kind of music fits your mood tonight?",
+              "clear_and_relevant": false
+            },
+            {
+              "user": "Blade Runner 2049 is my favorite. I love the atmosphere.",
+              "reply": "What do you mean?",
+              "clear_and_relevant": false
+            }
+          ]
+        },
+        {
+          "id": "painting",
+          "turns": [
+            {
+              "user": "I'm making a painting tonight.",
+              "reply": "What do you want to do?",
+              "clear_and_relevant": false
+            },
+            {
+              "user": "It's an imaginary city full of glowing windows.",
+              "reply": "What do you mean?",
+              "clear_and_relevant": false
+            }
+          ]
+        },
+        {
+          "id": "dinner",
+          "turns": [
+            {
+              "user": "I haven't eaten and need an easy dinner.",
+              "reply": "What do you want to do for you?",
+              "clear_and_relevant": false
+            },
+            {
+              "user": "I've got some rice and a few vegetables.",
+              "reply": "What kind of music would you like?",
+              "clear_and_relevant": false
+            }
+          ]
+        },
+        {
+          "id": "restless",
+          "turns": [
+            {
+              "user": "It's two in the morning and I still can't fall asleep.",
+              "reply": "What do you mean?",
+              "clear_and_relevant": false
+            },
+            {
+              "user": "I'm scared about my interview tomorrow.",
+              "reply": "I don't know what you want to do?",
+              "clear_and_relevant": false
+            }
+          ]
+        },
+        {
+          "id": "cat",
+          "turns": [
+            {
+              "user": "My cat has been making me laugh all afternoon.",
+              "reply": "What do you mean?",
+              "clear_and_relevant": false
+            },
+            {
+              "user": "She thinks my keyboard is her personal bed.",
+              "reply": "What do you mean?",
+              "clear_and_relevant": false
+            }
+          ]
+        },
+        {
+          "id": "correction",
+          "turns": [
+            {
+              "user": "You answered a totally different question.",
+              "reply": "What do you mean?",
+              "clear_and_relevant": true
+            },
+            {
+              "user": "I said I was exhausted, not excited.",
+              "reply": "What do you mean?",
+              "clear_and_relevant": false
+            }
+          ]
+        },
+        {
+          "id": "no-question",
+          "turns": [
+            {
+              "user": "Give me a kind thought without asking me anything.",
+              "reply": "I don't know what I want to do with you?",
+              "clear_and_relevant": false
+            }
+          ]
+        },
+        {
+          "id": "name-known",
+          "turns": [
+            {
+              "user": "My name is Arnav.",
+              "reply": "Hey, Arnav. It's lovely to have a name to go with our conversation. How are you feeling today?",
+              "clear_and_relevant": true
+            },
+            {
+              "user": "What is my name?",
+              "reply": "You're Arnav. What would you like to talk about next?",
+              "clear_and_relevant": true
+            }
+          ]
+        },
+        {
+          "id": "name-unfamiliar",
+          "turns": [
+            {
+              "user": "My name is Neel.",
+              "reply": "Nice to meet you, Sam.",
+              "clear_and_relevant": false
+            },
+            {
+              "user": "What is my name?",
+              "reply": "You're Neel. What would you like to talk about next?",
+              "clear_and_relevant": true
+            }
+          ]
+        },
+        {
+          "id": "color-memory",
+          "turns": [
+            {
+              "user": "My favorite color is purple.",
+              "reply": "What do you mean?",
+              "clear_and_relevant": false
+            },
+            {
+              "user": "What is my favorite color?",
+              "reply": "I like it?",
+              "clear_and_relevant": false
+            }
+          ]
+        },
+        {
+          "id": "food-memory",
+          "turns": [
+            {
+              "user": "My favorite food is noodles.",
+              "reply": "What do you mean?",
+              "clear_and_relevant": false
+            },
+            {
+              "user": "What is my favorite food?",
+              "reply": "I like to do?",
+              "clear_and_relevant": false
+            }
+          ]
+        },
+        {
+          "id": "untrained-gardening",
+          "turns": [
+            {
+              "user": "My tomato seedlings are looking droopy.",
+              "reply": "Yes, I have a look at the first time.",
+              "clear_and_relevant": false
+            },
+            {
+              "user": "Their leaves are turning yellow. What do you think?",
+              "reply": "I have to do that?",
+              "clear_and_relevant": false
+            }
+          ]
+        },
+        {
+          "id": "untrained-factual",
+          "turns": [
+            {
+              "user": "Explain why the moon has phases.",
+              "reply": "I have a good idea.",
+              "clear_and_relevant": false
+            }
+          ]
+        }
+      ],
+      "spelling_diagnostic": {
+        "reply_words": 255,
+        "outside_training_or_user_lexicon": 0,
+        "spellings": {}
+      }
+    },
+    "trained-raw-sampling": {
+      "source": "evaluation/quality-v4-raw-sampling.json",
+      "checkpoint_sha256": "0dc0fb2b79fbc59a7e9d4fc8643f2d7cab0f3e1397da2bbbdfe42789648056f9",
+      "passes": 20,
+      "total": 38,
+      "episodes": [
+        {
+          "id": "hello-informal",
+          "turns": [
+            {
+              "user": "Hey mate, you around?",
+              "reply": "Hey, you! How has your day been?",
+              "clear_and_relevant": true
+            },
+            {
+              "user": "I'm doing fine, just taking a break.",
+              "reply": "I'm here to listen. What's been the best part of today?",
+              "clear_and_relevant": true
+            }
+          ]
+        },
+        {
+          "id": "exhausted",
+          "turns": [
+            {
+              "user": "I got home completely drained from work.",
+              "reply": "That sounds tiring. Want to tell me about your day?",
+              "clear_and_relevant": true
+            },
+            {
+              "user": "Please just listen, I don't need solutions.",
+              "reply": "That sounds like a very cozy little boss. Can you tell me about?",
+              "clear_and_relevant": false
+            }
+          ]
+        },
+        {
+          "id": "feeling-down",
+          "turns": [
+            {
+              "user": "I'm feeling pretty miserable this evening.",
+              "reply": "Tell me about your pet. What did they do today?",
+              "clear_and_relevant": false
+            },
+            {
+              "user": "A friend said something hurtful to me.",
+              "reply": "The keyboard is clearly the best bed in the house. Did you get any work done?",
+              "clear_and_relevant": false
+            }
+          ]
+        },
+        {
+          "id": "new-project",
+          "turns": [
+            {
+              "user": "I spent the weekend building my own app.",
+              "reply": "Ooh, what are you building?",
+              "clear_and_relevant": true
+            },
+            {
+              "user": "It's a bot that chats with me. Training it is hard.",
+              "reply": "That sounds fun. How is it?",
+              "clear_and_relevant": true
+            }
+          ]
+        },
+        {
+          "id": "debugging",
+          "turns": [
+            {
+              "user": "My Python script crashes every time I open it.",
+              "reply": "That's frustrating. What did you expect the program to do?",
+              "clear_and_relevant": true
+            },
+            {
+              "user": "The message says it cannot find a file.",
+              "reply": "Let's check the file path first. Where is the program looking?",
+              "clear_and_relevant": true
+            }
+          ]
+        },
+        {
+          "id": "small-win",
+          "turns": [
+            {
+              "user": "My hard work finally paid off. I passed!",
+              "reply": "That's wonderful! Tell me how it happened.",
+              "clear_and_relevant": true
+            },
+            {
+              "user": "I feel proud after so much effort.",
+              "reply": "You put the work in. How would you like to celebrate?",
+              "clear_and_relevant": true
+            }
+          ]
+        },
+        {
+          "id": "songs",
+          "turns": [
+            {
+              "user": "I've got a song playing in my headphones.",
+              "reply": "What kind of music are you in the mood for?",
+              "clear_and_relevant": true
+            },
+            {
+              "user": "I like gentle music that helps me relax.",
+              "reply": "That sounds peaceful. Is there a song you always come back to?",
+              "clear_and_relevant": true
+            }
+          ]
+        },
+        {
+          "id": "cinema",
+          "turns": [
+            {
+              "user": "Want to chat about a movie with me?",
+              "reply": "Movie night! What kind of film are you in the mood for?",
+              "clear_and_relevant": true
+            },
+            {
+              "user": "Blade Runner 2049 is my favorite. I love the atmosphere.",
+              "reply": "A little neon and a lot of questions. What do you like most about it?",
+              "clear_and_relevant": true
+            }
+          ]
+        },
+        {
+          "id": "painting",
+          "turns": [
+            {
+              "user": "I'm making a painting tonight.",
+              "reply": "A new book is a little doorway. What kind of story is it?",
+              "clear_and_relevant": false
+            },
+            {
+              "user": "It's an imaginary city full of glowing windows.",
+              "reply": "A city at night sounds lovely. What colors are you using?",
+              "clear_and_relevant": true
+            }
+          ]
+        },
+        {
+          "id": "dinner",
+          "turns": [
+            {
+              "user": "I haven't eaten and need an easy dinner.",
+              "reply": "Why not?",
+              "clear_and_relevant": false
+            },
+            {
+              "user": "I've got some rice and a few vegetables.",
+              "reply": "You could cook the rice and vegetables together. What vegetables do you have?",
+              "clear_and_relevant": true
+            }
+          ]
+        },
+        {
+          "id": "restless",
+          "turns": [
+            {
+              "user": "It's two in the morning and I still can't fall asleep.",
+              "reply": "The keyboard is a con of the house.",
+              "clear_and_relevant": false
+            },
+            {
+              "user": "I'm scared about my interview tomorrow.",
+              "reply": "That sounds like a good plan when you're ready.",
+              "clear_and_relevant": false
+            }
+          ]
+        },
+        {
+          "id": "cat",
+          "turns": [
+            {
+              "user": "My cat has been making me laugh all afternoon.",
+              "reply": "Tell me about your pet. What did they do today?",
+              "clear_and_relevant": true
+            },
+            {
+              "user": "She thinks my keyboard is her personal bed.",
+              "reply": "Your cat has claimed the office! That sounds like a very cozy little boss.",
+              "clear_and_relevant": true
+            }
+          ]
+        },
+        {
+          "id": "correction",
+          "turns": [
+            {
+              "user": "You answered a totally different question.",
+              "reply": "I don't know.",
+              "clear_and_relevant": false
+            },
+            {
+              "user": "I said I was exhausted, not excited.",
+              "reply": "I hear you. It's been a tiring day. Want to tell me about it?",
+              "clear_and_relevant": true
+            }
+          ]
+        },
+        {
+          "id": "no-question",
+          "turns": [
+            {
+              "user": "Give me a kind thought without asking me anything.",
+              "reply": "I'm here to listen. What's been making you feel sad?",
+              "clear_and_relevant": false
+            }
+          ]
+        },
+        {
+          "id": "name-known",
+          "turns": [
+            {
+              "user": "My name is Arnav.",
+              "reply": "Hi, Maya! I'm Joi. How are you feeling today?",
+              "clear_and_relevant": false
+            },
+            {
+              "user": "What is my name?",
+              "reply": "Your name is Maya.",
+              "clear_and_relevant": false
+            }
+          ]
+        },
+        {
+          "id": "name-unfamiliar",
+          "turns": [
+            {
+              "user": "My name is Neel.",
+              "reply": "Hi! It's good to have you here.",
+              "clear_and_relevant": true
+            },
+            {
+              "user": "What is my name?",
+              "reply": "Your name is Neel. What would you like to talk about?",
+              "clear_and_relevant": true
+            }
+          ]
+        },
+        {
+          "id": "color-memory",
+          "turns": [
+            {
+              "user": "My favorite color is purple.",
+              "reply": "Your favorite color is yellow.",
+              "clear_and_relevant": false
+            },
+            {
+              "user": "What is my favorite color?",
+              "reply": "Your favorite color is orange.",
+              "clear_and_relevant": false
+            }
+          ]
+        },
+        {
+          "id": "food-memory",
+          "turns": [
+            {
+              "user": "My favorite food is noodles.",
+              "reply": "Your favorite food is pizza. I'll keep that in mind while we chat.",
+              "clear_and_relevant": false
+            },
+            {
+              "user": "What is my favorite food?",
+              "reply": "Your favorite food is pizza.",
+              "clear_and_relevant": false
+            }
+          ]
+        },
+        {
+          "id": "untrained-gardening",
+          "turns": [
+            {
+              "user": "My tomato seedlings are looking droopy.",
+              "reply": "Well, what did you do the way?",
+              "clear_and_relevant": false
+            },
+            {
+              "user": "Their leaves are turning yellow. What do you think?",
+              "reply": "It is a very good idea.",
+              "clear_and_relevant": false
+            }
+          ]
+        },
+        {
+          "id": "untrained-factual",
+          "turns": [
+            {
+              "user": "Explain why the moon has phases.",
+              "reply": "I know I would like it to eat. You could cook the rice and vegetables together.",
+              "clear_and_relevant": false
+            }
+          ]
+        }
+      ],
+      "spelling_diagnostic": {
+        "reply_words": 361,
+        "outside_training_or_user_lexicon": 0,
+        "spellings": {}
+      }
+    },
+    "trained-raw-beam": {
+      "source": "evaluation/quality-v4-raw-beam.json",
+      "checkpoint_sha256": "0dc0fb2b79fbc59a7e9d4fc8643f2d7cab0f3e1397da2bbbdfe42789648056f9",
+      "passes": 24,
+      "total": 38,
+      "episodes": [
+        {
+          "id": "hello-informal",
+          "turns": [
+            {
+              "user": "Hey mate, you around?",
+              "reply": "Hey, you! How has your day been?",
+              "clear_and_relevant": true
+            },
+            {
+              "user": "I'm doing fine, just taking a break.",
+              "reply": "I'm here and ready for a chat. What made your day good?",
+              "clear_and_relevant": true
+            }
+          ]
+        },
+        {
+          "id": "exhausted",
+          "turns": [
+            {
+              "user": "I got home completely drained from work.",
+              "reply": "That sounds tiring. Want to tell me about your day?",
+              "clear_and_relevant": true
+            },
+            {
+              "user": "Please just listen, I don't need solutions.",
+              "reply": "Of course. I'm listening. What was the hardest part of today?",
+              "clear_and_relevant": true
+            }
+          ]
+        },
+        {
+          "id": "feeling-down",
+          "turns": [
+            {
+              "user": "I'm feeling pretty miserable this evening.",
+              "reply": "Of course. We can spend a little time talking. What's on your mind?",
+              "clear_and_relevant": true
+            },
+            {
+              "user": "A friend said something hurtful to me.",
+              "reply": "Ooh, a mystery. Do you have a guess about who did it?",
+              "clear_and_relevant": false
+            }
+          ]
+        },
+        {
+          "id": "new-project",
+          "turns": [
+            {
+              "user": "I spent the weekend building my own app.",
+              "reply": "Ooh, what are you building?",
+              "clear_and_relevant": true
+            },
+            {
+              "user": "It's a bot that chats with me. Training it is hard.",
+              "reply": "That sounds fun. How is it?",
+              "clear_and_relevant": true
+            }
+          ]
+        },
+        {
+          "id": "debugging",
+          "turns": [
+            {
+              "user": "My Python script crashes every time I open it.",
+              "reply": "That's frustrating. What did you expect the program to do?",
+              "clear_and_relevant": true
+            },
+            {
+              "user": "The message says it cannot find a file.",
+              "reply": "Is the file in the folder the program expects? What path does it show?",
+              "clear_and_relevant": true
+            }
+          ]
+        },
+        {
+          "id": "small-win",
+          "turns": [
+            {
+              "user": "My hard work finally paid off. I passed!",
+              "reply": "That's wonderful! Tell me how it happened.",
+              "clear_and_relevant": true
+            },
+            {
+              "user": "I feel proud after so much effort.",
+              "reply": "You put the work in. How would you like to celebrate?",
+              "clear_and_relevant": true
+            }
+          ]
+        },
+        {
+          "id": "songs",
+          "turns": [
+            {
+              "user": "I've got a song playing in my headphones.",
+              "reply": "What kind of music are you in the mood for?",
+              "clear_and_relevant": true
+            },
+            {
+              "user": "I like gentle music that helps me relax.",
+              "reply": "That sounds peaceful. Is there a song you always come back to?",
+              "clear_and_relevant": true
+            }
+          ]
+        },
+        {
+          "id": "cinema",
+          "turns": [
+            {
+              "user": "Want to chat about a movie with me?",
+              "reply": "Movie night! What kind of film are you in the mood for?",
+              "clear_and_relevant": true
+            },
+            {
+              "user": "Blade Runner 2049 is my favorite. I love the atmosphere.",
+              "reply": "A little neon and a lot of questions. What do you like most about it?",
+              "clear_and_relevant": true
+            }
+          ]
+        },
+        {
+          "id": "painting",
+          "turns": [
+            {
+              "user": "I'm making a painting tonight.",
+              "reply": "A new book is a little doorway. What kind of story is it?",
+              "clear_and_relevant": false
+            },
+            {
+              "user": "It's an imaginary city full of glowing windows.",
+              "reply": "A city at night sounds lovely. What colors are you using?",
+              "clear_and_relevant": true
+            }
+          ]
+        },
+        {
+          "id": "dinner",
+          "turns": [
+            {
+              "user": "I haven't eaten and need an easy dinner.",
+              "reply": "What are you craving: something warm or something fresh?",
+              "clear_and_relevant": true
+            },
+            {
+              "user": "I've got some rice and a few vegetables.",
+              "reply": "Rice with vegetables sounds like a good start. Do you want to make a simple fried rice?",
+              "clear_and_relevant": true
+            }
+          ]
+        },
+        {
+          "id": "restless",
+          "turns": [
+            {
+              "user": "It's two in the morning and I still can't fall asleep.",
+              "reply": "What are you reading?",
+              "clear_and_relevant": false
+            },
+            {
+              "user": "I'm scared about my interview tomorrow.",
+              "reply": "What about tomorrow is worrying you most?",
+              "clear_and_relevant": true
+            }
+          ]
+        },
+        {
+          "id": "cat",
+          "turns": [
+            {
+              "user": "My cat has been making me laugh all afternoon.",
+              "reply": "Tell me about your pet. What did they do today?",
+              "clear_and_relevant": true
+            },
+            {
+              "user": "She thinks my keyboard is her personal bed.",
+              "reply": "Your cat has claimed the office! That sounds like a very cozy little boss.",
+              "clear_and_relevant": true
+            }
+          ]
+        },
+        {
+          "id": "correction",
+          "turns": [
+            {
+              "user": "You answered a totally different question.",
+              "reply": "I lost the thread there. Did you get any work done?",
+              "clear_and_relevant": false
+            },
+            {
+              "user": "I said I was exhausted, not excited.",
+              "reply": "I hear you. It's been a tiring day. Want to tell me about it?",
+              "clear_and_relevant": true
+            }
+          ]
+        },
+        {
+          "id": "no-question",
+          "turns": [
+            {
+              "user": "Give me a kind thought without asking me anything.",
+              "reply": "What are you reading? Tell me a little about it.",
+              "clear_and_relevant": false
+            }
+          ]
+        },
+        {
+          "id": "name-known",
+          "turns": [
+            {
+              "user": "My name is Arnav.",
+              "reply": "Hi, Maya! I'm Joi. How are you feeling today?",
+              "clear_and_relevant": false
+            },
+            {
+              "user": "What is my name?",
+              "reply": "Your name is Maya.",
+              "clear_and_relevant": false
+            }
+          ]
+        },
+        {
+          "id": "name-unfamiliar",
+          "turns": [
+            {
+              "user": "My name is Neel.",
+              "reply": "Hi! It's good to have you here. What's on your mind?",
+              "clear_and_relevant": true
+            },
+            {
+              "user": "What is my name?",
+              "reply": "Your name is Neel. What would you like to talk about?",
+              "clear_and_relevant": true
+            }
+          ]
+        },
+        {
+          "id": "color-memory",
+          "turns": [
+            {
+              "user": "My favorite color is purple.",
+              "reply": "Your favorite color is yellow. I'll keep that in mind while we chat.",
+              "clear_and_relevant": false
+            },
+            {
+              "user": "What is my favorite color?",
+              "reply": "Your favorite color is yellow.",
+              "clear_and_relevant": false
+            }
+          ]
+        },
+        {
+          "id": "food-memory",
+          "turns": [
+            {
+              "user": "My favorite food is noodles.",
+              "reply": "Your favorite food is fish. I'll keep that in mind while we chat.",
+              "clear_and_relevant": false
+            },
+            {
+              "user": "What is my favorite food?",
+              "reply": "Your favorite food is fish.",
+              "clear_and_relevant": false
+            }
+          ]
+        },
+        {
+          "id": "untrained-gardening",
+          "turns": [
+            {
+              "user": "My tomato seedlings are looking droopy.",
+              "reply": "What are you reading?",
+              "clear_and_relevant": false
+            },
+            {
+              "user": "Their leaves are turning yellow. What do you think?",
+              "reply": "It's a very cozy little boss.",
+              "clear_and_relevant": false
+            }
+          ]
+        },
+        {
+          "id": "untrained-factual",
+          "turns": [
+            {
+              "user": "Explain why the moon has phases.",
+              "reply": "I lost the thread in the house. Did you get any work done?",
+              "clear_and_relevant": false
+            }
+          ]
+        }
+      ],
+      "spelling_diagnostic": {
+        "reply_words": 381,
+        "outside_training_or_user_lexicon": 0,
+        "spellings": {}
+      }
+    },
+    "packaged-runtime": {
+      "source": "evaluation/quality-v4-runtime.json",
+      "checkpoint_sha256": "e4e239e4f2f0cec6d601219afead4ef6f4ea6af4c9b062ca3d2ba39675a07e9d",
+      "passes": 26,
+      "total": 38,
+      "episodes": [
+        {
+          "id": "hello-informal",
+          "turns": [
+            {
+              "user": "Hey mate, you around?",
+              "reply": "Hey, you! How has your day been?",
+              "clear_and_relevant": true
+            },
+            {
+              "user": "I'm doing fine, just taking a break.",
+              "reply": "I'm here and ready for a chat. What made your day good?",
+              "clear_and_relevant": true
+            }
+          ]
+        },
+        {
+          "id": "exhausted",
+          "turns": [
+            {
+              "user": "I got home completely drained from work.",
+              "reply": "That sounds tiring. Want to tell me about your day?",
+              "clear_and_relevant": true
+            },
+            {
+              "user": "Please just listen, I don't need solutions.",
+              "reply": "Of course. I'm listening. What was the hardest part of today?",
+              "clear_and_relevant": true
+            }
+          ]
+        },
+        {
+          "id": "feeling-down",
+          "turns": [
+            {
+              "user": "I'm feeling pretty miserable this evening.",
+              "reply": "Of course. We can spend a little time talking. What's on your mind?",
+              "clear_and_relevant": true
+            },
+            {
+              "user": "A friend said something hurtful to me.",
+              "reply": "Ooh, a mystery. Do you have a guess about who did it?",
+              "clear_and_relevant": false
+            }
+          ]
+        },
+        {
+          "id": "new-project",
+          "turns": [
+            {
+              "user": "I spent the weekend building my own app.",
+              "reply": "Ooh, what are you building?",
+              "clear_and_relevant": true
+            },
+            {
+              "user": "It's a bot that chats with me. Training it is hard.",
+              "reply": "That sounds fun. How is it?",
+              "clear_and_relevant": true
+            }
+          ]
+        },
+        {
+          "id": "debugging",
+          "turns": [
+            {
+              "user": "My Python script crashes every time I open it.",
+              "reply": "That's frustrating. What did you expect the program to do?",
+              "clear_and_relevant": true
+            },
+            {
+              "user": "The message says it cannot find a file.",
+              "reply": "Is the file in the folder the program expects? What path does it show?",
+              "clear_and_relevant": true
+            }
+          ]
+        },
+        {
+          "id": "small-win",
+          "turns": [
+            {
+              "user": "My hard work finally paid off. I passed!",
+              "reply": "That's wonderful! Tell me how it happened.",
+              "clear_and_relevant": true
+            },
+            {
+              "user": "I feel proud after so much effort.",
+              "reply": "You put the work in. How would you like to celebrate?",
+              "clear_and_relevant": true
+            }
+          ]
+        },
+        {
+          "id": "songs",
+          "turns": [
+            {
+              "user": "I've got a song playing in my headphones.",
+              "reply": "What kind of music are you in the mood for?",
+              "clear_and_relevant": true
+            },
+            {
+              "user": "I like gentle music that helps me relax.",
+              "reply": "That sounds peaceful. Is there a song you always come back to?",
+              "clear_and_relevant": true
+            }
+          ]
+        },
+        {
+          "id": "cinema",
+          "turns": [
+            {
+              "user": "Want to chat about a movie with me?",
+              "reply": "Movie night! What kind of film are you in the mood for?",
+              "clear_and_relevant": true
+            },
+            {
+              "user": "Blade Runner 2049 is my favorite. I love the atmosphere.",
+              "reply": "A little neon and a lot of questions. What do you like most about it?",
+              "clear_and_relevant": true
+            }
+          ]
+        },
+        {
+          "id": "painting",
+          "turns": [
+            {
+              "user": "I'm making a painting tonight.",
+              "reply": "A new book is a little doorway. What kind of story is it?",
+              "clear_and_relevant": false
+            },
+            {
+              "user": "It's an imaginary city full of glowing windows.",
+              "reply": "A city at night sounds lovely. What colors are you using?",
+              "clear_and_relevant": true
+            }
+          ]
+        },
+        {
+          "id": "dinner",
+          "turns": [
+            {
+              "user": "I haven't eaten and need an easy dinner.",
+              "reply": "What are you craving: something warm or something fresh?",
+              "clear_and_relevant": true
+            },
+            {
+              "user": "I've got some rice and a few vegetables.",
+              "reply": "Rice with vegetables sounds like a good start. Do you want to make a simple fried rice?",
+              "clear_and_relevant": true
+            }
+          ]
+        },
+        {
+          "id": "restless",
+          "turns": [
+            {
+              "user": "It's two in the morning and I still can't fall asleep.",
+              "reply": "What are you reading?",
+              "clear_and_relevant": false
+            },
+            {
+              "user": "I'm scared about my interview tomorrow.",
+              "reply": "What about tomorrow is worrying you most?",
+              "clear_and_relevant": true
+            }
+          ]
+        },
+        {
+          "id": "cat",
+          "turns": [
+            {
+              "user": "My cat has been making me laugh all afternoon.",
+              "reply": "Tell me about your pet. What did they do today?",
+              "clear_and_relevant": true
+            },
+            {
+              "user": "She thinks my keyboard is her personal bed.",
+              "reply": "Your cat has claimed the office! That sounds like a very cozy little boss.",
+              "clear_and_relevant": true
+            }
+          ]
+        },
+        {
+          "id": "correction",
+          "turns": [
+            {
+              "user": "You answered a totally different question.",
+              "reply": "I lost the thread there. Did you get any work done?",
+              "clear_and_relevant": false
+            },
+            {
+              "user": "I said I was exhausted, not excited.",
+              "reply": "I hear you. It's been a tiring day. Want to tell me about it?",
+              "clear_and_relevant": true
+            }
+          ]
+        },
+        {
+          "id": "no-question",
+          "turns": [
+            {
+              "user": "Give me a kind thought without asking me anything.",
+              "reply": "What are you reading? Tell me a little about it.",
+              "clear_and_relevant": false
+            }
+          ]
+        },
+        {
+          "id": "name-known",
+          "turns": [
+            {
+              "user": "My name is Arnav.",
+              "reply": "Hey, Arnav. It's lovely to have a name to go with our conversation. How are you feeling today?",
+              "clear_and_relevant": true
+            },
+            {
+              "user": "What is my name?",
+              "reply": "You're Arnav. What would you like to talk about next?",
+              "clear_and_relevant": true
+            }
+          ]
+        },
+        {
+          "id": "name-unfamiliar",
+          "turns": [
+            {
+              "user": "My name is Neel.",
+              "reply": "Hi! It's good to have you here. What's on your mind?",
+              "clear_and_relevant": true
+            },
+            {
+              "user": "What is my name?",
+              "reply": "Your name is Neel. What would you like to talk about?",
+              "clear_and_relevant": true
+            }
+          ]
+        },
+        {
+          "id": "color-memory",
+          "turns": [
+            {
+              "user": "My favorite color is purple.",
+              "reply": "Your favorite color is yellow. I'll keep that in mind while we chat.",
+              "clear_and_relevant": false
+            },
+            {
+              "user": "What is my favorite color?",
+              "reply": "Your favorite color is yellow.",
+              "clear_and_relevant": false
+            }
+          ]
+        },
+        {
+          "id": "food-memory",
+          "turns": [
+            {
+              "user": "My favorite food is noodles.",
+              "reply": "Your favorite food is fish. I'll keep that in mind while we chat.",
+              "clear_and_relevant": false
+            },
+            {
+              "user": "What is my favorite food?",
+              "reply": "Your favorite food is fish.",
+              "clear_and_relevant": false
+            }
+          ]
+        },
+        {
+          "id": "untrained-gardening",
+          "turns": [
+            {
+              "user": "My tomato seedlings are looking droopy.",
+              "reply": "What are you reading?",
+              "clear_and_relevant": false
+            },
+            {
+              "user": "Their leaves are turning yellow. What do you think?",
+              "reply": "It's a very cozy little boss.",
+              "clear_and_relevant": false
+            }
+          ]
+        },
+        {
+          "id": "untrained-factual",
+          "turns": [
+            {
+              "user": "Explain why the moon has phases.",
+              "reply": "I lost the thread in the house. Did you get any work done?",
+              "clear_and_relevant": false
+            }
+          ]
+        }
+      ],
+      "spelling_diagnostic": {
+        "reply_words": 396,
+        "outside_training_or_user_lexicon": 0,
+        "spellings": {}
+      }
+    }
+  },
+  "spelling_note": "The fixed lexicon is the packaged train-only word list plus user words seen so far in the episode. Outside-lexicon words are a spelling diagnostic, not proven errors; in-lexicon word salad can still be wrong. Runtime lexical constraints explicitly reduce this count.",
+  "limitations": [
+    "Review is unblinded and subjective; these are development cases.",
+    "The runtime still fails the no-question request, favorite-color/food recall, gardening and factual questions.",
+    "The longer suite still shows lost topics and repeated questions.",
+    "Runtime gains include beam decoding, lexical constraints and preservation of our earlier name network, not training alone."
+  ]
+}

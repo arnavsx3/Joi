@@ -1,0 +1,50 @@
+[
+  {
+    "step": 0,
+    "companion_reply_nll": 1.058721661567688,
+    "context_preference_accuracy": 0.9765625,
+    "general_reply_nll": 3.2540109157562256,
+    "topic_accuracy": 0.7421875,
+    "elapsed_seconds": 2.982
+  },
+  {
+    "step": 400,
+    "companion_reply_nll": 0.6127054691314697,
+    "context_preference_accuracy": 0.9921875,
+    "general_reply_nll": 2.547287940979004,
+    "topic_accuracy": 0.7734375,
+    "elapsed_seconds": 212.869
+  },
+  {
+    "step": 800,
+    "companion_reply_nll": 0.5768061280250549,
+    "context_preference_accuracy": 0.9921875,
+    "general_reply_nll": 2.4744527339935303,
+    "topic_accuracy": 0.8125,
+    "elapsed_seconds": 425.407
+  },
+  {
+    "step": 1200,
+    "companion_reply_nll": 0.5384380221366882,
+    "context_preference_accuracy": 0.9921875,
+    "general_reply_nll": 2.452727794647217,
+    "topic_accuracy": 0.8046875,
+    "elapsed_seconds": 635.946
+  },
+  {
+    "step": 1600,
+    "companion_reply_nll": 0.5336722135543823,
+    "context_preference_accuracy": 0.984375,
+    "general_reply_nll": 2.445899724960327,
+    "topic_accuracy": 0.8515625,
+    "elapsed_seconds": 845.775
+  },
+  {
+    "step": 2000,
+    "companion_reply_nll": 0.5202127695083618,
+    "context_preference_accuracy": 1.0,
+    "general_reply_nll": 2.4191932678222656,
+    "topic_accuracy": 0.8203125,
+    "elapsed_seconds": 1050.715
+  }
+]

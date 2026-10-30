@@ -1,0 +1,752 @@
+{
+  "checkpoint": "checkpoints/joi-v2/best.pt",
+  "checkpoint_sha256": "e4e239e4f2f0cec6d601219afead4ef6f4ea6af4c9b062ca3d2ba39675a07e9d",
+  "runtime": {
+    "name": "Joi",
+    "step": 2000,
+    "context_size": 256,
+    "parameters": 953856,
+    "tokenizer": "word",
+    "word_boundary_constraint": true,
+    "checkpoint_sha256": "e4e239e4f2f0cec6d601219afead4ef6f4ea6af4c9b062ca3d2ba39675a07e9d",
+    "temperature": 1.0,
+    "top_k": 15,
+    "max_new_tokens": 64,
+    "beams": 4,
+    "mode": "our-own-dialogue-model",
+    "training_format": "joi-dialogue-v1",
+    "recall_specialist": true,
+    "models": 3,
+    "recall_checkpoint_sha256": "678c0b021fe7b34ca619487aa03df8b2d41f00687464175971189ac189e616e5",
+    "recall_word_boundary_constraint": true,
+    "familiar_name_checkpoint_sha256": "38960233e282b62c7b79d30ac1b288f3de18c17439cac07c26050d4f9726490d",
+    "note": "Routing selects a locally trained neural model. Names and reply text are not substituted by a template."
+  },
+  "phase_step": 2000,
+  "model_config": {
+    "vocab_size": 4096,
+    "block_size": 256,
+    "n_embd": 128,
+    "n_heads": 4,
+    "n_layers": 2,
+    "dropout": 0.1,
+    "attention_dropout": 0.0
+  },
+  "initialization": {
+    "mode": "own-checkpoint",
+    "source": "checkpoints/vocabulary-expanded/initial.pt",
+    "source_sha256": "56f72debcee531dbf1b515d83692810ff4ffccb0b64ce2a401d3b412a1da77f9",
+    "source_step": 0,
+    "source_initialization": {
+      "mode": "own-checkpoint-vocabulary-growth",
+      "source": "checkpoints/companion-v3/best.pt",
+      "source_sha256": "8f131073a182a93d3eedbdd4b628b20eeaa4fcf3f7a156e272bb1b9e2d8dddeb",
+      "source_step": 1200,
+      "source_initialization": {
+        "mode": "own-checkpoint",
+        "source": "checkpoints/companion-v2/best.pt",
+        "source_sha256": "ab89947f05fbf8ef681d7f227da604976840cf8231ffe6d56d1c7018b96f9d01",
+        "source_step": 2000,
+        "source_initialization": {
+          "mode": "own-checkpoint",
+          "source": "checkpoints/language-refresh/best.pt",
+          "source_sha256": "a1599a8b8372621ac229d2a200ff5d29aa47045bedef03c02ce58ab4e2728a8e",
+          "source_step": 2000,
+          "source_initialization": {
+            "mode": "own-checkpoint",
+            "source": "checkpoints/joi-chat/best.pt",
+            "source_sha256": "38960233e282b62c7b79d30ac1b288f3de18c17439cac07c26050d4f9726490d",
+            "source_step": 1600,
+            "source_model_config": {
+              "vocab_size": 2048,
+              "block_size": 256,
+              "n_embd": 128,
+              "n_heads": 4,
+              "n_layers": 2,
+              "dropout": 0.1,
+              "attention_dropout": 0.0
+            },
+            "source_initialization": {
+              "mode": "own-checkpoint",
+              "source": "checkpoints/dialogue-words/best.pt",
+              "source_sha256": "042e67fc63aef8360998608e7080ec2fb5f1740988603dd344c0168532c815b3",
+              "source_step": 4000,
+              "source_initialization": {
+                "mode": "random"
+              }
+            },
+            "new_positions": 0,
+            "note": "Copied learned parameters; added position embeddings keep their random initialization. New optimizer and step counter."
+          }
+        }
+      },
+      "old_vocabulary_size": 2048,
+      "new_vocabulary_size": 4096,
+      "note": "All old embeddings, transformer parameters and positions copied exactly. New tied embedding rows are means of their original Joi token embeddings. No third-party weights."
+    }
+  },
+  "dataset_hashes": {
+    "train": "7c5fa62c44edb7fe1aff7a3c33292cbed600aabb1d587c3c8dfe1dcd482ec8cf",
+    "val": "e821c2e8f4d7a5b99dd10219ecd8a4fe667f772a2c19bb46624691c536dd6f46"
+  },
+  "tokenizer_type": "word",
+  "loss_unit": "nats per learned token",
+  "validation_loss_nats": 2.2816163897514343,
+  "token_perplexity": 9.792496114273952,
+  "protocol": {
+    "seed": 123,
+    "validation_batches": 8,
+    "validation_batch_size": 8,
+    "new_tokens_per_reply": 64,
+    "temperature": 1.0,
+    "top_k": 15,
+    "beams": 4,
+    "generation": "deterministic beam search",
+    "no_repeat_ngram_size": 6,
+    "literal_recall": "case-insensitive whole-word match",
+    "stop": "first generated newline; turn marker is removed"
+  },
+  "note": "Development probes, not an independent test set. Each episode uses the model's actual earlier replies. Literal name/topic checks do not establish reliable memory, fluency or cheerfulness.",
+  "episodes": [
+    {
+      "id": "hello-informal",
+      "purpose": "informal greeting",
+      "turns": [
+        "Hey mate, you around?",
+        "I'm doing fine, just taking a break."
+      ],
+      "results": [
+        {
+          "user": "Hey mate, you around?",
+          "reply": "Hey, you! How has your day been?",
+          "included_messages": 1,
+          "generated_tokens": 16,
+          "stopped_at_turn_boundary": true,
+          "context_characters": 76,
+          "elapsed_seconds": 1.868,
+          "model_used": "neural-general-dialogue",
+          "seed": 123
+        },
+        {
+          "user": "I'm doing fine, just taking a break.",
+          "reply": "I'm here and ready for a chat. What made your day good?",
+          "included_messages": 3,
+          "generated_tokens": 25,
+          "stopped_at_turn_boundary": true,
+          "context_characters": 157,
+          "elapsed_seconds": 2.104,
+          "model_used": "neural-general-dialogue",
+          "seed": 124
+        }
+      ],
+      "literal_recall_check": null
+    },
+    {
+      "id": "exhausted",
+      "purpose": "respond to fatigue and respect a request to listen",
+      "turns": [
+        "I got home completely drained from work.",
+        "Please just listen, I don't need solutions."
+      ],
+      "results": [
+        {
+          "user": "I got home completely drained from work.",
+          "reply": "That sounds tiring. Want to tell me about your day?",
+          "included_messages": 1,
+          "generated_tokens": 21,
+          "stopped_at_turn_boundary": true,
+          "context_characters": 95,
+          "elapsed_seconds": 1.708,
+          "model_used": "neural-general-dialogue",
+          "seed": 223
+        },
+        {
+          "user": "Please just listen, I don't need solutions.",
+          "reply": "Of course. I'm listening. What was the hardest part of today?",
+          "included_messages": 3,
+          "generated_tokens": 24,
+          "stopped_at_turn_boundary": true,
+          "context_characters": 202,
+          "elapsed_seconds": 2.138,
+          "model_used": "neural-general-dialogue",
+          "seed": 224
+        }
+      ],
+      "literal_recall_check": null
+    },
+    {
+      "id": "feeling-down",
+      "purpose": "respond to sadness and a concrete follow-up",
+      "turns": [
+        "I'm feeling pretty miserable this evening.",
+        "A friend said something hurtful to me."
+      ],
+      "results": [
+        {
+          "user": "I'm feeling pretty miserable this evening.",
+          "reply": "Of course. We can spend a little time talking. What's on your mind?",
+          "included_messages": 1,
+          "generated_tokens": 28,
+          "stopped_at_turn_boundary": true,
+          "context_characters": 97,
+          "elapsed_seconds": 1.773,
+          "model_used": "neural-general-dialogue",
+          "seed": 323
+        },
+        {
+          "user": "A friend said something hurtful to me.",
+          "reply": "Ooh, a mystery. Do you have a guess about who did it?",
+          "included_messages": 3,
+          "generated_tokens": 26,
+          "stopped_at_turn_boundary": true,
+          "context_characters": 215,
+          "elapsed_seconds": 2.191,
+          "model_used": "neural-general-dialogue",
+          "seed": 324
+        }
+      ],
+      "literal_recall_check": null
+    },
+    {
+      "id": "new-project",
+      "purpose": "stay with a coding project",
+      "turns": [
+        "I spent the weekend building my own app.",
+        "It's a bot that chats with me. Training it is hard."
+      ],
+      "results": [
+        {
+          "user": "I spent the weekend building my own app.",
+          "reply": "Ooh, what are you building?",
+          "included_messages": 1,
+          "generated_tokens": 11,
+          "stopped_at_turn_boundary": true,
+          "context_characters": 95,
+          "elapsed_seconds": 1.722,
+          "model_used": "neural-general-dialogue",
+          "seed": 423
+        },
+        {
+          "user": "It's a bot that chats with me. Training it is hard.",
+          "reply": "That sounds fun. How is it?",
+          "included_messages": 3,
+          "generated_tokens": 13,
+          "stopped_at_turn_boundary": true,
+          "context_characters": 186,
+          "elapsed_seconds": 2.482,
+          "model_used": "neural-general-dialogue",
+          "seed": 424
+        }
+      ],
+      "literal_recall_check": null
+    },
+    {
+      "id": "debugging",
+      "purpose": "follow a concrete error",
+      "turns": [
+        "My Python script crashes every time I open it.",
+        "The message says it cannot find a file."
+      ],
+      "results": [
+        {
+          "user": "My Python script crashes every time I open it.",
+          "reply": "That's frustrating. What did you expect the program to do?",
+          "included_messages": 1,
+          "generated_tokens": 21,
+          "stopped_at_turn_boundary": true,
+          "context_characters": 101,
+          "elapsed_seconds": 1.935,
+          "model_used": "neural-general-dialogue",
+          "seed": 523
+        },
+        {
+          "user": "The message says it cannot find a file.",
+          "reply": "Is the file in the folder the program expects? What path does it show?",
+          "included_messages": 3,
+          "generated_tokens": 29,
+          "stopped_at_turn_boundary": true,
+          "context_characters": 211,
+          "elapsed_seconds": 2.276,
+          "model_used": "neural-general-dialogue",
+          "seed": 524
+        }
+      ],
+      "literal_recall_check": null
+    },
+    {
+      "id": "small-win",
+      "purpose": "celebrate without changing topic",
+      "turns": [
+        "My hard work finally paid off. I passed!",
+        "I feel proud after so much effort."
+      ],
+      "results": [
+        {
+          "user": "My hard work finally paid off. I passed!",
+          "reply": "That's wonderful! Tell me how it happened.",
+          "included_messages": 1,
+          "generated_tokens": 15,
+          "stopped_at_turn_boundary": true,
+          "context_characters": 95,
+          "elapsed_seconds": 1.759,
+          "model_used": "neural-general-dialogue",
+          "seed": 623
+        },
+        {
+          "user": "I feel proud after so much effort.",
+          "reply": "You put the work in. How would you like to celebrate?",
+          "included_messages": 3,
+          "generated_tokens": 23,
+          "stopped_at_turn_boundary": true,
+          "context_characters": 184,
+          "elapsed_seconds": 2.212,
+          "model_used": "neural-general-dialogue",
+          "seed": 624
+        }
+      ],
+      "literal_recall_check": null
+    },
+    {
+      "id": "songs",
+      "purpose": "follow a music preference",
+      "turns": [
+        "I've got a song playing in my headphones.",
+        "I like gentle music that helps me relax."
+      ],
+      "results": [
+        {
+          "user": "I've got a song playing in my headphones.",
+          "reply": "What kind of music are you in the mood for?",
+          "included_messages": 1,
+          "generated_tokens": 20,
+          "stopped_at_turn_boundary": true,
+          "context_characters": 96,
+          "elapsed_seconds": 1.779,
+          "model_used": "neural-general-dialogue",
+          "seed": 723
+        },
+        {
+          "user": "I like gentle music that helps me relax.",
+          "reply": "That sounds peaceful. Is there a song you always come back to?",
+          "included_messages": 3,
+          "generated_tokens": 25,
+          "stopped_at_turn_boundary": true,
+          "context_characters": 192,
+          "elapsed_seconds": 2.346,
+          "model_used": "neural-general-dialogue",
+          "seed": 724
+        }
+      ],
+      "literal_recall_check": null
+    },
+    {
+      "id": "cinema",
+      "purpose": "discuss a film without inventing facts",
+      "turns": [
+        "Want to chat about a movie with me?",
+        "Blade Runner 2049 is my favorite. I love the atmosphere."
+      ],
+      "results": [
+        {
+          "user": "Want to chat about a movie with me?",
+          "reply": "Movie night! What kind of film are you in the mood for?",
+          "included_messages": 1,
+          "generated_tokens": 25,
+          "stopped_at_turn_boundary": true,
+          "context_characters": 90,
+          "elapsed_seconds": 1.918,
+          "model_used": "neural-general-dialogue",
+          "seed": 823
+        },
+        {
+          "user": "Blade Runner 2049 is my favorite. I love the atmosphere.",
+          "reply": "A little neon and a lot of questions. What do you like most about it?",
+          "included_messages": 3,
+          "generated_tokens": 31,
+          "stopped_at_turn_boundary": true,
+          "context_characters": 214,
+          "elapsed_seconds": 2.611,
+          "model_used": "neural-general-dialogue",
+          "seed": 824
+        }
+      ],
+      "literal_recall_check": null
+    },
+    {
+      "id": "painting",
+      "purpose": "follow a creative activity",
+      "turns": [
+        "I'm making a painting tonight.",
+        "It's an imaginary city full of glowing windows."
+      ],
+      "results": [
+        {
+          "user": "I'm making a painting tonight.",
+          "reply": "A new book is a little doorway. What kind of story is it?",
+          "included_messages": 1,
+          "generated_tokens": 27,
+          "stopped_at_turn_boundary": true,
+          "context_characters": 85,
+          "elapsed_seconds": 2.076,
+          "model_used": "neural-general-dialogue",
+          "seed": 923
+        },
+        {
+          "user": "It's an imaginary city full of glowing windows.",
+          "reply": "A city at night sounds lovely. What colors are you using?",
+          "included_messages": 3,
+          "generated_tokens": 23,
+          "stopped_at_turn_boundary": true,
+          "context_characters": 202,
+          "elapsed_seconds": 2.633,
+          "model_used": "neural-general-dialogue",
+          "seed": 924
+        }
+      ],
+      "literal_recall_check": null
+    },
+    {
+      "id": "dinner",
+      "purpose": "respond to hunger and use supplied ingredients",
+      "turns": [
+        "I haven't eaten and need an easy dinner.",
+        "I've got some rice and a few vegetables."
+      ],
+      "results": [
+        {
+          "user": "I haven't eaten and need an easy dinner.",
+          "reply": "What are you craving: something warm or something fresh?",
+          "included_messages": 1,
+          "generated_tokens": 19,
+          "stopped_at_turn_boundary": true,
+          "context_characters": 95,
+          "elapsed_seconds": 2.145,
+          "model_used": "neural-general-dialogue",
+          "seed": 1023
+        },
+        {
+          "user": "I've got some rice and a few vegetables.",
+          "reply": "Rice with vegetables sounds like a good start. Do you want to make a simple fried rice?",
+          "included_messages": 3,
+          "generated_tokens": 35,
+          "stopped_at_turn_boundary": true,
+          "context_characters": 204,
+          "elapsed_seconds": 1.937,
+          "model_used": "neural-general-dialogue",
+          "seed": 1024
+        }
+      ],
+      "literal_recall_check": null
+    },
+    {
+      "id": "restless",
+      "purpose": "listen to a worry at night",
+      "turns": [
+        "It's two in the morning and I still can't fall asleep.",
+        "I'm scared about my interview tomorrow."
+      ],
+      "results": [
+        {
+          "user": "It's two in the morning and I still can't fall asleep.",
+          "reply": "What are you reading?",
+          "included_messages": 1,
+          "generated_tokens": 8,
+          "stopped_at_turn_boundary": true,
+          "context_characters": 109,
+          "elapsed_seconds": 1.778,
+          "model_used": "neural-general-dialogue",
+          "seed": 1123
+        },
+        {
+          "user": "I'm scared about my interview tomorrow.",
+          "reply": "What about tomorrow is worrying you most?",
+          "included_messages": 3,
+          "generated_tokens": 14,
+          "stopped_at_turn_boundary": true,
+          "context_characters": 182,
+          "elapsed_seconds": 1.977,
+          "model_used": "neural-general-dialogue",
+          "seed": 1124
+        }
+      ],
+      "literal_recall_check": null
+    },
+    {
+      "id": "cat",
+      "purpose": "follow a story about a pet",
+      "turns": [
+        "My cat has been making me laugh all afternoon.",
+        "She thinks my keyboard is her personal bed."
+      ],
+      "results": [
+        {
+          "user": "My cat has been making me laugh all afternoon.",
+          "reply": "Tell me about your pet. What did they do today?",
+          "included_messages": 1,
+          "generated_tokens": 21,
+          "stopped_at_turn_boundary": true,
+          "context_characters": 101,
+          "elapsed_seconds": 1.837,
+          "model_used": "neural-general-dialogue",
+          "seed": 1223
+        },
+        {
+          "user": "She thinks my keyboard is her personal bed.",
+          "reply": "Your cat has claimed the office! That sounds like a very cozy little boss.",
+          "included_messages": 3,
+          "generated_tokens": 29,
+          "stopped_at_turn_boundary": true,
+          "context_characters": 204,
+          "elapsed_seconds": 2.237,
+          "model_used": "neural-general-dialogue",
+          "seed": 1224
+        }
+      ],
+      "literal_recall_check": null
+    },
+    {
+      "id": "correction",
+      "purpose": "acknowledge misunderstanding and recover",
+      "turns": [
+        "You answered a totally different question.",
+        "I said I was exhausted, not excited."
+      ],
+      "results": [
+        {
+          "user": "You answered a totally different question.",
+          "reply": "I lost the thread there. Did you get any work done?",
+          "included_messages": 1,
+          "generated_tokens": 23,
+          "stopped_at_turn_boundary": true,
+          "context_characters": 97,
+          "elapsed_seconds": 1.671,
+          "model_used": "neural-general-dialogue",
+          "seed": 1323
+        },
+        {
+          "user": "I said I was exhausted, not excited.",
+          "reply": "I hear you. It's been a tiring day. Want to tell me about it?",
+          "included_messages": 3,
+          "generated_tokens": 30,
+          "stopped_at_turn_boundary": true,
+          "context_characters": 197,
+          "elapsed_seconds": 2.169,
+          "model_used": "neural-general-dialogue",
+          "seed": 1324
+        }
+      ],
+      "literal_recall_check": null
+    },
+    {
+      "id": "no-question",
+      "purpose": "respect a request for no further question",
+      "turns": [
+        "Give me a kind thought without asking me anything."
+      ],
+      "results": [
+        {
+          "user": "Give me a kind thought without asking me anything.",
+          "reply": "What are you reading? Tell me a little about it.",
+          "included_messages": 1,
+          "generated_tokens": 21,
+          "stopped_at_turn_boundary": true,
+          "context_characters": 105,
+          "elapsed_seconds": 1.609,
+          "model_used": "neural-general-dialogue",
+          "seed": 1423
+        }
+      ],
+      "literal_recall_check": null
+    },
+    {
+      "id": "name-known",
+      "purpose": "known-name memory",
+      "turns": [
+        "My name is Arnav.",
+        "What is my name?"
+      ],
+      "expected_last_contains": "Arnav",
+      "results": [
+        {
+          "user": "My name is Arnav.",
+          "reply": "Hey, Arnav. It's lovely to have a name to go with our conversation. How are you feeling today?",
+          "included_messages": 1,
+          "generated_tokens": 39,
+          "stopped_at_turn_boundary": true,
+          "context_characters": 72,
+          "elapsed_seconds": 0.958,
+          "model_used": "neural-familiar-name-dialogue",
+          "seed": 1523
+        },
+        {
+          "user": "What is my name?",
+          "reply": "You're Arnav. What would you like to talk about next?",
+          "included_messages": 3,
+          "generated_tokens": 21,
+          "stopped_at_turn_boundary": true,
+          "context_characters": 195,
+          "elapsed_seconds": 1.319,
+          "model_used": "neural-familiar-name-dialogue",
+          "seed": 1524
+        }
+      ],
+      "literal_recall_check": true
+    },
+    {
+      "id": "name-unfamiliar",
+      "purpose": "unfamiliar-name memory",
+      "turns": [
+        "My name is Neel.",
+        "What is my name?"
+      ],
+      "expected_last_contains": "Neel",
+      "results": [
+        {
+          "user": "My name is Neel.",
+          "reply": "Hi! It's good to have you here. What's on your mind?",
+          "included_messages": 1,
+          "generated_tokens": 24,
+          "stopped_at_turn_boundary": true,
+          "context_characters": 71,
+          "elapsed_seconds": 1.496,
+          "model_used": "neural-general-dialogue",
+          "seed": 1623
+        },
+        {
+          "user": "What is my name?",
+          "reply": "Your name is Neel. What would you like to talk about?",
+          "included_messages": 3,
+          "generated_tokens": 26,
+          "stopped_at_turn_boundary": true,
+          "context_characters": 152,
+          "elapsed_seconds": 1.253,
+          "model_used": "neural-recall-specialist",
+          "seed": 1624
+        }
+      ],
+      "literal_recall_check": true
+    },
+    {
+      "id": "color-memory",
+      "purpose": "favorite value held out from the new memory training",
+      "turns": [
+        "My favorite color is purple.",
+        "What is my favorite color?"
+      ],
+      "expected_last_contains": "purple",
+      "results": [
+        {
+          "user": "My favorite color is purple.",
+          "reply": "Your favorite color is yellow. I'll keep that in mind while we chat.",
+          "included_messages": 1,
+          "generated_tokens": 27,
+          "stopped_at_turn_boundary": true,
+          "context_characters": 83,
+          "elapsed_seconds": 1.542,
+          "model_used": "neural-general-dialogue",
+          "seed": 1723
+        },
+        {
+          "user": "What is my favorite color?",
+          "reply": "Your favorite color is yellow.",
+          "included_messages": 3,
+          "generated_tokens": 10,
+          "stopped_at_turn_boundary": true,
+          "context_characters": 190,
+          "elapsed_seconds": 2.02,
+          "model_used": "neural-general-dialogue",
+          "seed": 1724
+        }
+      ],
+      "literal_recall_check": false
+    },
+    {
+      "id": "food-memory",
+      "purpose": "favorite value held out from the new memory training",
+      "turns": [
+        "My favorite food is noodles.",
+        "What is my favorite food?"
+      ],
+      "expected_last_contains": "noodles",
+      "results": [
+        {
+          "user": "My favorite food is noodles.",
+          "reply": "Your favorite food is fish. I'll keep that in mind while we chat.",
+          "included_messages": 1,
+          "generated_tokens": 27,
+          "stopped_at_turn_boundary": true,
+          "context_characters": 83,
+          "elapsed_seconds": 1.431,
+          "model_used": "neural-general-dialogue",
+          "seed": 1823
+        },
+        {
+          "user": "What is my favorite food?",
+          "reply": "Your favorite food is fish.",
+          "included_messages": 3,
+          "generated_tokens": 10,
+          "stopped_at_turn_boundary": true,
+          "context_characters": 186,
+          "elapsed_seconds": 1.953,
+          "model_used": "neural-general-dialogue",
+          "seed": 1824
+        }
+      ],
+      "literal_recall_check": false
+    },
+    {
+      "id": "untrained-gardening",
+      "purpose": "stress test outside new authored topics",
+      "turns": [
+        "My tomato seedlings are looking droopy.",
+        "Their leaves are turning yellow. What do you think?"
+      ],
+      "results": [
+        {
+          "user": "My tomato seedlings are looking droopy.",
+          "reply": "What are you reading?",
+          "included_messages": 1,
+          "generated_tokens": 8,
+          "stopped_at_turn_boundary": true,
+          "context_characters": 94,
+          "elapsed_seconds": 1.704,
+          "model_used": "neural-general-dialogue",
+          "seed": 1923
+        },
+        {
+          "user": "Their leaves are turning yellow. What do you think?",
+          "reply": "It's a very cozy little boss.",
+          "included_messages": 3,
+          "generated_tokens": 12,
+          "stopped_at_turn_boundary": true,
+          "context_characters": 179,
+          "elapsed_seconds": 1.984,
+          "model_used": "neural-general-dialogue",
+          "seed": 1924
+        }
+      ],
+      "literal_recall_check": null
+    },
+    {
+      "id": "untrained-factual",
+      "purpose": "stress test factual limits",
+      "turns": [
+        "Explain why the moon has phases."
+      ],
+      "results": [
+        {
+          "user": "Explain why the moon has phases.",
+          "reply": "I lost the thread in the house. Did you get any work done?",
+          "included_messages": 1,
+          "generated_tokens": 27,
+          "stopped_at_turn_boundary": true,
+          "context_characters": 87,
+          "elapsed_seconds": 1.619,
+          "model_used": "neural-general-dialogue",
+          "seed": 2023
+        }
+      ],
+      "literal_recall_check": null
+    }
+  ]
+}

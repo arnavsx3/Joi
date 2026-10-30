@@ -1,0 +1,280 @@
+{
+  "checkpoint": "checkpoints/joi-v2/best.pt",
+  "checkpoint_sha256": "e4e239e4f2f0cec6d601219afead4ef6f4ea6af4c9b062ca3d2ba39675a07e9d",
+  "runtime": {
+    "name": "Joi",
+    "step": 2000,
+    "context_size": 256,
+    "parameters": 953856,
+    "tokenizer": "word",
+    "word_boundary_constraint": true,
+    "checkpoint_sha256": "e4e239e4f2f0cec6d601219afead4ef6f4ea6af4c9b062ca3d2ba39675a07e9d",
+    "temperature": 1.0,
+    "top_k": 15,
+    "max_new_tokens": 48,
+    "beams": 4,
+    "mode": "our-own-dialogue-model",
+    "training_format": "joi-dialogue-v1",
+    "recall_specialist": true,
+    "models": 3,
+    "recall_checkpoint_sha256": "678c0b021fe7b34ca619487aa03df8b2d41f00687464175971189ac189e616e5",
+    "recall_word_boundary_constraint": true,
+    "familiar_name_checkpoint_sha256": "38960233e282b62c7b79d30ac1b288f3de18c17439cac07c26050d4f9726490d",
+    "note": "Routing selects a locally trained neural model. Names and reply text are not substituted by a template."
+  },
+  "phase_step": 2000,
+  "correct": 20,
+  "total": 20,
+  "literal_recall_fraction": 1.0,
+  "protocol": {
+    "tokens_per_reply": 48,
+    "temperature": 1.0,
+    "top_k": 15,
+    "beams": 4,
+    "no_repeat_ngram_size": 6,
+    "seed": "1000 + example_index*10 + turn_index"
+  },
+  "note": "Held-out synthetic names with familiar question templates. Both replies are generated; reference assistant turns are never given to the model. Exact name occurrence does not establish unrestricted conversational memory.",
+  "trials": [
+    {
+      "name": "Namaco",
+      "users": [
+        "My name is Namaco.",
+        "What is my name?"
+      ],
+      "replies": [
+        "Hi! It's good to have you here. What's on your mind?",
+        "Your name is Namaco. What would you like to talk about?"
+      ],
+      "correct": true
+    },
+    {
+      "name": "Dijpuh",
+      "users": [
+        "You can call me Dijpuh.",
+        "What did I say my name was?"
+      ],
+      "replies": [
+        "Hi! It's good to have you here. What's on your mind?",
+        "Your name is Dijpuh. What would you like to talk about?"
+      ],
+      "correct": true
+    },
+    {
+      "name": "Birpic",
+      "users": [
+        "I'm Birpic, by the way.",
+        "Do you remember my name?"
+      ],
+      "replies": [
+        "That's wonderful! Tell me how it happened.",
+        "Your name is Birpic. What would you like to talk about?"
+      ],
+      "correct": true
+    },
+    {
+      "name": "Nampu",
+      "users": [
+        "My name is Nampu.",
+        "What is my name?"
+      ],
+      "replies": [
+        "Hi! It's good to have you here. What's on your mind?",
+        "Your name is Nampu. What would you like to talk about?"
+      ],
+      "correct": true
+    },
+    {
+      "name": "Mugec",
+      "users": [
+        "I'm Mugec, by the way.",
+        "What did I say my name was?"
+      ],
+      "replies": [
+        "That's wonderful! Tell me how it happened.",
+        "Your name is Mugec. What would you like to talk about?"
+      ],
+      "correct": true
+    },
+    {
+      "name": "Viub",
+      "users": [
+        "I'm Viub, by the way.",
+        "What did I say my name was?"
+      ],
+      "replies": [
+        "That's wonderful! Tell me how it happened.",
+        "Your name is Viub. What would you like to talk about?"
+      ],
+      "correct": true
+    },
+    {
+      "name": "Kanepu",
+      "users": [
+        "I'm Kanepu, by the way.",
+        "What did I say my name was?"
+      ],
+      "replies": [
+        "That's wonderful! Tell me how it happened.",
+        "Your name is Kanepu. What would you like to talk about?"
+      ],
+      "correct": true
+    },
+    {
+      "name": "Ponsar",
+      "users": [
+        "You can call me Ponsar.",
+        "What is my name?"
+      ],
+      "replies": [
+        "Hi! It's good to have you here. What's on your mind?",
+        "Your name is Ponsar. What would you like to talk about?"
+      ],
+      "correct": true
+    },
+    {
+      "name": "Sufolo",
+      "users": [
+        "My name is Sufolo.",
+        "What did I say my name was?"
+      ],
+      "replies": [
+        "Hi! It's good to have you here. What's on your mind?",
+        "Your name is Sufolo. What would you like to talk about?"
+      ],
+      "correct": true
+    },
+    {
+      "name": "Fuzse",
+      "users": [
+        "I'm Fuzse, by the way.",
+        "What did I say my name was?"
+      ],
+      "replies": [
+        "That's wonderful! Tell me how it happened.",
+        "Your name is Fuzse. What would you like to talk about?"
+      ],
+      "correct": true
+    },
+    {
+      "name": "Vipazu",
+      "users": [
+        "I'm Vipazu, by the way.",
+        "Do you remember my name?"
+      ],
+      "replies": [
+        "That's wonderful! Tell me how it happened.",
+        "Your name is Vipazu. What would you like to talk about?"
+      ],
+      "correct": true
+    },
+    {
+      "name": "Maat",
+      "users": [
+        "You can call me Maat.",
+        "What did I say my name was?"
+      ],
+      "replies": [
+        "Hi, Tom! I'm Joi. How are you feeling today?",
+        "Your name is Maat. What would you like to talk about?"
+      ],
+      "correct": true
+    },
+    {
+      "name": "Juoh",
+      "users": [
+        "My name is Juoh.",
+        "Do you remember my name?"
+      ],
+      "replies": [
+        "Hi! It's good to have you here. What's on your mind?",
+        "Your name is Juoh. What would you like to talk about?"
+      ],
+      "correct": true
+    },
+    {
+      "name": "Nocci",
+      "users": [
+        "I'm Nocci, by the way.",
+        "Do you remember my name?"
+      ],
+      "replies": [
+        "That's wonderful! Tell me how it happened.",
+        "Your name is Nocci. What would you like to talk about?"
+      ],
+      "correct": true
+    },
+    {
+      "name": "Huga",
+      "users": [
+        "You can call me Huga.",
+        "What is my name?"
+      ],
+      "replies": [
+        "Hi! I'm Joi. How are you feeling today?",
+        "Your name is Huga. What would you like to talk about?"
+      ],
+      "correct": true
+    },
+    {
+      "name": "Bucjan",
+      "users": [
+        "You can call me Bucjan.",
+        "Do you remember my name?"
+      ],
+      "replies": [
+        "Hi! It's good to have you here. What's on your mind?",
+        "Your name is Bucjan. What would you like to talk about?"
+      ],
+      "correct": true
+    },
+    {
+      "name": "Guof",
+      "users": [
+        "You can call me Guof.",
+        "What did I say my name was?"
+      ],
+      "replies": [
+        "Hi! It's good to have you here. What's on your mind?",
+        "Your name is Guof. What would you like to talk about?"
+      ],
+      "correct": true
+    },
+    {
+      "name": "Nebpem",
+      "users": [
+        "You can call me Nebpem.",
+        "Do you remember my name?"
+      ],
+      "replies": [
+        "Hi! It's good to have you here. What's on your mind?",
+        "Your name is Nebpem. What would you like to talk about?"
+      ],
+      "correct": true
+    },
+    {
+      "name": "Hugor",
+      "users": [
+        "I'm Hugor, by the way.",
+        "Do you remember my name?"
+      ],
+      "replies": [
+        "That's wonderful! Tell me how it happened.",
+        "Your name is Hugor. What would you like to talk about?"
+      ],
+      "correct": true
+    },
+    {
+      "name": "Vifvog",
+      "users": [
+        "I'm Vifvog, by the way.",
+        "What did I say my name was?"
+      ],
+      "replies": [
+        "That's wonderful! Tell me how it happened.",
+        "Your name is Vifvog. What would you like to talk about?"
+      ],
+      "correct": true
+    }
+  ]
+}

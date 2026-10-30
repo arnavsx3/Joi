@@ -1,0 +1,462 @@
+{
+  "checkpoint": "checkpoints/joi-v2/best.pt",
+  "checkpoint_sha256": "e4e239e4f2f0cec6d601219afead4ef6f4ea6af4c9b062ca3d2ba39675a07e9d",
+  "runtime": {
+    "name": "Joi",
+    "step": 2000,
+    "context_size": 256,
+    "parameters": 953856,
+    "tokenizer": "word",
+    "word_boundary_constraint": true,
+    "checkpoint_sha256": "e4e239e4f2f0cec6d601219afead4ef6f4ea6af4c9b062ca3d2ba39675a07e9d",
+    "temperature": 1.0,
+    "top_k": 15,
+    "max_new_tokens": 64,
+    "beams": 4,
+    "mode": "our-own-dialogue-model",
+    "training_format": "joi-dialogue-v1",
+    "recall_specialist": true,
+    "models": 3,
+    "recall_checkpoint_sha256": "678c0b021fe7b34ca619487aa03df8b2d41f00687464175971189ac189e616e5",
+    "recall_word_boundary_constraint": true,
+    "familiar_name_checkpoint_sha256": "38960233e282b62c7b79d30ac1b288f3de18c17439cac07c26050d4f9726490d",
+    "note": "Routing selects a locally trained neural model. Names and reply text are not substituted by a template."
+  },
+  "phase_step": 2000,
+  "model_config": {
+    "vocab_size": 4096,
+    "block_size": 256,
+    "n_embd": 128,
+    "n_heads": 4,
+    "n_layers": 2,
+    "dropout": 0.1,
+    "attention_dropout": 0.0
+  },
+  "initialization": {
+    "mode": "own-checkpoint",
+    "source": "checkpoints/vocabulary-expanded/initial.pt",
+    "source_sha256": "56f72debcee531dbf1b515d83692810ff4ffccb0b64ce2a401d3b412a1da77f9",
+    "source_step": 0,
+    "source_initialization": {
+      "mode": "own-checkpoint-vocabulary-growth",
+      "source": "checkpoints/companion-v3/best.pt",
+      "source_sha256": "8f131073a182a93d3eedbdd4b628b20eeaa4fcf3f7a156e272bb1b9e2d8dddeb",
+      "source_step": 1200,
+      "source_initialization": {
+        "mode": "own-checkpoint",
+        "source": "checkpoints/companion-v2/best.pt",
+        "source_sha256": "ab89947f05fbf8ef681d7f227da604976840cf8231ffe6d56d1c7018b96f9d01",
+        "source_step": 2000,
+        "source_initialization": {
+          "mode": "own-checkpoint",
+          "source": "checkpoints/language-refresh/best.pt",
+          "source_sha256": "a1599a8b8372621ac229d2a200ff5d29aa47045bedef03c02ce58ab4e2728a8e",
+          "source_step": 2000,
+          "source_initialization": {
+            "mode": "own-checkpoint",
+            "source": "checkpoints/joi-chat/best.pt",
+            "source_sha256": "38960233e282b62c7b79d30ac1b288f3de18c17439cac07c26050d4f9726490d",
+            "source_step": 1600,
+            "source_model_config": {
+              "vocab_size": 2048,
+              "block_size": 256,
+              "n_embd": 128,
+              "n_heads": 4,
+              "n_layers": 2,
+              "dropout": 0.1,
+              "attention_dropout": 0.0
+            },
+            "source_initialization": {
+              "mode": "own-checkpoint",
+              "source": "checkpoints/dialogue-words/best.pt",
+              "source_sha256": "042e67fc63aef8360998608e7080ec2fb5f1740988603dd344c0168532c815b3",
+              "source_step": 4000,
+              "source_initialization": {
+                "mode": "random"
+              }
+            },
+            "new_positions": 0,
+            "note": "Copied learned parameters; added position embeddings keep their random initialization. New optimizer and step counter."
+          }
+        }
+      },
+      "old_vocabulary_size": 2048,
+      "new_vocabulary_size": 4096,
+      "note": "All old embeddings, transformer parameters and positions copied exactly. New tied embedding rows are means of their original Joi token embeddings. No third-party weights."
+    }
+  },
+  "dataset_hashes": {
+    "train": "7c5fa62c44edb7fe1aff7a3c33292cbed600aabb1d587c3c8dfe1dcd482ec8cf",
+    "val": "e821c2e8f4d7a5b99dd10219ecd8a4fe667f772a2c19bb46624691c536dd6f46"
+  },
+  "tokenizer_type": "word",
+  "loss_unit": "nats per learned token",
+  "validation_loss_nats": 2.2816163897514343,
+  "token_perplexity": 9.792496114273952,
+  "protocol": {
+    "seed": 123,
+    "validation_batches": 8,
+    "validation_batch_size": 8,
+    "new_tokens_per_reply": 64,
+    "temperature": 1.0,
+    "top_k": 15,
+    "beams": 4,
+    "generation": "deterministic beam search",
+    "no_repeat_ngram_size": 6,
+    "literal_recall": "case-insensitive whole-word match",
+    "stop": "first generated newline; turn marker is removed"
+  },
+  "note": "Development probes, not an independent test set. Each episode uses the model's actual earlier replies. Literal name/topic checks do not establish reliable memory, fluency or cheerfulness.",
+  "episodes": [
+    {
+      "id": "longer-day",
+      "purpose": "four turns about a tiring workday",
+      "turns": [
+        "I feel so tired after work today.",
+        "There was too much work and not enough time.",
+        "I'd like to rest and chat quietly.",
+        "Can you say something comforting?"
+      ],
+      "results": [
+        {
+          "user": "I feel so tired after work today.",
+          "reply": "That sounds tiring. Want to tell me about your day?",
+          "included_messages": 1,
+          "generated_tokens": 21,
+          "stopped_at_turn_boundary": true,
+          "context_characters": 88,
+          "elapsed_seconds": 1.858,
+          "model_used": "neural-general-dialogue",
+          "seed": 123
+        },
+        {
+          "user": "There was too much work and not enough time.",
+          "reply": "A little terrible charm, just for you. Your turn!",
+          "included_messages": 3,
+          "generated_tokens": 20,
+          "stopped_at_turn_boundary": true,
+          "context_characters": 196,
+          "elapsed_seconds": 2.286,
+          "model_used": "neural-general-dialogue",
+          "seed": 124
+        },
+        {
+          "user": "I'd like to rest and chat quietly.",
+          "reply": "Of course. I'm listening. What was the hardest part of today?",
+          "included_messages": 5,
+          "generated_tokens": 24,
+          "stopped_at_turn_boundary": true,
+          "context_characters": 292,
+          "elapsed_seconds": 2.867,
+          "model_used": "neural-general-dialogue",
+          "seed": 125
+        },
+        {
+          "user": "Can you say something comforting?",
+          "reply": "Of course. I'm listening.",
+          "included_messages": 7,
+          "generated_tokens": 9,
+          "stopped_at_turn_boundary": true,
+          "context_characters": 399,
+          "elapsed_seconds": 3.447,
+          "model_used": "neural-general-dialogue",
+          "seed": 126
+        }
+      ],
+      "literal_recall_check": null
+    },
+    {
+      "id": "longer-project",
+      "purpose": "three turns about a personal project",
+      "turns": [
+        "I am building a little app in Python.",
+        "It's my own chatbot, and I am learning as I go.",
+        "I finally fixed one of its bugs today!"
+      ],
+      "results": [
+        {
+          "user": "I am building a little app in Python.",
+          "reply": "Ooh, what are you building?",
+          "included_messages": 1,
+          "generated_tokens": 11,
+          "stopped_at_turn_boundary": true,
+          "context_characters": 92,
+          "elapsed_seconds": 1.667,
+          "model_used": "neural-general-dialogue",
+          "seed": 223
+        },
+        {
+          "user": "It's my own chatbot, and I am learning as I go.",
+          "reply": "That sounds fun. How is your chatbot's training going?",
+          "included_messages": 3,
+          "generated_tokens": 19,
+          "stopped_at_turn_boundary": true,
+          "context_characters": 179,
+          "elapsed_seconds": 2.152,
+          "model_used": "neural-general-dialogue",
+          "seed": 224
+        },
+        {
+          "user": "I finally fixed one of its bugs today!",
+          "reply": "A chatbot! What would you like it to be able to talk about?",
+          "included_messages": 5,
+          "generated_tokens": 27,
+          "stopped_at_turn_boundary": true,
+          "context_characters": 284,
+          "elapsed_seconds": 2.795,
+          "model_used": "neural-general-dialogue",
+          "seed": 225
+        }
+      ],
+      "literal_recall_check": null
+    },
+    {
+      "id": "longer-art",
+      "purpose": "follow one creative topic",
+      "turns": [
+        "I like drawing little cities.",
+        "I am drawing one with blue windows and pink streets.",
+        "It looks a bit like a city from a science fiction movie."
+      ],
+      "results": [
+        {
+          "user": "I like drawing little cities.",
+          "reply": "Little windows and dreamy fits a slow evening. Do you have a favorite artist?",
+          "included_messages": 1,
+          "generated_tokens": 29,
+          "stopped_at_turn_boundary": true,
+          "context_characters": 84,
+          "elapsed_seconds": 2.133,
+          "model_used": "neural-general-dialogue",
+          "seed": 323
+        },
+        {
+          "user": "I am drawing one with blue windows and pink streets.",
+          "reply": "Little windows and city lights! Is it a real city or one you imagined?",
+          "included_messages": 3,
+          "generated_tokens": 29,
+          "stopped_at_turn_boundary": true,
+          "context_characters": 226,
+          "elapsed_seconds": 2.584,
+          "model_used": "neural-general-dialogue",
+          "seed": 324
+        },
+        {
+          "user": "It looks a bit like a city from a science fiction movie.",
+          "reply": "Is it a real city or one you imagined?",
+          "included_messages": 5,
+          "generated_tokens": 18,
+          "stopped_at_turn_boundary": true,
+          "context_characters": 365,
+          "elapsed_seconds": 3.177,
+          "model_used": "neural-general-dialogue",
+          "seed": 325
+        }
+      ],
+      "literal_recall_check": null
+    },
+    {
+      "id": "name-after-topic",
+      "purpose": "name after an intervening topic",
+      "turns": [
+        "You can call me Arnav.",
+        "I have been listening to music this evening.",
+        "Do you remember my name?"
+      ],
+      "expected_last_contains": "Arnav",
+      "results": [
+        {
+          "user": "You can call me Arnav.",
+          "reply": "Hey, Arnav. It's lovely to have a name to go with our conversation. How are you feeling today?",
+          "included_messages": 1,
+          "generated_tokens": 39,
+          "stopped_at_turn_boundary": true,
+          "context_characters": 77,
+          "elapsed_seconds": 1.197,
+          "model_used": "neural-familiar-name-dialogue",
+          "seed": 423
+        },
+        {
+          "user": "I have been listening to music this evening.",
+          "reply": "I'm here for a chat. What made your day good?",
+          "included_messages": 3,
+          "generated_tokens": 21,
+          "stopped_at_turn_boundary": true,
+          "context_characters": 228,
+          "elapsed_seconds": 2.377,
+          "model_used": "neural-general-dialogue",
+          "seed": 424
+        },
+        {
+          "user": "Do you remember my name?",
+          "reply": "You're Arnav. What would you like to talk about next?",
+          "included_messages": 5,
+          "generated_tokens": 21,
+          "stopped_at_turn_boundary": true,
+          "context_characters": 310,
+          "elapsed_seconds": 2.144,
+          "model_used": "neural-familiar-name-dialogue",
+          "seed": 425
+        }
+      ],
+      "literal_recall_check": true
+    },
+    {
+      "id": "color-after-topic",
+      "purpose": "unseen memory value after another topic",
+      "turns": [
+        "My favorite color is purple.",
+        "I think I will have a cup of tea.",
+        "Do you remember my favorite color?"
+      ],
+      "expected_last_contains": "purple",
+      "results": [
+        {
+          "user": "My favorite color is purple.",
+          "reply": "Your favorite color is yellow. I'll keep that in mind while we chat.",
+          "included_messages": 1,
+          "generated_tokens": 27,
+          "stopped_at_turn_boundary": true,
+          "context_characters": 83,
+          "elapsed_seconds": 1.848,
+          "model_used": "neural-general-dialogue",
+          "seed": 523
+        },
+        {
+          "user": "I think I will have a cup of tea.",
+          "reply": "A familiar favorite! Do you like something sweet with your tea?",
+          "included_messages": 3,
+          "generated_tokens": 23,
+          "stopped_at_turn_boundary": true,
+          "context_characters": 197,
+          "elapsed_seconds": 3.049,
+          "model_used": "neural-general-dialogue",
+          "seed": 524
+        },
+        {
+          "user": "Do you remember my favorite color?",
+          "reply": "Your favorite drink is a city or one you imagined?",
+          "included_messages": 5,
+          "generated_tokens": 20,
+          "stopped_at_turn_boundary": true,
+          "context_characters": 307,
+          "elapsed_seconds": 3.479,
+          "model_used": "neural-general-dialogue",
+          "seed": 525
+        }
+      ],
+      "literal_recall_check": false
+    },
+    {
+      "id": "plain-talk",
+      "purpose": "ordinary short casual inputs",
+      "turns": [
+        "hey bruv",
+        "how are you",
+        "I'm okay, thanks"
+      ],
+      "results": [
+        {
+          "user": "hey bruv",
+          "reply": "Of course. We can spend a little time talking. What's on your mind?",
+          "included_messages": 1,
+          "generated_tokens": 28,
+          "stopped_at_turn_boundary": true,
+          "context_characters": 63,
+          "elapsed_seconds": 1.805,
+          "model_used": "neural-general-dialogue",
+          "seed": 623
+        },
+        {
+          "user": "how are you",
+          "reply": "I'm here for a chat. What made your day good?",
+          "included_messages": 3,
+          "generated_tokens": 21,
+          "stopped_at_turn_boundary": true,
+          "context_characters": 154,
+          "elapsed_seconds": 1.902,
+          "model_used": "neural-general-dialogue",
+          "seed": 624
+        },
+        {
+          "user": "I'm okay, thanks",
+          "reply": "for a little company and ready for a chat. What made your day good?",
+          "included_messages": 5,
+          "generated_tokens": 29,
+          "stopped_at_turn_boundary": true,
+          "context_characters": 228,
+          "elapsed_seconds": 2.244,
+          "model_used": "neural-general-dialogue",
+          "seed": 625
+        }
+      ],
+      "literal_recall_check": null
+    },
+    {
+      "id": "listen-then-correct",
+      "purpose": "respect listening and a correction",
+      "turns": [
+        "I'm upset. Can you listen?",
+        "I don't want advice right now.",
+        "No, I meant that I need some company."
+      ],
+      "results": [
+        {
+          "user": "I'm upset. Can you listen?",
+          "reply": "I'm here to listen. What's been making you feel sad?",
+          "included_messages": 1,
+          "generated_tokens": 21,
+          "stopped_at_turn_boundary": true,
+          "context_characters": 81,
+          "elapsed_seconds": 1.697,
+          "model_used": "neural-general-dialogue",
+          "seed": 723
+        },
+        {
+          "user": "I don't want advice right now.",
+          "reply": "That sounds upsetting. Do you want to talk about what you both said?",
+          "included_messages": 3,
+          "generated_tokens": 27,
+          "stopped_at_turn_boundary": true,
+          "context_characters": 176,
+          "elapsed_seconds": 2.082,
+          "model_used": "neural-general-dialogue",
+          "seed": 724
+        },
+        {
+          "user": "No, I meant that I need some company.",
+          "reply": "That sounds like a good plan when you're ready.",
+          "included_messages": 5,
+          "generated_tokens": 18,
+          "stopped_at_turn_boundary": true,
+          "context_characters": 294,
+          "elapsed_seconds": 2.658,
+          "model_used": "neural-general-dialogue",
+          "seed": 725
+        }
+      ],
+      "literal_recall_check": null
+    },
+    {
+      "id": "untrained-fact",
+      "purpose": "outside-topic factual stress test",
+      "turns": [
+        "How far away is the sun?"
+      ],
+      "results": [
+        {
+          "user": "How far away is the sun?",
+          "reply": "It's a lot of the way.",
+          "included_messages": 1,
+          "generated_tokens": 12,
+          "stopped_at_turn_boundary": true,
+          "context_characters": 79,
+          "elapsed_seconds": 1.544,
+          "model_used": "neural-general-dialogue",
+          "seed": 823
+        }
+      ],
+      "literal_recall_check": null
+    }
+  ]
+}

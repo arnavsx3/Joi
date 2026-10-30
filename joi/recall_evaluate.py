@@ -7,7 +7,7 @@ from pathlib import Path
 import re
 
 from joi.chat import ChatEngine, CompanionEngine
-from joi.companion_data import SITUATIONS, records
+from joi.companion_data import SITUATIONS, records as companion_records
 
 
 def recall_trial(engine, conversation, seed):
@@ -55,7 +55,7 @@ def main():
         if general.checkpoint["curriculum_sha256"] != hashlib.sha256(SITUATIONS.read_bytes()).hexdigest():
             parser.error("Restore the checkpoint's exact authored curriculum before checking held-out names")
         train += "\n" + "\n".join(" ".join(message["content"] for message in history) + " " + target
-                                   for _, history, target in records("train"))
+                                   for _, history, target in companion_records("train"))
     trials=[recall_trial(engine,conversation,1000+index*10) for index,conversation in enumerate(records)]
     for trial in trials:
         if re.search(r"\b"+re.escape(trial["name"])+r"\b",train,flags=re.I):

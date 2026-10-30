@@ -1,4 +1,7 @@
-# Joi companion experiment: current status
+# First Joi companion experiment
+
+This is the earlier experiment. See the [current training and conversation
+report](quality-v2.md) for the upgraded default model and measured improvements.
 
 The portrait, local app, neural inference, history handling, and training tools
 are implemented. **The models do not yet reliably sustain a free-flowing

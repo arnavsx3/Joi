@@ -25,25 +25,28 @@ The screen uses Vite, React, TypeScript, and Tailwind. See the
 [frontend guide](frontend.md) for live development and frontend checks.
 
 Open **http://127.0.0.1:7860**. The selected checkpoint is
-`checkpoints/joi-chat/best.pt`: 691,712 parameters and a 256-token context.
+`checkpoints/joi-v2/best.pt` when available: 953,856 parameters, a 4,096-piece
+vocabulary and a 256-token context. The earlier `checkpoints/joi-chat/best.pt`
+remains a fallback when the packaged upgrade is absent.
 Your browser saves the transcript locally, and recent turns are sent back as
 context. No pretrained weights or remote chat service are involved.
 
-When compatible weights exist at `checkpoints/companion-recall/best.pt`, a small
-rule routes explicit name questions about an unfamiliar, previously introduced
-name to that separately trained neural specialist. Familiar whole-word names
-and ordinary conversation stay with the general model. Both replies are generated
-by our models: the router never writes or substitutes an answer. Use
+The packaged upgrade uses four-beam neural decoding with training-word spelling
+constraints. It preserves our earlier general network for familiar-name
+introductions and questions, and uses our recall network for supported unfamiliar
+name questions. Each network uses its own tokenizer. Replies are generated
+by our models; the router never writes or substitutes an answer. Use
 `--no-recall-specialist` to inspect general-model behavior alone. The specialist
 and routing remain experimental and can still give an incorrect name.
 
-See the [companion experiment report](companion-experiment.md) for actual
+See the [current experiment report](quality-v2.md) for actual
 conversations, failures, name-recall trials, and training details. **The app
 works; reliable free-flowing neural conversation is not established yet.**
 
 This checkout has the trained checkpoints locally. A fresh clone needs
 `uv sync --locked`, followed by the learned-word and general assistant-only
-training steps below. The code and reports are on GitHub; weights and downloaded
+training steps below and the [current continuation steps](quality-v2.md#reproduce).
+The code and reports are on GitHub; weights and downloaded
 datasets remain local. Conversation quality and dependable memory are still
 active research goals for this small model.
 
@@ -107,7 +110,8 @@ replies must be checked from actual generated examples.
 ![Joi chat screen](assets/joi-chat-desktop.jpg)
 
 [Phone layout](assets/joi-chat-mobile.jpg). The default chat checkpoint is
-`checkpoints/joi-chat/best.pt`; pass `--checkpoint` to inspect a different
+`checkpoints/joi-v2/best.pt` when present, otherwise `checkpoints/joi-chat/best.pt`;
+pass `--checkpoint` to inspect a different
 dialogue-trained run.
 
 Record actual multi-turn development probes and a separate validation score:

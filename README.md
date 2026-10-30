@@ -5,7 +5,7 @@
 <br><br>
 
 <a href="#step-inside">⟦ ENTER JOI ⟧</a> &nbsp; · &nbsp;
-<a href="docs/companion-experiment.md">⟦ THE EXPERIMENT ⟧</a> &nbsp; · &nbsp;
+<a href="docs/quality-v2.md">⟦ THE EXPERIMENT ⟧</a> &nbsp; · &nbsp;
 <a href="docs/development.md">⟦ UNDER THE HOLOGRAM ⟧</a>
 
 <br><br>
@@ -46,7 +46,7 @@ The code lives here. Trained weights stay on your laptop.
 
 | Follow the signal | |
 | :--- | :--- |
-| [**The experiment →**](docs/companion-experiment.md) | Real conversations, progress, and rough edges. |
+| [**The experiment →**](docs/quality-v2.md) | Real conversations, progress, and rough edges. |
 | [**The workshop →**](docs/development.md) | Setup, training, and how she’s made. |
 | [**How Joi learns →**](docs/how-joi-learns.md) | The neural network story, in plain language. |
 
